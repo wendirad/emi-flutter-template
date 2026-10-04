@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import '../../../../core/interfaces/i_auth_repository.dart';
+import '../repositories/i_auth_repository.dart';
 import '../../../../core/use_cases/use_cases.dart';
 import '../failures/auth_failures.dart';
 

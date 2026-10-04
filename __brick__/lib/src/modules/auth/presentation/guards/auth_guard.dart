@@ -1,5 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../app.dart';
+import '../../../../core/app.dart';
 
 class AuthGuard extends RouteGuard {
   AuthGuard() : super(redirectTo: AppRoute.signIn.str);

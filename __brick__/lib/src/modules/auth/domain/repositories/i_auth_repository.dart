@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import '../../modules/auth/domain/entities/auth_entities.dart';
-import '../../modules/auth/domain/failures/auth_failures.dart';
+import '../entities/auth_entities.dart';
+import '../failures/auth_failures.dart';
 
 abstract class IAuthRepository {
   Future<bool> get isAuthenticated;

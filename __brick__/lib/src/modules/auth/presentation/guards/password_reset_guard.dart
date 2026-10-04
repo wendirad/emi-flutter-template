@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../app.dart';
-import '../../../modules/auth/domain/use_cases/verify_password_reset_code_use_case.dart';
+import '../../../../core/app.dart';
+import '../../domain/use_cases/verify_password_reset_code_use_case.dart';
 
 class PasswordResetGuard extends RouteGuard {
   final VerifyPasswordResetCodeUseCase verifyPasswordResetCode;
