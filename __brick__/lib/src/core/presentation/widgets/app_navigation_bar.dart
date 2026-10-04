@@ -13,8 +13,18 @@ class AppNavigationBar extends StatefulWidget {
 
 class _AppNavigationBarState extends State<AppNavigationBar> {
   int _selectedIndex = 0;
-  _AppNavigationBarState() : super() {
-    Modular.to.addListener(_handleBackButton);
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = _indexForCurrentRoute() ?? _selectedIndex;
+    Modular.to.addListener(_syncSelectedIndex);
+  }
+
+  @override
+  void dispose() {
+    Modular.to.removeListener(_syncSelectedIndex);
+    super.dispose();
   }
 
   @override
@@ -44,33 +54,35 @@ class _AppNavigationBarState extends State<AppNavigationBar> {
               GButton(icon: Icons.settings_outlined, text: 'Settings'),
             ],
             selectedIndex: _selectedIndex,
-            onTabChange: (index) => _navigate(index, context),
+            onTabChange: _navigate,
           ),
         ),
       ),
     );
   }
 
-  void _navigate(int index, BuildContext context) async {
+  void _navigate(int index) {
     if (index == _selectedIndex) return;
     if (mounted) setState(() => _selectedIndex = index);
 
-    await Modular.to.pushNamed(switch (index) {
+    Modular.to.navigate(switch (index) {
       0 => AppRoute.home.str,
       1 => AppRoute.settings.str,
       _ => AppRoute.notFound.str,
     });
   }
 
-  void _handleBackButton() {
-    if (mounted) {
-      setState(() {
-        if (AppRoute.current.isOrIsChildOf(AppRoute.home)) {
-          _selectedIndex = 0;
-        } else if (AppRoute.current.isOrIsChildOf(AppRoute.settings)) {
-          _selectedIndex = 1;
-        }
-      });
+  int? _indexForCurrentRoute() {
+    final current = AppRoute.current;
+    if (current.isOrIsChildOf(AppRoute.home)) return 0;
+    if (current.isOrIsChildOf(AppRoute.settings)) return 1;
+    return null;
+  }
+
+  void _syncSelectedIndex() {
+    final int? index = _indexForCurrentRoute();
+    if (mounted && index != null && index != _selectedIndex) {
+      setState(() => _selectedIndex = index);
     }
   }
 }
