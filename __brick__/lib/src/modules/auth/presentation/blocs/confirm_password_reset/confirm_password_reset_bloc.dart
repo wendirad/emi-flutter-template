@@ -14,13 +14,6 @@ class ConfirmPasswordResetBloc
 
   ConfirmPasswordResetBloc(this.confirmPasswordReset)
     : super(ConfirmPasswordResetState.initial()) {
-    on<ConfirmPasswordResetToggleShowPassword>(
-      (_, emit) => emit(state.copyWith(showPassword: !state.showPassword)),
-    );
-    on<ConfirmPasswordResetToggleShowConfirmPassword>(
-      (_, emit) =>
-          emit(state.copyWith(showConfirmPassword: !state.showConfirmPassword)),
-    );
     on<ConfirmPasswordResetRequested>(_onConfirmPasswordResetRequested);
   }
 

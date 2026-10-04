@@ -59,6 +59,7 @@ class _SignInForm extends StatefulWidget {
 class _SignInFormState extends State<_SignInForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _saveInfo = false;
 
   @override
   void initState() {
@@ -85,7 +86,7 @@ class _SignInFormState extends State<_SignInForm> {
 
         if (savedEmail.isNotEmpty) _emailController.text = savedEmail;
 
-        ReadContext(context).read<SignInBloc>().add(const SignInToggleSaveInfo());
+        setState(() => _saveInfo = true);
       }
     } catch (e) {
       debugPrint('Error loading saved email: $e');
@@ -118,20 +119,14 @@ class _SignInFormState extends State<_SignInForm> {
               PasswordField(
                 controller: _passwordController,
                 enforceStrength: false,
-                showPassword: state.showPassword,
-                onShowPasswordToggle: () => ReadContext(
-                  context,
-                ).read<SignInBloc>().add(SignInToggleShowPassword()),
               ),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CheckboxField(
-                    isChecked: state.saveInfo,
-                    onToggle: () => ReadContext(
-                      context,
-                    ).read<SignInBloc>().add(SignInToggleSaveInfo()),
+                    isChecked: _saveInfo,
+                    onToggle: () => setState(() => _saveInfo = !_saveInfo),
                     suffix: Text('Remember my email'),
                   ),
                   AppTextButton(
@@ -153,7 +148,7 @@ class _SignInFormState extends State<_SignInForm> {
                         SignInParam(
                           email: _emailController.text.trim(),
                           password: _passwordController.text.trim(),
-                          saveInfo: state.saveInfo,
+                          saveInfo: _saveInfo,
                         ),
                       ),
                     );

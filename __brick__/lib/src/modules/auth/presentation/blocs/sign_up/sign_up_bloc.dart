@@ -12,13 +12,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final SignUpWithEmailAndPasswordUseCase signUp;
 
   SignUpBloc(this.signUp) : super(SignUpState.initial()) {
-    on<SignUpToggleShowPassword>(
-      (_, emit) => emit(state.copyWith(showPassword: !state.showPassword)),
-    );
-    on<SignUpToggleShowConfirmPassword>(
-      (_, emit) =>
-          emit(state.copyWith(showConfirmPassword: !state.showConfirmPassword)),
-    );
     on<SignUpRequested>(_onSignUpRequested);
   }
 

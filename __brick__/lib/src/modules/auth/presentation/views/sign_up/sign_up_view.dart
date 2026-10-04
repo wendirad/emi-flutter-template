@@ -102,20 +102,12 @@ class _SignUpFormState extends State<_SignUpForm> {
 
               PasswordField(
                 controller: _passwordController,
-                showPassword: state.showPassword,
-                onShowPasswordToggle: () => ReadContext(
-                  context,
-                ).read<SignUpBloc>().add(SignUpToggleShowPassword()),
               ),
 
               PasswordField(
                 controller: _confirmPasswordController,
                 confirms: _passwordController,
-                showPassword: state.showConfirmPassword,
                 hintText: 'Confirm Password',
-                onShowPasswordToggle: () => ReadContext(
-                  context,
-                ).read<SignUpBloc>().add(SignUpToggleShowConfirmPassword()),
               ),
 
               const SizedBox(height: 16),

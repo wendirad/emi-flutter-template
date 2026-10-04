@@ -124,20 +124,12 @@ class _ConfirmPasswordResetViewFormState
             children: [
               PasswordField(
                 controller: _newPasswordController,
-                showPassword: state.showPassword,
-                onShowPasswordToggle: () => ReadContext(context)
-                    .read<ConfirmPasswordResetBloc>()
-                    .add(ConfirmPasswordResetToggleShowPassword()),
               ),
 
               PasswordField(
                 controller: _confirmNewPasswordController,
                 confirms: _newPasswordController,
-                showPassword: state.showConfirmPassword,
                 hintText: 'Confirm Password',
-                onShowPasswordToggle: () => ReadContext(context)
-                    .read<ConfirmPasswordResetBloc>()
-                    .add(ConfirmPasswordResetToggleShowConfirmPassword()),
               ),
 
               const SizedBox(height: 16),

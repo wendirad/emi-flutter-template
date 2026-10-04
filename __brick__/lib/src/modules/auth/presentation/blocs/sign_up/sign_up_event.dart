@@ -15,11 +15,3 @@ class SignUpRequested extends SignUpEvent {
   @override
   List<Object> get props => [param];
 }
-
-class SignUpToggleShowPassword extends SignUpEvent {
-  const SignUpToggleShowPassword();
-}
-
-class SignUpToggleShowConfirmPassword extends SignUpEvent {
-  const SignUpToggleShowConfirmPassword();
-}

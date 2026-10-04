@@ -7,14 +7,10 @@ enum ConfirmPasswordResetProcess { idle, inProgress, successful, failed }
 
 class ConfirmPasswordResetState extends Equatable {
   final ConfirmPasswordResetProcess process;
-  final bool showPassword;
-  final bool showConfirmPassword;
   final PasswordResetConfirmFailure? error;
 
   const ConfirmPasswordResetState({
     required this.process,
-    this.showPassword = false,
-    this.showConfirmPassword = false,
     this.error,
   });
 
@@ -23,13 +19,9 @@ class ConfirmPasswordResetState extends Equatable {
 
   ConfirmPasswordResetState copyWith({
     ConfirmPasswordResetProcess? process,
-    bool? showPassword,
-    bool? showConfirmPassword,
     Object? error = _unset,
   }) => ConfirmPasswordResetState(
     process: process ?? this.process,
-    showPassword: showPassword ?? this.showPassword,
-    showConfirmPassword: showConfirmPassword ?? this.showConfirmPassword,
     error: identical(error, _unset)
         ? this.error
         : error as PasswordResetConfirmFailure?,
@@ -38,8 +30,6 @@ class ConfirmPasswordResetState extends Equatable {
   @override
   List<Object> get props => [
     process,
-    showPassword,
-    showConfirmPassword,
     ?error,
   ];
 }

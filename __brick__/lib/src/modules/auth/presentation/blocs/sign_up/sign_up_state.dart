@@ -8,13 +8,9 @@ enum SignUpProcess { idle, inProgress, successful, failed }
 class SignUpState extends Equatable {
   final SignUpProcess process;
   final SignUpWithEmailAndPasswordFailure? error;
-  final bool showPassword;
-  final bool showConfirmPassword;
 
   const SignUpState({
     required this.process,
-    this.showPassword = false,
-    this.showConfirmPassword = false,
     this.error,
   });
 
@@ -22,13 +18,9 @@ class SignUpState extends Equatable {
 
   SignUpState copyWith({
     SignUpProcess? process,
-    bool? showPassword,
-    bool? showConfirmPassword,
     Object? error = _unset,
   }) => SignUpState(
     process: process ?? this.process,
-    showPassword: showPassword ?? this.showPassword,
-    showConfirmPassword: showConfirmPassword ?? this.showConfirmPassword,
     error: identical(error, _unset)
         ? this.error
         : error as SignUpWithEmailAndPasswordFailure?,
@@ -37,8 +29,6 @@ class SignUpState extends Equatable {
   @override
   List<Object> get props => [
     process,
-    showPassword,
-    showConfirmPassword,
     ?error,
   ];
 }

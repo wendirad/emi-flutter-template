@@ -12,14 +12,6 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   final SignInWithEmailAndPasswordUseCase signIn;
 
   SignInBloc(this.signIn) : super(SignInState.initial()) {
-    on<SignInToggleShowPassword>(
-      (_, emit) => emit(state.copyWith(showPassword: !state.showPassword)),
-    );
-
-    on<SignInToggleSaveInfo>(
-      (_, emit) => emit(state.copyWith(saveInfo: !state.saveInfo)),
-    );
-
     on<SignInRequested>(_onSignInRequested);
   }
 

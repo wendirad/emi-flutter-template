@@ -7,14 +7,7 @@ sealed class ConfirmPasswordResetEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ConfirmPasswordResetToggleShowPassword extends ConfirmPasswordResetEvent {
-  const ConfirmPasswordResetToggleShowPassword();
-}
 
-class ConfirmPasswordResetToggleShowConfirmPassword
-    extends ConfirmPasswordResetEvent {
-  const ConfirmPasswordResetToggleShowConfirmPassword();
-}
 
 class ConfirmPasswordResetRequested extends ConfirmPasswordResetEvent {
   final ConfirmPasswordResetParam param;
