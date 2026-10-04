@@ -15,7 +15,7 @@ class AppWidget extends StatelessWidget {
       builder: (context, _) {
         return MaterialApp.router(
           locale: Locale('en'),
-          title: 'Demo App',
+          title: '{{project_name.titleCase()}}',
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),
           themeMode: themeService.mode,

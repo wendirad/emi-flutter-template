@@ -86,7 +86,7 @@ class _AppInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      'Demo App',
+      '{{project_name.titleCase()}}',
       style: context.tt.headlineMedium?.copyWith(
         fontWeight: FontWeight.bold,
         color: context.cs.onSurface,
@@ -107,7 +107,7 @@ class _AppDescription extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              r'''A demo app''',
+              r'''{{{description}}}''',
               style: context.tt.bodyMedium?.copyWith(
                 color: context.cs.onSurface.withValues(alpha: 0.8),
                 height: 1.5,
