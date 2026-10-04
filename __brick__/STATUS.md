@@ -10,7 +10,7 @@ One line per item, so a single `grep` finds it.
 - Task: `- [<mark>] T<nnn> <area>: <title>`. Marks: `[ ]` todo, `[~]` in progress, `[x]` done, `[!]` blocked (reason in the title).
 - Subtask: indented under its task as `  - [<mark>] T<nnn>.<n> <title>`.
 - `<area>` is the feature or layer: `auth`, `profile`, `settings`, `core`, `l10n`, `theme`, `app`.
-- Finished top-level tasks move to `STATUS_ARCHIVE.md` with `bash tool/status.sh archive`.
+- Finished top-level tasks move to `docs/status/archive.md` with `bash tool/status.sh archive`.
 
 ## Features
 

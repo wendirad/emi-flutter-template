@@ -7,7 +7,7 @@
 #   status.sh add <area> <title> [parent-ID]   new task, or subtask under parent-ID
 #   status.sh set <ID> <todo|doing|done|blocked>   change one task's mark
 #   status.sh feature <ID> <state>   change one feature's state
-#   status.sh archive                move finished top-level tasks to STATUS_ARCHIVE.md
+#   status.sh archive                move finished top-level tasks to docs/status/archive.md
 set -euo pipefail
 cd "$(dirname "$0")/.."
 file=STATUS.md
@@ -80,7 +80,8 @@ case "$cmd" in
       /^  - \[.\] T[0-9]+\./ && moving {print > arch; next}
       {moving=0; print}' "$file" >"$file.new"
     cat "$file.new" >"$file"; rm -f "$file.new"
-    cat "$tmp" >>STATUS_ARCHIVE.md
+    mkdir -p docs/status
+    cat "$tmp" >>docs/status/archive.md
     echo "archived $(wc -l <"$tmp" | tr -d ' ') line(s)"
     rm -f "$tmp"
     ;;

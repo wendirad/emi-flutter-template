@@ -23,7 +23,7 @@ Read this before changing anything. Open only the files the task needs; do not s
 | Change a feature's state | `bash tool/status.sh feature F-home done` |
 | Move finished tasks out of `STATUS.md` | `bash tool/status.sh archive` |
 
-Before a multi-step task, add its steps as subtasks, and `set` each one as it lands. `STATUS_ARCHIVE.md` holds finished work; search it with `grep`, do not read it.
+Before a multi-step task, add its steps as subtasks, and `set` each one as it lands. `docs/status/archive.md` holds finished work; search it with `grep`, do not read it.
 
 ## Environment
 
