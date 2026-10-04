@@ -6,7 +6,6 @@ import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/use_cases/use_cases.dart';
 import '../../blocs/sign_up/sign_up_bloc.dart';
-import '../widgets/components/header.dart';
 import '../widgets/widgets.dart';
 
 class SignUpView extends StatefulWidget {
@@ -24,7 +23,7 @@ class _SignUpViewState extends State<SignUpView> {
     return BlocProvider(
       create: (_) =>
           SignUpBloc(Modular.get<SignUpWithEmailAndPasswordUseCase>()),
-      child: BlocConsumer<SignUpBloc, SignUpState>(
+      child: BlocListener<SignUpBloc, SignUpState>(
         listenWhen: (p, c) => p.process != c.process || p.error != c.error,
         listener: (context, state) async {
           if (state.process == SignUpProcess.successful) {
@@ -32,47 +31,16 @@ class _SignUpViewState extends State<SignUpView> {
             Modular.to.navigate(AppRoute.home.str);
           }
         },
-
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: context.cs.surfaceDim,
-            resizeToAvoidBottomInset: true,
-            body: SingleChildScrollView(
-              child: SizedBox(
-                height: MediaQuery.sizeOf(context).height,
-                child: Padding(
-                  padding: const EdgeInsets.all(28.0).copyWith(top: 32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const TopBar(),
-
-                      const Column(
-                        spacing: 16,
-                        children: [
-                          AuthBanner(),
-
-                          Header(
-                            title: 'Register',
-                            subtitle: 'Create your new account',
-                          ),
-                        ],
-                      ),
-
-                      Column(
-                        children: [
-                          _SignUpForm(formKey: _signUpFormKey),
-
-                          const _SignUpFooter(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+        child: AuthScaffold(
+          title: 'Register',
+          subtitle: 'Create your new account',
+          form: _SignUpForm(formKey: _signUpFormKey),
+          footer: AuthFooter(
+            prompt: 'Already have an account?',
+            actionText: 'Sign In',
+            onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
+          ),
+        ),
       ),
     );
   }
@@ -171,29 +139,6 @@ class _SignUpFormState extends State<_SignUpForm> {
               ),
             ],
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SignUpFooter extends StatelessWidget {
-  const _SignUpFooter();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Already have an account?'),
-            AppTextButton(
-              text: 'Sign In',
-              onPress: () async =>
-                  await Modular.to.pushNamed(AppRoute.signIn.str),
-            ),
-          ],
         ),
       ],
     );

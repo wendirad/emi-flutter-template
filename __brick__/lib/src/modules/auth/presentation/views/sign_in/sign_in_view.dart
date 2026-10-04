@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../../../../core/constants/constants.dart';
-import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/use_cases/use_cases.dart';
 import '../../blocs/sign_in/sign_in_bloc.dart';
-import '../widgets/components/header.dart';
 import '../widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,7 +23,7 @@ class _SignInViewState extends State<SignInView> {
     return BlocProvider(
       create: (_) =>
           SignInBloc(Modular.get<SignInWithEmailAndPasswordUseCase>()),
-      child: BlocConsumer<SignInBloc, SignInState>(
+      child: BlocListener<SignInBloc, SignInState>(
         listenWhen: (p, c) => p.process != c.process || p.error != c.error,
         listener: (context, state) async {
           if (state.process == SignInProcess.success) {
@@ -34,47 +32,16 @@ class _SignInViewState extends State<SignInView> {
             Modular.to.navigate(AppRoute.home.str);
           }
         },
-
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: context.cs.surfaceDim,
-            resizeToAvoidBottomInset: true,
-            body: SingleChildScrollView(
-              child: SizedBox(
-                height: MediaQuery.sizeOf(context).height,
-                child: Padding(
-                  padding: const EdgeInsets.all(28.0).copyWith(top: 32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const TopBar(),
-
-                      const Column(
-                        spacing: 16,
-                        children: [
-                          AuthBanner(),
-
-                          Header(
-                            title: 'Welcome Back',
-                            subtitle: 'Sign In into your account',
-                          ),
-                        ],
-                      ),
-
-                      Column(
-                        children: [
-                          _SignInForm(formKey: _signInFormKey),
-
-                          const _SignInFooter(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+        child: AuthScaffold(
+          title: 'Welcome Back',
+          subtitle: 'Sign In into your account',
+          form: _SignInForm(formKey: _signInFormKey),
+          footer: AuthFooter(
+            prompt: "Don't have account?",
+            actionText: 'Sign Up',
+            onAction: () => Modular.to.pushNamed(AppRoute.signUp.str),
+          ),
+        ),
       ),
     );
   }
@@ -197,29 +164,6 @@ class _SignInFormState extends State<_SignInForm> {
               ),
             ],
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SignInFooter extends StatelessWidget {
-  const _SignInFooter();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Don't have account?"),
-            AppTextButton(
-              text: 'Sign Up',
-              onPress: () async =>
-                  await Modular.to.pushNamed(AppRoute.signUp.str),
-            ),
-          ],
         ),
       ],
     );

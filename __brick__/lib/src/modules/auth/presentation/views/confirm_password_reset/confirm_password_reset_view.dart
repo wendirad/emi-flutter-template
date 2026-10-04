@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../../../../core/constants/constants.dart';
-import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
 import '../../blocs/confirm_password_reset/confirm_password_reset_bloc.dart';
-import '../widgets/components/header.dart';
 import '../widgets/widgets.dart';
 
 class ConfirmPasswordResetView extends StatefulWidget {
@@ -34,7 +32,7 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
     return BlocProvider(
       create: (_) =>
           ConfirmPasswordResetBloc(Modular.get<ConfirmPasswordResetUseCase>()),
-      child: BlocConsumer<ConfirmPasswordResetBloc, ConfirmPasswordResetState>(
+      child: BlocListener<ConfirmPasswordResetBloc, ConfirmPasswordResetState>(
         listenWhen: (p, c) => p.process != c.process || p.error != c.error,
         listener: (context, state) {
           if (state.process == ConfirmPasswordResetProcess.successful) {
@@ -42,49 +40,19 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
             Modular.to.navigate(AppRoute.signIn.str);
           }
         },
-
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: context.cs.surfaceDim,
-            resizeToAvoidBottomInset: true,
-            body: SingleChildScrollView(
-              child: SizedBox(
-                height: MediaQuery.sizeOf(context).height,
-                child: Padding(
-                  padding: const EdgeInsets.all(28.0).copyWith(top: 32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const TopBar(),
-
-                      const Column(
-                        spacing: 16,
-                        children: [
-                          AuthBanner(),
-
-                          Header(
-                            title: 'Confirm Password',
-                            subtitle: 'Set your new password',
-                          ),
-                        ],
-                      ),
-
-                      Column(
-                        children: [
-                          _ConfirmPasswordResetViewForm(
-                            formKey: _confirmPasswordResetViewFormKey,
-                            code: verificationCode,
-                          ),
-                          const _ConfirmPasswordResetViewFooter(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+        child: AuthScaffold(
+          title: 'Confirm Password',
+          subtitle: 'Set your new password',
+          form: _ConfirmPasswordResetViewForm(
+          formKey: _confirmPasswordResetViewFormKey,
+          code: verificationCode,
+        ),
+          footer: AuthFooter(
+            prompt: 'Remember your password?',
+            actionText: 'Sign In',
+            onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
+          ),
+        ),
       ),
     );
   }
@@ -192,29 +160,6 @@ class _ConfirmPasswordResetViewFormState
               ),
             ],
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ConfirmPasswordResetViewFooter extends StatelessWidget {
-  const _ConfirmPasswordResetViewFooter();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Remember your password?"),
-            AppTextButton(
-              text: 'Sign In',
-              onPress: () async =>
-                  await Modular.to.pushNamed(AppRoute.signIn.str),
-            ),
-          ],
         ),
       ],
     );

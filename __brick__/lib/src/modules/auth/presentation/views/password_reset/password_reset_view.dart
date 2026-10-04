@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../../../../core/constants/constants.dart';
-import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
 import '../../blocs/password_reset/password_reset_bloc.dart';
-import '../widgets/components/header.dart';
 import '../widgets/widgets.dart';
 
 class PasswordResetView extends StatefulWidget {
@@ -26,7 +24,7 @@ class _PasswordResetViewState extends State<PasswordResetView> {
       create: (_) =>
           PasswordResetBloc(Modular.get<SendPasswordResetEmailUseCase>()),
 
-      child: BlocConsumer<PasswordResetBloc, PasswordResetState>(
+      child: BlocListener<PasswordResetBloc, PasswordResetState>(
         listenWhen: (p, c) => p.process != c.process || p.error != c.error,
         listener: (context, state) async {
           if (state.process == PasswordResetProcess.successful) {
@@ -34,49 +32,16 @@ class _PasswordResetViewState extends State<PasswordResetView> {
             Modular.to.navigate(AppRoute.signIn.str);
           }
         },
-
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: context.cs.surfaceDim,
-            resizeToAvoidBottomInset: true,
-            body: SingleChildScrollView(
-              child: SizedBox(
-                height: MediaQuery.sizeOf(context).height,
-                child: Padding(
-                  padding: const EdgeInsets.all(28.0).copyWith(top: 32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const TopBar(),
-
-                      const Column(
-                        spacing: 16,
-                        children: [
-                          AuthBanner(),
-
-                          Header(
-                            title: 'Forgot Your Password?',
-                            subtitle: 'Reset your password with email',
-                          ),
-                        ],
-                      ),
-
-                      Column(
-                        children: [
-                          _PasswordResetViewForm(
-                            formKey: _passwordResetViewFormKey,
-                          ),
-
-                          const _PasswordResetViewFooter(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+        child: AuthScaffold(
+          title: 'Forgot Your Password?',
+          subtitle: 'Reset your password with email',
+          form: _PasswordResetViewForm(formKey: _passwordResetViewFormKey),
+          footer: AuthFooter(
+            prompt: 'Remember your password?',
+            actionText: 'Sign In',
+            onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
+          ),
+        ),
       ),
     );
   }
@@ -155,29 +120,6 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
               ),
             ],
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _PasswordResetViewFooter extends StatelessWidget {
-  const _PasswordResetViewFooter();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Remember your password?"),
-            AppTextButton(
-              text: 'Sign In',
-              onPress: () async =>
-                  await Modular.to.pushNamed(AppRoute.signIn.str),
-            ),
-          ],
         ),
       ],
     );
