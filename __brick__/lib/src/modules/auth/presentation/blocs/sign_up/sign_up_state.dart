@@ -1,5 +1,8 @@
 part of 'sign_up_bloc.dart';
 
+// Sentinel so copyWith can tell "keep the error" from an explicit null.
+const Object _unset = Object();
+
 enum SignUpProcess { idle, inProgress, successful, failed }
 
 class SignUpState extends Equatable {
@@ -21,12 +24,14 @@ class SignUpState extends Equatable {
     SignUpProcess? process,
     bool? showPassword,
     bool? showConfirmPassword,
-    SignUpWithEmailAndPasswordFailure? error,
+    Object? error = _unset,
   }) => SignUpState(
     process: process ?? this.process,
     showPassword: showPassword ?? this.showPassword,
     showConfirmPassword: showConfirmPassword ?? this.showConfirmPassword,
-    error: error ?? this.error,
+    error: identical(error, _unset)
+        ? this.error
+        : error as SignUpWithEmailAndPasswordFailure?,
   );
 
   @override

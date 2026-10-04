@@ -1,5 +1,8 @@
 part of 'auth_session_bloc.dart';
 
+// Sentinel so copyWith can tell "keep the error" from an explicit null.
+const Object _unset = Object();
+
 enum SessionStatus { initial, authenticated, unauthenticated }
 
 class AuthSessionState extends Equatable {
@@ -13,13 +16,12 @@ class AuthSessionState extends Equatable {
 
   bool get isAuthenticated => status == SessionStatus.authenticated;
 
-  AuthSessionState copyWith({
-    SessionStatus? status,
-    AuthSessionFailure? error,
-  }) {
+  AuthSessionState copyWith({SessionStatus? status, Object? error = _unset}) {
     return AuthSessionState(
       status: status ?? this.status,
-      error: error ?? this.error,
+      error: identical(error, _unset)
+          ? this.error
+          : error as AuthSessionFailure?,
     );
   }
 

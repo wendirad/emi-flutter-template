@@ -1,5 +1,8 @@
 part of 'confirm_password_reset_bloc.dart';
 
+// Sentinel so copyWith can tell "keep the error" from an explicit null.
+const Object _unset = Object();
+
 enum ConfirmPasswordResetProcess { idle, inProgress, successful, failed }
 
 class ConfirmPasswordResetState extends Equatable {
@@ -22,12 +25,14 @@ class ConfirmPasswordResetState extends Equatable {
     ConfirmPasswordResetProcess? process,
     bool? showPassword,
     bool? showConfirmPassword,
-    PasswordResetConfirmFailure? error,
+    Object? error = _unset,
   }) => ConfirmPasswordResetState(
     process: process ?? this.process,
     showPassword: showPassword ?? this.showPassword,
     showConfirmPassword: showConfirmPassword ?? this.showConfirmPassword,
-    error: error ?? this.error,
+    error: identical(error, _unset)
+        ? this.error
+        : error as PasswordResetConfirmFailure?,
   );
 
   @override

@@ -1,5 +1,8 @@
 part of 'update_profile_bloc.dart';
 
+// Sentinel so copyWith can tell "keep the error" from an explicit null.
+const Object _unset = Object();
+
 enum ProfileUpdateStatus { idle, inProgress, successful, failed }
 
 class UpdateProfileState extends Equatable {
@@ -13,10 +16,12 @@ class UpdateProfileState extends Equatable {
 
   UpdateProfileState copyWith({
     ProfileUpdateStatus? process,
-    ProfileUpdateFailure? error,
+    Object? error = _unset,
   }) => UpdateProfileState(
     process: process ?? this.process,
-    error: error ?? this.error,
+    error: identical(error, _unset)
+        ? this.error
+        : error as ProfileUpdateFailure?,
   );
 
   @override
