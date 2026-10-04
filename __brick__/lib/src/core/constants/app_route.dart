@@ -2,32 +2,32 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AppRoute {
-  static final Route root = Route('/');
-  static final Route app = Route('/app');
-  static final Route splash = Route('/splash');
-  static final Route notFound = Route('/not-found');
+  static final AppRouteNode root = AppRouteNode('/');
+  static final AppRouteNode app = AppRouteNode('/app');
+  static final AppRouteNode splash = AppRouteNode('/splash');
+  static final AppRouteNode notFound = AppRouteNode('/not-found');
 
-  static final Route auth = app.child('/auth');
-  static final Route signUp = auth.child('/sign-up');
-  static final Route signIn = auth.child('/sign-in');
-  static final Route resetPassword = auth.child('/reset-password');
-  static final Route confirmPasswordReset = auth.child(
+  static final AppRouteNode auth = app.child('/auth');
+  static final AppRouteNode signUp = auth.child('/sign-up');
+  static final AppRouteNode signIn = auth.child('/sign-in');
+  static final AppRouteNode resetPassword = auth.child('/reset-password');
+  static final AppRouteNode confirmPasswordReset = auth.child(
     '/confirm-reset-password',
   );
 
-  static final Route appShell = app.child('/shell');
-  static final Route appShellInitial = appShell.child('/initial');
+  static final AppRouteNode appShell = app.child('/shell');
+  static final AppRouteNode appShellInitial = appShell.child('/initial');
 
-  static final Route home = appShell.child('/home', title: 'Home');
+  static final AppRouteNode home = appShell.child('/home', title: 'Home');
 
-  static final Route settings = appShell.child('/settings', title: 'Settings');
-  static final Route about = settings.child('/about', title: 'About');
-  static final Route updateProfile = settings.child(
+  static final AppRouteNode settings = appShell.child('/settings', title: 'Settings');
+  static final AppRouteNode about = settings.child('/about', title: 'About');
+  static final AppRouteNode updateProfile = settings.child(
     '/update-profile',
     title: 'Edit Profile',
   );
 
-  static Route get current {
+  static AppRouteNode get current {
     final String currentPath = Modular.to.path;
     String normalize(String s) {
       final cleaned = s.split('?').first.split('#').first;
@@ -38,7 +38,7 @@ class AppRoute {
 
     final String target = normalize(currentPath);
 
-    Route? search(Route r) {
+    AppRouteNode? search(AppRouteNode r) {
       if (normalize(r.str) == target) return r;
       for (final c in r.children) {
         final found = search(c);
@@ -54,33 +54,33 @@ class AppRoute {
       if (match != null) return match;
     }
 
-    return Route(target);
+    return AppRouteNode(target);
   }
 }
 
-class Route extends Equatable {
+class AppRouteNode extends Equatable {
   final String _path;
   final String _parent;
   final String? _title;
 
-  final List<Route> _childs = [];
+  final List<AppRouteNode> _children = [];
 
-  Route(String path, {String parent = '', String? title = ''})
+  AppRouteNode(String path, {String parent = '', String? title = ''})
     : _parent = parent,
       _path = path,
       _title = title;
 
-  Route child(String path, {String? title}) {
-    _childs.add(Route(path, parent: str, title: title));
-    return _childs.last;
+  AppRouteNode child(String path, {String? title}) {
+    _children.add(AppRouteNode(path, parent: str, title: title));
+    return _children.last;
   }
 
-  bool isOrIsChildOf(Route route) {
+  bool isOrIsChildOf(AppRouteNode route) {
     if (route == this) return true;
     return isChildOf(route);
   }
 
-  bool isChildOf(Route route) {
+  bool isChildOf(AppRouteNode route) {
     if (route.children.any((r) => r == this)) return true;
     for (final child in route.children) {
       if (isChildOf(child)) return true;
@@ -91,11 +91,11 @@ class Route extends Equatable {
   String get base => _path;
   String get str => _parent + _path;
   String? get title => _title;
-  List<Route> get children => _childs;
+  List<AppRouteNode> get children => _children;
 
   @override
   String toString() =>
-      'Route<base: $_path, str: $str, title: $title, children: ${_childs.length}>';
+      'AppRouteNode<base: $_path, str: $str, title: $title, children: ${_children.length}>';
 
   @override
   List<Object?> get props => [str.replaceAll(RegExp(r'/$'), '')];
