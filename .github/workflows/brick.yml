@@ -46,6 +46,13 @@ jobs:
         working-directory: ${{ runner.temp }}/gen/out
         run: flutter analyze
 
+      - name: Generated l10n code is up to date
+        working-directory: ${{ runner.temp }}/gen/out
+        run: |
+          flutter gen-l10n
+          diff -r "$GITHUB_WORKSPACE/__brick__/lib/src/core/l10n/generated" \
+            lib/src/core/l10n/generated
+
       - name: Test the generated project
         working-directory: ${{ runner.temp }}/gen/out
         run: flutter test

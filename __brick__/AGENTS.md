@@ -106,7 +106,14 @@ No inline keys. Add them to the matching class in `core/constants/`:
 
 `.env` is bundled into the app. It is configuration, not a place for secrets.
 
-User-facing text is currently written inline in English. Keep it short, sentence case, and in the widget that shows it.
+User-facing text is localized (English and Amharic). Never write it inline in a widget:
+
+- Add the key to both `lib/src/core/l10n/arb/app_en.arb` and `app_am.arb`, with a `{placeholder}` and an `@key` entry for each parameter in `app_en.arb`. Then run `flutter gen-l10n` and commit the output in `lib/src/core/l10n/generated/`. `arb_files_test.dart` fails when a key is missing from either file.
+- Read it with `context.l10n.<key>` (`core/extensions/build_context_extensions.dart`). Keys are camelCase and start with the area: `signInTitle`, `settingsGeneral`, `failureNetwork`.
+- Domain code has no `BuildContext` and no Flutter, so it returns data, not text. Validators return a `ValidationError`; failures carry a `code`. The screen turns them into text: `error.message(context.l10n)` and `failure.localized(context.l10n)` (`presentation/extensions/`). `Failure.message` is English for logs and tests; do not show it.
+- Developer-facing text (exceptions, `debugPrint`) stays English and unlocalized.
+- The Amharic strings were written without a native review. Have a speaker check them before release.
+- To add a language, add `app_<code>.arb` next to the others and run `flutter gen-l10n`. The picker in Settings lists every supported locale. Poppins has no Ethiopic glyphs, so Amharic text uses the platform fallback font.
 
 ## UI
 
@@ -123,9 +130,9 @@ User-facing text is currently written inline in English. Keep it short, sentence
 
 **Add a bloc and screen.** Create `blocs/<name>/` with the bloc and event files, using `ProcessState` or `LoadState`. Create `views/<screen>/<screen>_view.dart`, provide the bloc with `BlocProvider(create: ...)` in the view, export the view from `views/views.dart`, add the route to `AppRoute` and to the module's `routes`, and add a bloc test.
 
-**Add a feature module.** Copy the `modules/auth` shape, add `<feature>.dart` with only what others may use, register `<Feature>Module` in `app/app_module.dart` (`ModuleRoute` and `imports`), and add its routes to `AppRoute`.
+**Add a feature module.** Copy the `modules/auth` shape (`modules/profile` is the smallest example), add `<feature>.dart` with only what others may use, register `<Feature>Module` in `app/app_module.dart` (`ModuleRoute` and `imports`), and add its routes to `AppRoute`.
 
-**Add a failure.** Add the class to `domain/failures/<feature>_failures.dart` following the existing ones, add any new code to its message table, and extend `auth_failures_test.dart`-style tests.
+**Add a failure.** Add the class to `domain/failures/<feature>_failures.dart` following the existing ones and add any new code to its English message table. Add the text for the code to both `.arb` files and map it in the feature's `presentation/extensions/<feature>_failure_message.dart`, then extend `auth_failures_test.dart` and `auth_failure_message_test.dart`-style tests.
 
 **Rename or move a file.** Use `git mv`. Update every relative import and export, the folder barrel, and any `part` / `part of` line. Run `flutter analyze`; an unresolved import is an error, an unused one is a warning.
 
