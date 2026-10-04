@@ -7,7 +7,7 @@ Read this and `STATUS.md` before changing anything. Open only the files the task
 1. Read `STATUS.md`. Find the task or add it, and mark it `[~]`.
 2. Change only what the task asks. Do not touch unrelated files, reformat untouched code, or add a dependency the task does not need.
 3. Run `bash tool/check.sh`. It must pass before you call the task done.
-4. Update `STATUS.md` (see its header), then commit one category per commit: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`.
+4. Update `STATUS.md` (see its header), then commit one category per commit as `type(scope): summary` in lowercase imperative, e.g. `feat(auth): add sign-in cubit`. Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`. Scope is the feature or layer (`auth`, `profile`, `core`, `l10n`, `theme`); omit it only for repo-wide changes.
 
 ## Environment
 
@@ -17,7 +17,7 @@ Dart `^3.9.2` and the stable Flutter channel (see `pubspec.yaml`). Keep `pubspec
 
 `bash tool/check.sh` runs the whole sequence in this order and stops at the first failure: `flutter gen-l10n` (when `.arb` files changed), `build_runner` (when a `@JsonSerializable` model changed), `dart fix --apply` (sorts imports and fixes lints), `dart format` on changed files, `flutter analyze`, `flutter test`.
 
-A Claude Code hook (`.claude/settings.json`) already runs `dart fix` and `dart format` on each edited Dart file and `gen-l10n` on each edited `.arb`. Do not sort or format by hand. Do not weaken `analysis_options.yaml` to pass; fix the code.
+A Claude Code hook (`.claude/settings.json`) already runs `dart fix` and `dart format` on each edited Dart file, `gen-l10n` on each edited `.arb`, and `build_runner` on each edited model with a `.g.dart` part, so generated files exist before analysis. Without the hook, run `flutter gen-l10n` or `dart run build_runner build --delete-conflicting-outputs` right after such an edit. Do not sort or format by hand. Do not weaken `analysis_options.yaml` to pass; fix the code.
 
 ## Layout and boundaries
 
@@ -42,7 +42,7 @@ Feature layout: `<name>.dart` (public barrel), `<name>_module.dart` (routes and 
 
 ## Imports and files
 
-- Relative imports inside the package. Import a `core` sub-package through its barrel (`constants/`, `presentation/widgets/`, `theme/`, `presentation/errors/`, `utils/`, `l10n/`); files inside that package import siblings directly.
+- Relative imports inside the package. Import a `core` sub-package through its barrel (`constants/`, `presentation/widgets/`, `theme/`, `presentation/errors/`, `utils/`, `l10n/`) from outside it. Files inside a folder import siblings directly (`import 'foo.dart'`), never their own folder's barrel or a parent barrel.
 - Every new public file is exported from its folder's barrel and removed from it when deleted. Do not leave a barrel entry or an empty folder behind.
 - One public class per file, named `snake_case` after the class. Exceptions: a use case with its `*Param`, bloc `part` files, grouped `*_entities.dart`, `*_models.dart`, `*_failures.dart`.
 - Never name a class `Route`, `TextField`, `FormField` or anything else that shadows Flutter. Custom widgets are `AppX` or named for their feature.

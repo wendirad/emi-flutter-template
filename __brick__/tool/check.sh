@@ -22,3 +22,4 @@ fi
 
 flutter analyze
 flutter test
+  
