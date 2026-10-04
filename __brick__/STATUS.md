@@ -23,13 +23,13 @@ One line per item, so a single `grep` finds it.
 | F-theme | Theme: light, dark, system | done | `core/theme` |
 | F-l10n | Localization: English, Amharic | done | Amharic reviewed |
 | F-home | Home tab | placeholder | shows the word "Home" |
-| F-rules | Firestore and Storage rules | untested | `firestore.rules`, `storage.rules` |
+| F-rules | Firestore and Storage rules | tested | `firestore.rules`, `storage.rules` |
 | F-tests | Screen and repository tests | partial | `AppButton` and `AuthFooter` only |
 
 ## Tasks
 
 - [x] T001 l10n: native-speaker review of `app_am.arb`
-- [ ] T002 core: test `firestore.rules` and `storage.rules` against the Firebase emulator
+- [x] T002 core: test `firestore.rules` and `storage.rules` against the Firebase emulator
 - [ ] T003 app: build the Home tab
 - [ ] T004 auth: widget tests for the sign-in and sign-up screens
 - [ ] T005 settings: widget tests for the settings screen

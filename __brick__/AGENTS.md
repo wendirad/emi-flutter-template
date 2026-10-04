@@ -85,7 +85,7 @@ Feature layout: `<name>.dart` (public barrel), `<name>_module.dart` (routes and 
 - A failure has a `const` constructor and `fromCode(String?)`, resolved through its own message table, then `failureMessageFor`'s shared table in `core/failures`. `Failure.message` is English for logs and tests; never show it.
 - Validators return a `ValidationError`, not text.
 - Never persist a password. Remember-me stores the email only.
-- Changing a Firestore field or collection updates the model, `FirestoreCollections`, `firestore.rules` and the repository together. The same goes for `StoragePaths` and `storage.rules`.
+- Changing a Firestore field or collection updates the model, `FirestoreCollections`, `firestore.rules` and the repository together. The same goes for `StoragePaths` and `storage.rules`. After editing a `.rules` file run `npm ci && npm test` in `rules_test/` (needs Node and Java 21); add a test for each rule you change.
 
 ## Strings, keys and constants
 
