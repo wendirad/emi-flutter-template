@@ -27,13 +27,10 @@ class AuthRepository implements IAuthRepository {
   @override
   Future<Either<AuthSessionFailure, Stream<bool>>> get authStateChanges async {
     try {
-      final stream = auth.authStateChanges().asyncMap((User? user) async {
-        if (user == null) throw none();
-        return true;
-      });
-      return Right(stream.asyncMap((bool r) => r));
-    } catch (e) {
-      return Left(AuthSessionFailure.fromCode('session-expired'));
+      return Right(auth.authStateChanges().map((User? user) => user != null));
+    } catch (e, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace, label: '$e');
+      return Left(AuthSessionFailure.fromCode('internal-error'));
     }
   }
 

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../../core/interfaces/i_auth_repository.dart';
@@ -18,23 +16,28 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
     );
   }
 
-  FutureOr<void> _onSessionUserSubscriptionRequested(
+  Future<void> _onSessionUserSubscriptionRequested(
     AuthSessionUserSubscriptionRequested event,
     Emitter<AuthSessionState> emit,
   ) async {
-    return emit.onEach(
-      _authRepository.authStateChanges.asStream(),
-      onData: (authSession) {
-        authSession.fold(
-          (error) => emit(
-            state.copyWith(status: SessionStatus.unauthenticated, error: error),
+    final result = await _authRepository.authStateChanges;
+
+    await result.fold(
+      (error) async => emit(
+        state.copyWith(status: SessionStatus.unauthenticated, error: error),
+      ),
+      (signedInChanges) => emit.onEach<bool>(
+        signedInChanges,
+        onData: (signedIn) => emit(
+          state.copyWith(
+            status: signedIn
+                ? SessionStatus.authenticated
+                : SessionStatus.unauthenticated,
+            error: null,
           ),
-          (_) => emit(
-            state.copyWith(status: SessionStatus.authenticated, error: null),
-          ),
-        );
-      },
-      onError: addError,
+        ),
+        onError: addError,
+      ),
     );
   }
 }
