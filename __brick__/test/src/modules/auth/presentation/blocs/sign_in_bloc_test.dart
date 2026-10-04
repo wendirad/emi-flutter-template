@@ -3,8 +3,8 @@
 // ignore_for_file: directives_ordering
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:{{project_name.snakeCase()}}/src/modules/auth/domain/failures/auth_failures.dart';
 import 'package:{{project_name.snakeCase()}}/src/modules/auth/domain/use_cases/use_cases.dart';

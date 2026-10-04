@@ -9,7 +9,6 @@ environment:
 
 dependencies:
   cloud_firestore: ^6.0.3
-  dartz: ^0.10.1
   equatable: ^2.0.7
   firebase_app_check: ^0.4.1+1
   firebase_auth: ^6.1.1
@@ -22,6 +21,7 @@ dependencies:
   flutter_modular: ^6.4.1
   flutter_social_button: ^1.1.6+1
   flutter_svg: ^2.2.1
+  fpdart: ^1.1.1
   google_fonts: ^6.3.2
   google_nav_bar: ^5.0.7
   image_picker: ^1.1.2

@@ -85,7 +85,7 @@ Rules:
 
 ## Errors and data access
 
-- Repositories and use cases return `Either<Failure, T>` (`dartz`). They do not throw to the caller.
+- Repositories and use cases return `Either<Failure, T>` (`fpdart`). They do not throw to the caller.
 - A feature's failures live in `domain/failures/`. Each has a `const` constructor and `fromCode(String?)`, resolved through the failure's own message table, then the shared `_commonMessages`, then a default.
 - Only a repository touches Firebase, `SharedPreferences` or the network. Views, blocs and use cases never do. `ThemeService` is the one core service that reads preferences.
 - Inject dependencies through constructors. Bind them in the owning module's `exportedBinds`/`binds`. `Modular.get` is allowed in module binds, route builders, `BlocProvider.create` and guards, nowhere else.

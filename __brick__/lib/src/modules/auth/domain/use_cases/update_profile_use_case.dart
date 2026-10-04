@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/use_cases/use_cases.dart';
 import '../failures/auth_failures.dart';

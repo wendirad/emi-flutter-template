@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fpdart/fpdart.dart';
 
 import '../failures/failure.dart';
 

@@ -2,8 +2,8 @@
 // differently from here.
 // ignore_for_file: directives_ordering
 
-import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:{{project_name.snakeCase()}}/src/modules/auth/domain/failures/auth_failures.dart';
 import 'package:{{project_name.snakeCase()}}/src/modules/auth/domain/repositories/i_auth_repository.dart';

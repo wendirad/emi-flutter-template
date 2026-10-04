@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/use_cases/use_cases.dart';
 import '../entities/auth_entities.dart';
