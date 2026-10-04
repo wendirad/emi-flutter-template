@@ -7,6 +7,7 @@ import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/use_cases/use_cases.dart';
 import '../../blocs/sign_up/sign_up_bloc.dart';
+import '../../extensions/auth_failure_message.dart';
 import '../widgets/widgets.dart';
 
 class SignUpView extends StatefulWidget {
@@ -28,17 +29,17 @@ class _SignUpViewState extends State<SignUpView> {
         listenWhen: (p, c) => p != c,
         listener: (context, state) async {
           if (state.isSuccess) {
-            AppSnackBar.success(context, 'Sign up successful');
+            AppSnackBar.success(context, context.l10n.signUpSuccess);
             Modular.to.navigate(AppRoute.home.str);
           }
         },
         child: AuthScaffold(
-          title: 'Register',
-          subtitle: 'Create your new account',
+          title: context.l10n.signUpTitle,
+          subtitle: context.l10n.signUpSubtitle,
           form: _SignUpForm(formKey: _signUpFormKey),
           footer: AuthFooter(
-            prompt: 'Already have an account?',
-            actionText: 'Sign In',
+            prompt: context.l10n.signUpHasAccountPrompt,
+            actionText: context.l10n.authSignIn,
             onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
           ),
         ),
@@ -81,8 +82,8 @@ class _SignUpFormState extends State<_SignUpForm> {
       children: [
         if (state.failure case final failure?) ...[
           AppAlert(
-            title: 'Sign Up Failed',
-            value: failure.message,
+            title: context.l10n.signUpFailedTitle,
+            value: failure.localized(context.l10n),
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
@@ -95,7 +96,7 @@ class _SignUpFormState extends State<_SignUpForm> {
             children: [
               AppTextField(
                 controller: _businessNameController,
-                hintText: 'Business Name',
+                hintText: context.l10n.fieldBusinessName,
                 icon: Icon(Icons.business_center, color: context.cs.secondary),
               ),
 
@@ -108,7 +109,7 @@ class _SignUpFormState extends State<_SignUpForm> {
               PasswordField(
                 controller: _confirmPasswordController,
                 confirms: _passwordController,
-                hintText: 'Confirm Password',
+                hintText: context.l10n.fieldConfirmPassword,
               ),
 
               const SizedBox(height: 16),
@@ -125,7 +126,7 @@ class _SignUpFormState extends State<_SignUpForm> {
                   }
                 },
                 isLoading: state.isInProgress,
-                title: 'Sign Up',
+                title: context.l10n.authSignUp,
               ),
             ],
           ),

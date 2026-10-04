@@ -30,7 +30,7 @@ class SettingsView extends StatelessWidget {
 
           if (state.failure case final failure?) {
             return ErrorView(
-              title: 'Oops!',
+              title: context.l10n.settingsErrorTitle,
               description: failure.message,
               onButtonPress: () async => ReadContext(
                 context,
@@ -56,7 +56,7 @@ class _SettingsContent extends StatelessWidget {
       backgroundColor: context.cs.surface,
       appBar: AppBar(
         title: Text(
-          AppRoute.current.title ?? 'Settings',
+          context.l10n.settingsTitle,
           style: context.tt.headlineSmall?.copyWith(
             fontWeight: FontWeight.w900,
           ),
@@ -125,7 +125,7 @@ class _ProfileSettings extends StatelessWidget {
                   AppRoute.updateProfile.str,
                   arguments: user,
                 ),
-                tooltip: 'Edit Profile',
+                tooltip: context.l10n.settingsEditProfileTooltip,
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
               ),
@@ -147,7 +147,7 @@ class _ProfileSettings extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        user.email ?? 'No email',
+                        user.email ?? context.l10n.settingsNoEmail,
                         style: context.tt.bodyMedium?.copyWith(
                           color: context.cs.onSurface.withValues(alpha: 0.7),
                         ),
@@ -175,7 +175,7 @@ class _GeneralSettings extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
           child: Text(
-            'General',
+            context.l10n.settingsGeneral,
             style: context.tt.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: context.cs.onSurface.withValues(alpha: 0.7),
@@ -188,8 +188,8 @@ class _GeneralSettings extends StatelessWidget {
             children: [
               _SettingsTile(
                 icon: Icons.palette_outlined,
-                title: 'Theme',
-                subtitle: 'Switch between light and dark mode',
+                title: context.l10n.settingsThemeTitle,
+                subtitle: context.l10n.settingsThemeSubtitle,
                 trailing: _ThemeToggle(),
               ),
               const Divider(height: 1),
@@ -240,7 +240,7 @@ class _AccountSettings extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
           child: Text(
-            'Account',
+            context.l10n.settingsAccount,
             style: context.tt.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: context.cs.onSurface.withValues(alpha: 0.7),
@@ -254,8 +254,8 @@ class _AccountSettings extends StatelessWidget {
               if (AppLinks.privacyPolicy.isNotEmpty) ...[
                 _SettingsTile(
                   icon: Icons.privacy_tip_outlined,
-                  title: 'Privacy Policy',
-                  subtitle: 'Read our privacy policy',
+                  title: context.l10n.settingsPrivacyTitle,
+                  subtitle: context.l10n.settingsPrivacySubtitle,
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => launchLink(context, AppLinks.privacyPolicy),
                 ),
@@ -264,8 +264,8 @@ class _AccountSettings extends StatelessWidget {
               if (AppLinks.termsOfService.isNotEmpty) ...[
                 _SettingsTile(
                   icon: Icons.description_outlined,
-                  title: 'Terms of Service',
-                  subtitle: 'Read our terms of service',
+                  title: context.l10n.settingsTermsTitle,
+                  subtitle: context.l10n.settingsTermsSubtitle,
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => launchLink(context, AppLinks.termsOfService),
                 ),
@@ -273,8 +273,8 @@ class _AccountSettings extends StatelessWidget {
               ],
               _SettingsTile(
                 icon: Icons.info_outline,
-                title: 'About',
-                subtitle: 'App version and information',
+                title: context.l10n.settingsAboutTitle,
+                subtitle: context.l10n.settingsAboutSubtitle,
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () async {
                   await Modular.to.pushNamed(AppRoute.about.str);

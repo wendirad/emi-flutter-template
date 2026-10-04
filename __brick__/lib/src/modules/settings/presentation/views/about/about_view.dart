@@ -15,7 +15,7 @@ class AboutView extends StatelessWidget {
       backgroundColor: context.cs.surface,
       appBar: AppBar(
         title: Text(
-          AppRoute.current.title ?? 'About',
+          context.l10n.settingsAboutTitle,
           style: context.tt.headlineSmall?.copyWith(
             fontWeight: FontWeight.w900,
           ),
@@ -157,7 +157,7 @@ class _SocialMedia extends StatelessWidget {
       children: [
         const SizedBox(height: 16),
         Text(
-          'Follow Us',
+          context.l10n.aboutFollowUs,
           style: context.tt.titleSmall?.copyWith(
             color: context.cs.onSurface.withValues(alpha: 0.7),
             fontWeight: FontWeight.w600,

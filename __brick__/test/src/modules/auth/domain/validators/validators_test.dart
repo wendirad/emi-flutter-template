@@ -15,10 +15,10 @@ void main() {
     });
 
     test('rejects missing or malformed addresses', () {
-      expect(validate(null), isNotNull);
-      expect(validate(''), isNotNull);
-      expect(validate('no-at-sign.example.com'), isNotNull);
-      expect(validate('user@nodot'), isNotNull);
+      expect(validate(null), ValidationError.emailInvalid);
+      expect(validate(''), ValidationError.emailInvalid);
+      expect(validate('no-at-sign.example.com'), ValidationError.emailInvalid);
+      expect(validate('user@nodot'), ValidationError.emailInvalid);
     });
   });
 
@@ -26,18 +26,18 @@ void main() {
     final validator = PasswordValidator();
 
     test('requires length, case, a digit and a symbol', () {
-      expect(validator('Sh0rt!'), isNotNull);
-      expect(validator('alllowercase1!'), isNotNull);
-      expect(validator('ALLUPPERCASE1!'), isNotNull);
-      expect(validator('NoDigitsHere!'), isNotNull);
-      expect(validator('NoSymbol123'), isNotNull);
+      expect(validator('Sh0rt!'), ValidationError.passwordTooShort);
+      expect(validator('alllowercase1!'), ValidationError.passwordNeedsUppercase);
+      expect(validator('ALLUPPERCASE1!'), ValidationError.passwordNeedsLowercase);
+      expect(validator('NoDigitsHere!'), ValidationError.passwordNeedsNumber);
+      expect(validator('NoSymbol123'), ValidationError.passwordNeedsSpecial);
       expect(validator('Valid#Pass1'), isNull);
     });
 
     test('presence only skips the strength rules', () {
       expect(validator.presence('weak'), isNull);
-      expect(validator.presence(''), isNotNull);
-      expect(validator.presence(null), isNotNull);
+      expect(validator.presence(''), ValidationError.passwordRequired);
+      expect(validator.presence(null), ValidationError.passwordRequired);
     });
   });
 
@@ -46,8 +46,20 @@ void main() {
 
     test('matches only identical passwords', () {
       expect(validate('Valid#Pass1', 'Valid#Pass1'), isNull);
-      expect(validate('Valid#Pass1', 'Other#Pass1'), isNotNull);
-      expect(validate('', 'Valid#Pass1'), isNotNull);
+      expect(
+        validate('Valid#Pass1', 'Other#Pass1'),
+        ValidationError.passwordsDoNotMatch,
+      );
+      expect(validate('', 'Valid#Pass1'), ValidationError.confirmationRequired);
+    });
+  });
+
+  group('TextValidator', () {
+    final validate = TextValidator().call;
+
+    test('rejects blank values', () {
+      expect(validate('  '), ValidationError.valueRequired);
+      expect(validate('Jane'), isNull);
     });
   });
 }

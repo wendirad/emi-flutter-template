@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../../core/presentation/widgets/widgets.dart';
 import '../../../../domain/validators/validators.dart';
+import '../../../extensions/validation_error_message.dart';
 
 class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final double radius;
-  final String hintText;
+  final String? hintText;
 
   /// When false only checks that a value is present (e.g. sign-in).
   final bool enforceStrength;
@@ -19,7 +21,7 @@ class PasswordField extends StatefulWidget {
     super.key,
     required this.controller,
     this.radius = 8,
-    this.hintText = 'Password',
+    this.hintText,
     this.enforceStrength = true,
     this.confirms,
   });
@@ -32,6 +34,11 @@ class _PasswordFieldState extends State<PasswordField> {
   bool _obscure = true;
 
   String? _validate(String? value) {
+    final ValidationError? error = _check(value);
+    return error?.message(context.l10n);
+  }
+
+  ValidationError? _check(String? value) {
     final TextEditingController? original = widget.confirms;
     if (original != null) {
       return ConfirmPasswordValidator().call(value, original.text.trim());
@@ -46,7 +53,7 @@ class _PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
     return InputField(
-      hintText: widget.hintText,
+      hintText: widget.hintText ?? context.l10n.fieldPassword,
       radius: widget.radius,
       isPasswordField: true,
       obscureText: _obscure,

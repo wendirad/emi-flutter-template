@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../../core/presentation/widgets/widgets.dart';
 import '../../../../domain/validators/validators.dart';
+import '../../../extensions/validation_error_message.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -24,7 +26,8 @@ class AppTextField extends StatelessWidget {
       hintText: hintText,
       prefixIcon: icon,
       controller: controller,
-      validator: TextValidator().call,
+      validator: (value) =>
+          TextValidator().call(value)?.message(context.l10n),
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }

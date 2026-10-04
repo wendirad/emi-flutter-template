@@ -12,7 +12,7 @@ class ThemeToggleButton extends StatelessWidget {
     final isDark = context.isDark;
 
     return IconButton(
-      tooltip: 'Toggle theme',
+      tooltip: context.l10n.toggleThemeTooltip,
       icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
       color: context.appColors.onOverlay,
       style: IconButton.styleFrom(

@@ -33,7 +33,7 @@ class SignOutConfirmationDialog extends StatelessWidget {
 
             // Title
             Text(
-              'Sign Out',
+              context.l10n.authSignOut,
               style: context.tt.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: context.cs.onSurface,
@@ -43,7 +43,7 @@ class SignOutConfirmationDialog extends StatelessWidget {
 
             // Description
             Text(
-              'Are you sure you want to sign out of your account?',
+              context.l10n.signOutConfirmMessage,
               textAlign: TextAlign.center,
               style: context.tt.bodyMedium?.copyWith(
                 color: context.cs.onSurface.withValues(alpha: 0.7),
@@ -67,7 +67,7 @@ class SignOutConfirmationDialog extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Cancel',
+                      context.l10n.actionCancel,
                       style: context.tt.labelLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.cs.onSurface,
@@ -89,7 +89,7 @@ class SignOutConfirmationDialog extends StatelessWidget {
                       elevation: 0,
                     ),
                     child: Text(
-                      'Sign Out',
+                      context.l10n.authSignOut,
                       style: context.tt.labelLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: context.cs.onError,

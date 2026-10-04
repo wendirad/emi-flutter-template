@@ -1,7 +1,9 @@
+import 'validation_error.dart';
+
 class TextValidator {
-  String? call(String? text, {String? field}) {
+  ValidationError? call(String? text) {
     if (text == null || text.trim().isEmpty) {
-      return 'Enter a valid ${(field ?? "value")}.';
+      return ValidationError.valueRequired;
     }
     return null;
   }

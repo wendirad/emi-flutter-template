@@ -4,6 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../constants/constants.dart';
 import '../../extensions/build_context_extensions.dart';
+import '../../l10n/l10n.dart';
 import '../widgets/illustration.dart';
 import 'error_info.dart';
 
@@ -27,7 +28,7 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _ErrorContent content = _ErrorContent.of(errorType);
+    final _ErrorContent content = _ErrorContent.of(errorType, context.l10n);
 
     return Container(
       color: context.cs.surface,
@@ -81,13 +82,12 @@ class _ErrorContent {
     required this.onPress,
   });
 
-  static _ErrorContent of(ErrorTypes type) => switch (type) {
+  static _ErrorContent of(ErrorTypes type, AppLocalizations l10n) => switch (type) {
     ErrorTypes.pageNotFound => _ErrorContent(
       illustration: Illustrations.pageNotFound,
-      title: 'Lost in Space!',
-      description:
-          'The page you are looking for seems to be missing. Please go back or visit the homepage.',
-      buttonText: 'Back',
+      title: l10n.errorPageNotFoundTitle,
+      description: l10n.errorPageNotFoundMessage,
+      buttonText: l10n.actionBack,
       onPress: () async {
         final canPop = await Modular.to.maybePop();
         if (!canPop) {
@@ -97,26 +97,23 @@ class _ErrorContent {
     ),
     ErrorTypes.noConnection => _ErrorContent(
       illustration: Illustrations.noConnection,
-      title: 'No Connection',
-      description:
-          "We're sorry, but you are not connected to the internet. Please check your connection and try again.",
-      buttonText: 'Try again',
+      title: l10n.errorNoConnectionTitle,
+      description: l10n.errorNoConnectionMessage,
+      buttonText: l10n.actionTryAgain,
       onPress: () async => Modular.to.navigate(Modular.to.path),
     ),
     ErrorTypes.underMaintenance => _ErrorContent(
       illustration: Illustrations.underMaintenance,
-      title: 'Under Maintenance',
-      description:
-          "We're sorry, but the service is currently under maintenance. Please try again later.",
-      buttonText: 'Try again',
+      title: l10n.errorMaintenanceTitle,
+      description: l10n.errorMaintenanceMessage,
+      buttonText: l10n.actionTryAgain,
       onPress: () async {},
     ),
     ErrorTypes.noData => _ErrorContent(
       illustration: Illustrations.noData,
-      title: 'No Data Found!',
-      description:
-          'No items were found. Try refreshing, or go back to the home screen.',
-      buttonText: 'Retry',
+      title: l10n.errorNoDataTitle,
+      description: l10n.errorNoDataMessage,
+      buttonText: l10n.actionRetry,
       onPress: () async {
         final String path = Modular.to.path;
         if (Modular.to.canPop()) {
@@ -128,10 +125,9 @@ class _ErrorContent {
     ),
     ErrorTypes.unknownError => _ErrorContent(
       illustration: Illustrations.unknownError,
-      title: 'Something went wrong',
-      description:
-          "We're sorry, but something unexpected happened. Please try again later.",
-      buttonText: 'Try again',
+      title: l10n.errorUnknownTitle,
+      description: l10n.errorUnknownMessage,
+      buttonText: l10n.actionTryAgain,
       onPress: () async => await Modular.to.pushNamed(Modular.to.path),
     ),
   };

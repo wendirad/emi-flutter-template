@@ -1,32 +1,32 @@
+import 'validation_error.dart';
+
 class PasswordValidator {
   /// Presence check only. Use for sign-in, where existing passwords may
   /// predate the current strength rules.
-  String? presence(String? password) {
+  ValidationError? presence(String? password) {
     if (password == null || password.isEmpty) {
-      return 'Password is required';
+      return ValidationError.passwordRequired;
     }
     return null;
   }
 
-  String? call(String? password) {
-    final String? missing = presence(password);
+  ValidationError? call(String? password) {
+    final ValidationError? missing = presence(password);
     if (missing != null) return missing;
     if (password == null) return null;
 
-    if (password.length < 8) {
-      return 'Password must be at least 8 characters';
-    }
+    if (password.length < 8) return ValidationError.passwordTooShort;
     if (!RegExp(r'[A-Z]').hasMatch(password)) {
-      return 'Include at least one uppercase letter';
+      return ValidationError.passwordNeedsUppercase;
     }
     if (!RegExp(r'[a-z]').hasMatch(password)) {
-      return 'Include at least one lowercase letter';
+      return ValidationError.passwordNeedsLowercase;
     }
     if (!RegExp(r'[0-9]').hasMatch(password)) {
-      return 'Include at least one number';
+      return ValidationError.passwordNeedsNumber;
     }
     if (!RegExp(r'[!@#\$&*~]').hasMatch(password)) {
-      return 'Include at least one special character';
+      return ValidationError.passwordNeedsSpecial;
     }
     return null;
   }

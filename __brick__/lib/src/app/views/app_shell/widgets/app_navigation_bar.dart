@@ -54,8 +54,11 @@ class _AppNavigationBarState extends State<AppNavigationBar> {
                 .withAlpha(200),
             color: context.cs.inversePrimary,
             tabs: [
-              GButton(icon: Icons.home_outlined, text: 'Home'),
-              GButton(icon: Icons.settings_outlined, text: 'Settings'),
+              GButton(icon: Icons.home_outlined, text: context.l10n.navHome),
+              GButton(
+                icon: Icons.settings_outlined,
+                text: context.l10n.navSettings,
+              ),
             ],
             selectedIndex: _selectedIndex,
             onTabChange: _navigate,

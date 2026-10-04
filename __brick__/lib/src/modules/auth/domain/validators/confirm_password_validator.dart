@@ -1,13 +1,15 @@
+import 'validation_error.dart';
+
 class ConfirmPasswordValidator {
-  String? call(String? confirmPassowrd, String? password) {
-    if (confirmPassowrd == null || confirmPassowrd.isEmpty) {
-      return 'Please confirm your password';
+  ValidationError? call(String? confirmPassword, String? password) {
+    if (confirmPassword == null || confirmPassword.isEmpty) {
+      return ValidationError.confirmationRequired;
     }
     if (password == null || password.isEmpty) {
-      return 'Password is required';
+      return ValidationError.passwordRequired;
     }
-    if (confirmPassowrd != password) {
-      return 'Passwords do not match';
+    if (confirmPassword != password) {
+      return ValidationError.passwordsDoNotMatch;
     }
     return null;
   }

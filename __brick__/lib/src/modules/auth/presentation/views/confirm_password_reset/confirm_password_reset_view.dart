@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../../../core/constants/constants.dart';
+import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
 import '../../blocs/confirm_password_reset/confirm_password_reset_bloc.dart';
+import '../../extensions/auth_failure_message.dart';
 import '../widgets/widgets.dart';
 
 class ConfirmPasswordResetView extends StatefulWidget {
@@ -37,20 +39,20 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
         listenWhen: (p, c) => p != c,
         listener: (context, state) {
           if (state.isSuccess) {
-            AppSnackBar.success(context, 'Password Reset Successfully!');
+            AppSnackBar.success(context, context.l10n.confirmResetSuccess);
             Modular.to.navigate(AppRoute.signIn.str);
           }
         },
         child: AuthScaffold(
-          title: 'Confirm Password',
-          subtitle: 'Set your new password',
+          title: context.l10n.fieldConfirmPassword,
+          subtitle: context.l10n.confirmResetSubtitle,
           form: _ConfirmPasswordResetViewForm(
           formKey: _confirmPasswordResetViewFormKey,
           code: verificationCode,
         ),
           footer: AuthFooter(
-            prompt: 'Remember your password?',
-            actionText: 'Sign In',
+            prompt: context.l10n.passwordResetRememberPrompt,
+            actionText: context.l10n.authSignIn,
             onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
           ),
         ),
@@ -113,8 +115,8 @@ class _ConfirmPasswordResetViewFormState
       children: [
         if (state.failure case final failure?) ...[
           AppAlert(
-            title: 'Password Reset Failed',
-            value: failure.message,
+            title: context.l10n.passwordResetFailedTitle,
+            value: failure.localized(context.l10n),
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
@@ -132,7 +134,7 @@ class _ConfirmPasswordResetViewFormState
               PasswordField(
                 controller: _confirmNewPasswordController,
                 confirms: _newPasswordController,
-                hintText: 'Confirm Password',
+                hintText: context.l10n.fieldConfirmPassword,
               ),
 
               const SizedBox(height: 16),
@@ -148,7 +150,7 @@ class _ConfirmPasswordResetViewFormState
                   }
                 },
                 isLoading: state.isInProgress,
-                title: 'Reset Password',
+                title: context.l10n.confirmResetButton,
               ),
             ],
           ),

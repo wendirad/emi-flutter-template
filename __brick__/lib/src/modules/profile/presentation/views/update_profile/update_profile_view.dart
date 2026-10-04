@@ -11,6 +11,7 @@ import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../../auth/auth.dart';
 import '../../../domain/use_cases/update_profile_use_case.dart';
 import '../../blocs/update_profile/update_profile_bloc.dart';
+import '../../extensions/profile_failure_message.dart';
 import '../widgets/profile_form_field.dart';
 import 'widgets/photo_update_widget.dart';
 
@@ -31,7 +32,7 @@ class _UpdateProfileViewState extends State<UpdateProfileView> {
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          AppRoute.current.title ?? 'Update Profile',
+          context.l10n.profileEditTitle,
           style: context.tt.headlineSmall?.copyWith(
             fontWeight: FontWeight.w900,
           ),
@@ -86,9 +87,8 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
     if (user == null || user is! AuthUser) {
       return ErrorView(
         errorType: ErrorTypes.noData,
-        title: 'User Data Not Found',
-        description:
-            'Unable to load user data. Please try again later or contact support.',
+        title: context.l10n.profileUserNotFoundTitle,
+        description: context.l10n.profileUserNotFoundMessage,
       );
     }
 
@@ -134,7 +134,7 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
             listenWhen: (p, c) => p != c,
             listener: (context, state) async {
               if (state.isSuccess) {
-                AppSnackBar.success(context, 'Profile Update Successful!');
+                AppSnackBar.success(context, context.l10n.profileUpdateSuccess);
                 await Modular.to.popAndPushNamed(AppRoute.settings.str);
               }
             },
@@ -149,8 +149,8 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                     children: [
                       if (state.failure case final failure?) ...[
                         AppAlert(
-                          title: 'Profile Update Failure',
-                          value: failure.message,
+                          title: context.l10n.profileUpdateFailedTitle,
+                          value: failure.localized(context.l10n),
                           variant: AlertVariant.danger,
                           icon: Icons.report_gmailerrorred_outlined,
                         ),
@@ -158,19 +158,19 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                       if (user is BusinessUser) ...[
                         ProfileFormField(
                           controller: _businessNameController,
-                          labelText: 'Business Name',
+                          labelText: context.l10n.fieldBusinessName,
                           icon: Icons.business_center,
                         ),
                       ],
                       ProfileFormField(
                         controller: _firstNameController,
-                        labelText: 'First Name',
+                        labelText: context.l10n.profileFirstName,
                         icon: Icons.text_fields,
                       ),
 
                       ProfileFormField(
                         controller: _lastNameController,
-                        labelText: 'Last Name',
+                        labelText: context.l10n.profileLastName,
                         icon: Icons.text_fields,
                       ),
 
@@ -189,7 +189,7 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                           );
                         },
                         isLoading: state.isInProgress,
-                title: 'Update Profile',
+                title: context.l10n.profileUpdateButton,
                       ),
                     ],
                   ),

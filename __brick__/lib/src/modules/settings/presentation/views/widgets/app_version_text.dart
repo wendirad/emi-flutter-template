@@ -22,7 +22,7 @@ class _AppVersionTextState extends State<AppVersionText> {
         final String? version = snapshot.data?.version;
 
         return Text(
-          version == null ? '' : 'Version $version',
+          version == null ? '' : context.l10n.appVersion(version),
           style: context.tt.bodySmall?.copyWith(
             color: context.cs.onSurface.withValues(alpha: 0.5),
           ),

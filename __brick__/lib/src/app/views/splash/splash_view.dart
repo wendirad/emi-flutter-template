@@ -43,12 +43,12 @@ class SplashView extends StatelessWidget {
                 const Spacer(flex: 2),
 
                 AppButton(
-                  title: 'Sign In'.toUpperCase(),
+                  title: context.l10n.splashSignIn.toUpperCase(),
                   onPress: () => Modular.to.navigate(AppRoute.signIn.str),
                 ),
 
                 AppTextButton(
-                  text: 'Create an account',
+                  text: context.l10n.splashCreateAccount,
                   onPress: () => Modular.to.navigate(AppRoute.signUp.str),
                 ),
               ],

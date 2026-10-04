@@ -47,7 +47,7 @@ class ErrorInfo extends StatelessWidget {
             button ??
                 AppButton(
                   onPress: () async => await onPress(),
-                  title: buttonText ?? 'Retry'.toUpperCase(),
+                  title: buttonText ?? context.l10n.actionRetry.toUpperCase(),
                 ),
             const SizedBox(height: 16),
           ],

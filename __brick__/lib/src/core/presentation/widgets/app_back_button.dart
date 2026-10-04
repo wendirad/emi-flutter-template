@@ -16,7 +16,7 @@ class AppBackButton extends StatelessWidget {
           return const SizedBox.shrink();
         }
         return IconButton(
-          tooltip: 'Back',
+          tooltip: context.l10n.actionBack,
           icon: const Icon(Icons.arrow_back),
           color: context.appColors.onOverlay,
           style: IconButton.styleFrom(

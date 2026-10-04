@@ -6,6 +6,7 @@ import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../blocs/sign_out/sign_out_bloc.dart';
+import '../../extensions/auth_failure_message.dart';
 import 'sign_out_confirmation_dialog.dart';
 
 class SignOutCard extends StatelessWidget {
@@ -17,17 +18,17 @@ class SignOutCard extends StatelessWidget {
       listenWhen: (previous, current) => previous != current,
       listener: (context, state) {
         if (state.isSuccess) {
-          AppSnackBar.success(context, 'Logout successful');
+          AppSnackBar.success(context, context.l10n.signOutSuccess);
           Modular.to.navigate(AppRoute.signIn.str);
         } else if (state.failure case final failure?) {
-          AppSnackBar.error(context, failure.message);
+          AppSnackBar.error(context, failure.localized(context.l10n));
         }
       },
       child: Card(
         child: _SignOutTile(
           icon: Icons.logout,
-          title: 'Sign Out',
-          subtitle: 'Sign out of your account',
+          title: context.l10n.authSignOut,
+          subtitle: context.l10n.signOutSubtitle,
           trailing: BlocBuilder<SignOutBloc, SignOutState>(
             builder: (context, state) {
               if (state.isInProgress) {

@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../../../core/constants/constants.dart';
+import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
 import '../../blocs/password_reset/password_reset_bloc.dart';
+import '../../extensions/auth_failure_message.dart';
 import '../widgets/widgets.dart';
 
 class PasswordResetView extends StatefulWidget {
@@ -29,17 +31,17 @@ class _PasswordResetViewState extends State<PasswordResetView> {
         listenWhen: (p, c) => p != c,
         listener: (context, state) async {
           if (state.isSuccess) {
-            AppSnackBar.success(context, 'Password Reset Email Sent Successfully!');
+            AppSnackBar.success(context, context.l10n.passwordResetEmailSent);
             Modular.to.navigate(AppRoute.signIn.str);
           }
         },
         child: AuthScaffold(
-          title: 'Forgot Your Password?',
-          subtitle: 'Reset your password with email',
+          title: context.l10n.passwordResetTitle,
+          subtitle: context.l10n.passwordResetSubtitle,
           form: _PasswordResetViewForm(formKey: _passwordResetViewFormKey),
           footer: AuthFooter(
-            prompt: 'Remember your password?',
-            actionText: 'Sign In',
+            prompt: context.l10n.passwordResetRememberPrompt,
+            actionText: context.l10n.authSignIn,
             onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
           ),
         ),
@@ -77,8 +79,8 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
       children: [
         if (state.failure case final failure?) ...[
           AppAlert(
-            title: 'Password Reset Failed',
-            value: failure.message,
+            title: context.l10n.passwordResetFailedTitle,
+            value: failure.localized(context.l10n),
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
@@ -87,8 +89,8 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
         if (Modular.args.data case final PasswordResetConfirmFailure failure
             when state.isIdle) ...[
           AppAlert(
-            title: 'Password Reset Confirmation Failed',
-            value: failure.message,
+            title: context.l10n.passwordResetConfirmationFailedTitle,
+            value: failure.localized(context.l10n),
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
@@ -113,7 +115,7 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
                   }
                 },
                 isLoading: state.isInProgress,
-                title: 'Send Password Reset Email',
+                title: context.l10n.passwordResetSendButton,
               ),
             ],
           ),

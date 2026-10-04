@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../../../core/constants/constants.dart';
+import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/use_cases/use_cases.dart';
 import '../../blocs/remembered_email/remembered_email_bloc.dart';
 import '../../blocs/sign_in/sign_in_bloc.dart';
+import '../../extensions/auth_failure_message.dart';
 import '../widgets/widgets.dart';
 
 class SignInView extends StatefulWidget {
@@ -38,18 +40,18 @@ class _SignInViewState extends State<SignInView> {
         listenWhen: (p, c) => p != c,
         listener: (context, state) async {
           if (state.isSuccess) {
-            AppSnackBar.success(context, 'Sign In successful');
+            AppSnackBar.success(context, context.l10n.signInSuccess);
 
             Modular.to.navigate(AppRoute.home.str);
           }
         },
         child: AuthScaffold(
-          title: 'Welcome Back',
-          subtitle: 'Sign In into your account',
+          title: context.l10n.signInTitle,
+          subtitle: context.l10n.signInSubtitle,
           form: _SignInForm(formKey: _signInFormKey),
           footer: AuthFooter(
-            prompt: "Don't have account?",
-            actionText: 'Sign Up',
+            prompt: context.l10n.signInNoAccountPrompt,
+            actionText: context.l10n.authSignUp,
             onAction: () => Modular.to.pushNamed(AppRoute.signUp.str),
           ),
         ),
@@ -98,8 +100,8 @@ class _SignInFormState extends State<_SignInForm> {
         children: [
           if (state.failure case final failure?) ...[
             AppAlert(
-              title: 'Sign In Failed',
-              value: failure.message,
+              title: context.l10n.signInFailedTitle,
+              value: failure.localized(context.l10n),
               variant: AlertVariant.danger,
               icon: Icons.report_gmailerrorred_outlined,
             ),
@@ -123,10 +125,10 @@ class _SignInFormState extends State<_SignInForm> {
                     CheckboxField(
                       isChecked: _saveInfo,
                       onToggle: () => setState(() => _saveInfo = !_saveInfo),
-                      suffix: Text('Remember my email'),
+                      suffix: Text(context.l10n.signInRememberEmail),
                     ),
                     AppTextButton(
-                      text: 'Forgot Password?',
+                      text: context.l10n.signInForgotPassword,
                       onPress: () async {
                         await Modular.to.pushNamed(AppRoute.resetPassword.str);
                       },
@@ -149,7 +151,7 @@ class _SignInFormState extends State<_SignInForm> {
                     }
                   },
                   isLoading: state.isInProgress,
-                  title: 'Sign In',
+                  title: context.l10n.authSignIn,
                 ),
               ],
             ),

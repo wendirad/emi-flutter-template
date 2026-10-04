@@ -49,7 +49,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
       if (mounted) {
         debugPrint('$e');
         debugPrintStack(stackTrace: stackTrace);
-        AppSnackBar.error(context, 'Error picking image');
+        AppSnackBar.error(context, context.l10n.profilePickImageError);
       }
     }
   }
@@ -66,7 +66,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
           children: [
             ListTile(
               leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'),
+              title: Text(context.l10n.profilePhotoGallery),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.gallery);
@@ -74,7 +74,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Take a Photo'),
+              title: Text(context.l10n.profilePhotoCamera),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.camera);
@@ -85,7 +85,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
               ListTile(
                 leading: Icon(Icons.delete_outline, color: context.cs.error),
                 title: Text(
-                  'Remove Photo',
+                  context.l10n.profilePhotoRemove,
                   style: TextStyle(color: context.cs.error),
                 ),
                 onTap: () {

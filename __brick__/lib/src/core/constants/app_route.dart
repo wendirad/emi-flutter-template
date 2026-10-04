@@ -18,16 +18,13 @@ class AppRoute {
   static final AppRouteNode appShell = app.child('/shell');
   static final AppRouteNode appShellInitial = appShell.child('/initial');
 
-  static final AppRouteNode home = appShell.child('/home', title: 'Home');
+  static final AppRouteNode home = appShell.child('/home');
 
-  static final AppRouteNode settings = appShell.child('/settings', title: 'Settings');
-  static final AppRouteNode about = settings.child('/about', title: 'About');
+  static final AppRouteNode settings = appShell.child('/settings');
+  static final AppRouteNode about = settings.child('/about');
 
-  static final AppRouteNode profile = appShell.child('/profile', title: 'Profile');
-  static final AppRouteNode updateProfile = profile.child(
-    '/edit',
-    title: 'Edit Profile',
-  );
+  static final AppRouteNode profile = appShell.child('/profile');
+  static final AppRouteNode updateProfile = profile.child('/edit');
 
   static AppRouteNode get current {
     final String currentPath = Modular.to.path;
@@ -63,17 +60,15 @@ class AppRoute {
 class AppRouteNode extends Equatable {
   final String _path;
   final String _parent;
-  final String? _title;
 
   final List<AppRouteNode> _children = [];
 
-  AppRouteNode(String path, {String parent = '', String? title = ''})
+  AppRouteNode(String path, {String parent = ''})
     : _parent = parent,
-      _path = path,
-      _title = title;
+      _path = path;
 
-  AppRouteNode child(String path, {String? title}) {
-    _children.add(AppRouteNode(path, parent: str, title: title));
+  AppRouteNode child(String path) {
+    _children.add(AppRouteNode(path, parent: str));
     return _children.last;
   }
 
@@ -92,12 +87,11 @@ class AppRouteNode extends Equatable {
 
   String get base => _path;
   String get str => _parent + _path;
-  String? get title => _title;
   List<AppRouteNode> get children => _children;
 
   @override
   String toString() =>
-      'AppRouteNode<base: $_path, str: $str, title: $title, children: ${_children.length}>';
+      'AppRouteNode<base: $_path, str: $str, children: ${_children.length}>';
 
   @override
   List<Object?> get props => [str.replaceAll(RegExp(r'/$'), '')];

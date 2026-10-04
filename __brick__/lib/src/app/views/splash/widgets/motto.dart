@@ -7,6 +7,7 @@ class Motto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final emphasis = context.isDark
         ? context.cs.primary.withValues(alpha: 0.6)
         : context.cs.primary;
@@ -24,17 +25,20 @@ class Motto extends StatelessWidget {
       text: TextSpan(
         style: baseStyle,
         children: [
-          TextSpan(text: 'Always ', style: baseStyle.copyWith(fontSize: 25)),
+          TextSpan(text: l10n.mottoFirstLead, style: baseStyle.copyWith(fontSize: 25)),
           TextSpan(
-            text: 'On',
+            text: l10n.mottoFirstEmphasis,
             style: baseStyle.copyWith(color: emphasis, fontSize: 35),
           ),
-          TextSpan(text: '.\nAlways ', style: baseStyle.copyWith(fontSize: 25)),
           TextSpan(
-            text: 'Professional',
+            text: '${l10n.mottoSentenceEnd}\n${l10n.mottoSecondLead}',
+            style: baseStyle.copyWith(fontSize: 25),
+          ),
+          TextSpan(
+            text: l10n.mottoSecondEmphasis,
             style: baseStyle.copyWith(color: emphasis, fontSize: 35),
           ),
-          const TextSpan(text: '.'),
+          TextSpan(text: l10n.mottoSentenceEnd),
         ],
       ),
     );

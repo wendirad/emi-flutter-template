@@ -18,7 +18,8 @@ class ProfileFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      validator: TextValidator().call,
+      validator: (value) =>
+          TextValidator().call(value)?.message(context.l10n),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: controller,
       decoration: InputDecoration(
