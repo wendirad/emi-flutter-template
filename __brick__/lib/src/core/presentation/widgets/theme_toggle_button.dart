@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../theme/theme.dart';
+import '../../extensions/build_context_extensions.dart';
 
 class ThemeToggleButton extends StatelessWidget {
   const ThemeToggleButton({super.key});
@@ -12,9 +13,9 @@ class ThemeToggleButton extends StatelessWidget {
     return IconButton(
       tooltip: 'Toggle theme',
       icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-      color: Colors.white,
+      color: context.appColors.onOverlay,
       style: IconButton.styleFrom(
-        backgroundColor: Colors.black.withValues(alpha: .18),
+        backgroundColor: context.appColors.overlay,
       ),
       onPressed: Modular.get<ThemeService>().toggleTheme,
     );

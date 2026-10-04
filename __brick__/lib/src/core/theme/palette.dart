@@ -41,4 +41,14 @@ class AppPalette {
   static const onErrorDark = Color(0xFF690005);
   static const errorContainerDark = Color(0xFF93000A);
   static const onErrorContainerDark = Color(0xFFFFDAD6);
+
+  // Status colors for the AppColors theme extension
+  static const success = Color(0xFF4CAF50);
+  static const onSuccess = Colors.white;
+  static const successDark = Color(0xFF66BB6A);
+  static const onSuccessDark = Color(0xFF0A2A0C);
+
+  // Chip drawn over imagery (back / theme buttons)
+  static const overlay = Color(0x2E000000);
+  static const onOverlay = Colors.white;
 }

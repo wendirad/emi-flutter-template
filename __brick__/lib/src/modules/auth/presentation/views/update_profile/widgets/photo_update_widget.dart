@@ -82,10 +82,10 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
             ),
             if (_selectedImage != null || widget.photoUrl != null)
               ListTile(
-                leading: const Icon(Icons.delete_outline, color: Colors.red),
-                title: const Text(
+                leading: Icon(Icons.delete_outline, color: context.cs.error),
+                title: Text(
                   'Remove Photo',
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: context.cs.error),
                 ),
                 onTap: () {
                   Navigator.pop(context);

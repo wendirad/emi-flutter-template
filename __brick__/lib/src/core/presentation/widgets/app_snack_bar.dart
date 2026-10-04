@@ -6,19 +6,29 @@ class AppSnackBar {
   const AppSnackBar._();
 
   static void success(BuildContext context, String message) =>
-      _show(context, message, Colors.green);
+      _show(
+        context,
+        message,
+        context.appColors.success,
+        context.appColors.onSuccess,
+      );
 
   static void error(BuildContext context, String message) =>
-      _show(context, message, context.cs.error);
+      _show(context, message, context.cs.error, context.cs.onError);
 
   static void info(BuildContext context, String message) =>
-      _show(context, message, null);
+      _show(context, message, null, null);
 
-  static void _show(BuildContext context, String message, Color? color) {
+  static void _show(
+    BuildContext context,
+    String message,
+    Color? background,
+    Color? foreground,
+  ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
-        backgroundColor: color,
+        content: Text(message, style: TextStyle(color: foreground)),
+        backgroundColor: background,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
       ),

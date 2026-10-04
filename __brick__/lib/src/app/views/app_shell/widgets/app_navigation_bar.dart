@@ -33,21 +33,24 @@ class _AppNavigationBarState extends State<AppNavigationBar> {
       decoration: BoxDecoration(
         color: context.cs.primaryContainer.withAlpha(150),
         boxShadow: [
-          BoxShadow(blurRadius: 20, color: Colors.black.withAlpha(25)),
+          BoxShadow(blurRadius: 20, color: context.cs.shadow.withAlpha(25)),
         ],
       ),
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
           child: GNav(
-            rippleColor: Colors.grey[300]!,
-            hoverColor: Colors.grey[300]!,
+            rippleColor: context.cs.outlineVariant,
+            hoverColor: context.cs.outlineVariant,
             gap: 8,
             activeColor: context.cs.inversePrimary,
             iconSize: 24,
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             duration: Duration(milliseconds: 400),
-            tabBackgroundColor: Colors.white.withAlpha(200),
+            tabBackgroundColor: (context.isDark
+                ? context.cs.inverseSurface
+                : context.cs.surface)
+                .withAlpha(200),
             color: context.cs.inversePrimary,
             tabs: [
               GButton(icon: Icons.home_outlined, text: 'Home'),

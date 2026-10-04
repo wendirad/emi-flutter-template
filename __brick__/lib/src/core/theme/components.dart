@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart';
 import 'palette.dart';
 
 ThemeData buildBaseTheme(ColorScheme scheme) {
@@ -14,6 +15,7 @@ ThemeData buildBaseTheme(ColorScheme scheme) {
     useMaterial3: true,
     colorScheme: scheme,
     brightness: scheme.brightness,
+    extensions: [isDark ? AppColors.dark : AppColors.light],
     scaffoldBackgroundColor: scheme.surface,
     canvasColor: scheme.surface,
     splashFactory: InkSparkle.splashFactory,

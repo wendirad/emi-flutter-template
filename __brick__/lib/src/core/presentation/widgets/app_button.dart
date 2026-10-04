@@ -27,18 +27,20 @@ class AppButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 48),
               backgroundColor: context.cs.primary,
-              foregroundColor: Colors.white,
+              foregroundColor: context.cs.onPrimary,
               disabledBackgroundColor: context.cs.primary,
-              disabledForegroundColor: Colors.white,
+              disabledForegroundColor: context.cs.onPrimary,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
             ),
             child: isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(color: Colors.white),
+                    child: CircularProgressIndicator(
+                      color: context.cs.onPrimary,
+                    ),
                   )
                 : child ?? Text(title!),
           )

@@ -19,7 +19,7 @@ class AppTextButton extends StatelessWidget {
         text,
         style: TextStyle(
           fontWeight: FontWeight.w900,
-          color: context.isDark ? Colors.white : context.theme.primaryColor,
+          color: context.isDark ? context.cs.onSurface : context.cs.primary,
           fontSize: 15,
         ),
       ),
