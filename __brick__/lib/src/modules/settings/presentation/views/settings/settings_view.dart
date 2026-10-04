@@ -10,6 +10,7 @@ import '../../../../auth/domain/entities/auth_entities.dart';
 import '../../../../auth/domain/use_cases/use_cases.dart';
 import '../../../../auth/presentation/blocs/sign_out/sign_out_bloc.dart';
 import '../../../../auth/presentation/views/views.dart';
+import '../../../../errors/presentation/views/error_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -19,21 +20,26 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  late final Future<dartz.Option<AuthUser>> _userFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _userFuture = Modular.get<IAuthRepository>().getSignedInUser();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: Modular.get<IAuthRepository>(),
-      child: FutureBuilder(
-        future: ReadContext(context).read<IAuthRepository>().getSignedInUser(),
-        builder: (context, snapshot) =>
-            AsyncPageLoader.fromSnapshot<dartz.Option<AuthUser>>(
-              snapshot: snapshot,
-              builder: (data) {
-                final user = data.fold(() => null, (user) => user);
-                return _SettingsContent(user: user!);
-              },
+    return FutureBuilder(
+      future: _userFuture,
+      builder: (context, snapshot) =>
+          AsyncPageLoader.fromSnapshot<dartz.Option<AuthUser>>(
+            snapshot: snapshot,
+            builder: (data) => data.fold(
+              () => const ErrorView(errorType: ErrorTypes.noData),
+              (user) => _SettingsContent(user: user),
             ),
-      ),
+          ),
     );
   }
 }
