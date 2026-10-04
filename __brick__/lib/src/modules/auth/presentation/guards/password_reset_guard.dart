@@ -12,13 +12,15 @@ class PasswordResetGuard extends RouteGuard {
       super(redirectTo: AppRoute.resetPassword.str);
 
   @override
-  FutureOr<bool> canActivate(String path, ParallelRoute route) async {
-    final bool isPasswordResetConfirm =
-        Modular.args.data?['mode'] == 'resetPassword';
+  FutureOr<bool> canActivate(String path, ParallelRoute<dynamic> route) async {
+    final Object? arguments = Modular.args.data;
+    final Map<Object?, Object?> query = arguments is Map
+        ? arguments
+        : const {};
 
-    if (!isPasswordResetConfirm) return false;
+    if (query['mode'] != 'resetPassword') return false;
 
-    final String oobCode = Modular.args.data?['oobCode'] ?? '';
+    final String oobCode = query['oobCode'] as String? ?? '';
 
     final codeVerification = await verifyPasswordResetCode(
       param: VerifyPasswordResetCodeParam(code: oobCode),

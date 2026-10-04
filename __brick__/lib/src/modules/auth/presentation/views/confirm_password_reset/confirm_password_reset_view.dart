@@ -58,9 +58,12 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
   }
 
   void _checkVerificationCode() {
-    verificationCode = Modular.args.data is VerifyPasswordResetCodeParam
-        ? Modular.args.data?.code
-        : Modular.args.data?['code'];
+    final Object? data = Modular.args.data;
+    verificationCode = switch (data) {
+      VerifyPasswordResetCodeParam(:final code) => code,
+      Map() => data['code'] as String?,
+      _ => null,
+    };
 
     if (verificationCode == null) {
       Modular.to.navigate(

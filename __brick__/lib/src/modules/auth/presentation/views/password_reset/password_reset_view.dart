@@ -83,11 +83,11 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
           ),
         ],
 
-        if (state.isIdle &&
-            Modular.args.data is PasswordResetConfirmFailure) ...[
+        if (Modular.args.data case final PasswordResetConfirmFailure failure
+            when state.isIdle) ...[
           AppAlert(
             title: 'Password Reset Confirmation Failed',
-            value: Modular.args.data?.message ?? 'Confirmation Error',
+            value: failure.message,
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
