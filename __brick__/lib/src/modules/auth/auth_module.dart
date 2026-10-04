@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../core/constants/constants.dart';
+import 'data/repositories/auth_repository.dart';
 import 'domain/repositories/i_auth_repository.dart';
 import 'presentation/guards/guards.dart';
 import 'domain/use_cases/use_cases.dart';
@@ -19,6 +22,13 @@ class AuthModule extends Module {
 
   @override
   void exportedBinds(Injector i) {
+    i.addLazySingleton<IAuthRepository>(
+      () => AuthRepository(
+        auth: Modular.get<FirebaseAuth>(),
+        store: Modular.get<FirebaseFirestore>(),
+      ),
+    );
+
     i.addLazySingleton<SignUpWithEmailAndPasswordUseCase>(
       () => SignUpWithEmailAndPasswordUseCase(
         authRepository: Modular.get<IAuthRepository>(),
