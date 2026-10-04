@@ -1,15 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../../domain/repositories/i_auth_repository.dart';
+import '../../../../../core/use_cases/use_cases.dart';
 import '../../../domain/failures/auth_failures.dart';
+import '../../../domain/use_cases/use_cases.dart';
 
 part 'auth_session_event.dart';
 part 'auth_session_state.dart';
 
 class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
-  final IAuthRepository _authRepository;
-  AuthSessionBloc({required IAuthRepository authRepository})
-    : _authRepository = authRepository,
+  final ObserveAuthSessionUseCase _observeAuthSession;
+
+  AuthSessionBloc({required ObserveAuthSessionUseCase observeAuthSession})
+    : _observeAuthSession = observeAuthSession,
       super(AuthSessionState.initial()) {
     on<AuthSessionUserSubscriptionRequested>(
       _onSessionUserSubscriptionRequested,
@@ -20,11 +22,11 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
     AuthSessionUserSubscriptionRequested event,
     Emitter<AuthSessionState> emit,
   ) async {
-    final result = await _authRepository.authStateChanges;
+    final result = await _observeAuthSession(param: const NoParam());
 
     await result.fold(
-      (error) async => emit(
-        state.copyWith(status: SessionStatus.unauthenticated, error: error),
+      (failure) async => emit(
+        state.copyWith(status: SessionStatus.unauthenticated, failure: failure),
       ),
       (signedInChanges) => emit.onEach<bool>(
         signedInChanges,
@@ -33,7 +35,7 @@ class AuthSessionBloc extends Bloc<AuthSessionEvent, AuthSessionState> {
             status: signedIn
                 ? SessionStatus.authenticated
                 : SessionStatus.unauthenticated,
-            error: null,
+            failure: null,
           ),
         ),
         onError: addError,

@@ -59,6 +59,12 @@ class AuthModule extends Module {
       ),
     );
 
+    i.addLazySingleton<ObserveAuthSessionUseCase>(
+      () => ObserveAuthSessionUseCase(
+        authRepository: Modular.get<IAuthRepository>(),
+      ),
+    );
+
     i.addLazySingleton<SignOutUseCase>(
       () => SignOutUseCase(authRepository: Modular.get<IAuthRepository>()),
     );

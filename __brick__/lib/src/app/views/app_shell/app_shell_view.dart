@@ -17,25 +17,22 @@ class AppShellView extends StatefulWidget {
 class _AppShellViewState extends State<AppShellView> {
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: Modular.get<IAuthRepository>(),
-      child: BlocProvider(
-        create: (ctx) => AuthSessionBloc(
-          authRepository: ReadContext(ctx).read<IAuthRepository>(),
-        )..add(AuthSessionUserSubscriptionRequested()),
-        child: BlocListener<AuthSessionBloc, AuthSessionState>(
-          listenWhen: (p, c) => p.status != c.status || p.error != c.error,
-          listener: (context, state) => _handleAuthState(context, state),
-          child: _RouterOutlet(),
-        ),
+    return BlocProvider(
+      create: (_) => AuthSessionBloc(
+        observeAuthSession: Modular.get<ObserveAuthSessionUseCase>(),
+      )..add(AuthSessionUserSubscriptionRequested()),
+      child: BlocListener<AuthSessionBloc, AuthSessionState>(
+        listenWhen: (p, c) => p != c,
+        listener: (context, state) => _handleAuthState(context, state),
+        child: _RouterOutlet(),
       ),
     );
   }
 
-  void _handleAuthState(BuildContext context, AuthSessionState state) async {
+  void _handleAuthState(BuildContext context, AuthSessionState state) {
     if (!state.isAuthenticated) {
-      if (state.error != null) {
-        AppSnackBar.error(context, state.error!.message);
+      if (state.failure case final failure?) {
+        AppSnackBar.error(context, failure.message);
       }
 
       Modular.to.navigate(AppRoute.signIn.str);
