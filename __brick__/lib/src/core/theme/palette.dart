@@ -21,4 +21,24 @@ class AppPalette {
   // Brand variants for dark
   static const brandLight = Color(0xFF986EE8);
   static const brandMuted = Color(0xFF7645DB);
+
+  // Tints and containers used by the light scheme
+  static const lavender = Color(0xFFE0C9FF);
+  static const lavenderLight = Color(0xFFEAD9FF);
+  static const mist = Color(0xFFF9F6FF);
+  static const mistDeep = Color(0xFFF3EEFF);
+  static const mistDim = Color(0xFFEFEAF7);
+
+  // Dark scheme surfaces
+  static const darkSurfaceHigh = Color(0xFF241C38);
+  static const darkOutlineVariant = Color(0xFF433569);
+
+  // Error tones (Material baseline)
+  static const errorLight = Color(0xFFBA1A1A);
+  static const errorContainerLight = Color(0xFFFFDAD6);
+  static const onErrorContainerLight = Color(0xFF410002);
+  static const errorDark = Color(0xFFFFB4AB);
+  static const onErrorDark = Color(0xFF690005);
+  static const errorContainerDark = Color(0xFF93000A);
+  static const onErrorContainerDark = Color(0xFFFFDAD6);
 }
