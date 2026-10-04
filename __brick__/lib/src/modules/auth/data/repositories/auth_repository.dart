@@ -57,7 +57,7 @@ class AuthRepository implements IAuthRepository {
       }
 
       try {
-        await store.collection(StoreName.user).doc(user.uid).set({
+        await store.collection(FirestoreCollections.user).doc(user.uid).set({
           'businessName': businessName,
           'lastUpdateTime': FieldValue.serverTimestamp(),
         });
@@ -88,15 +88,15 @@ class AuthRepository implements IAuthRepository {
       final prefs = await SharedPreferences.getInstance();
 
       if (saveInfo) {
-        await prefs.setBool('signInInfoSave', true);
-        await prefs.setString('email', email);
+        await prefs.setBool(PrefKeys.signInInfoSave, true);
+        await prefs.setString(PrefKeys.rememberedEmail, email);
       } else {
-        await prefs.setBool('signInInfoSave', false);
-        await prefs.remove('email');
+        await prefs.setBool(PrefKeys.signInInfoSave, false);
+        await prefs.remove(PrefKeys.rememberedEmail);
       }
 
       // Passwords are never persisted. Clear any value stored by older builds.
-      await prefs.remove('password');
+      await prefs.remove(PrefKeys.legacyPassword);
 
       return Right(unit);
     } on FirebaseAuthException catch (e) {
@@ -116,11 +116,9 @@ class AuthRepository implements IAuthRepository {
       await auth.sendPasswordResetEmail(
         email: email,
         actionCodeSettings: ActionCodeSettings(
-          url: EnvLoader.instance.getString('passwordResetContinueURL'),
-          androidPackageName: EnvLoader.instance.getString(
-            'androidPackageName',
-          ),
-          iOSBundleId: EnvLoader.instance.getString('iOSBundleId'),
+          url: EnvLoader.instance.getString(EnvKeys.passwordResetContinueUrl),
+          androidPackageName: EnvLoader.instance.getString(EnvKeys.androidPackageName),
+          iOSBundleId: EnvLoader.instance.getString(EnvKeys.iosBundleId),
           androidInstallApp: true,
           handleCodeInApp: true,
         ),
@@ -181,7 +179,7 @@ class AuthRepository implements IAuthRepository {
       );
 
       final DocumentSnapshot<Map<String, dynamic>> userDoc = await store
-          .collection(StoreName.user)
+          .collection(FirestoreCollections.user)
           .doc(user.uid)
           .get();
 
@@ -193,7 +191,7 @@ class AuthRepository implements IAuthRepository {
       };
 
       final DocumentSnapshot<Map<String, dynamic>> adminDoc = await store
-          .collection(StoreName.admin)
+          .collection(FirestoreCollections.admin)
           .doc(user.email)
           .get();
 
@@ -245,7 +243,7 @@ class AuthRepository implements IAuthRepository {
 
       if (profilePicture != null) {
         final String format = profilePicture.path.split('.').last;
-        final String refName = '${StoreName.profilePicture}${user.uid}.$format';
+        final String refName = '${StoragePaths.profilePicture}${user.uid}.$format';
 
         await _uploadProfilePhoto(profilePicture, refName);
 
@@ -258,7 +256,7 @@ class AuthRepository implements IAuthRepository {
       }
 
       final DocumentSnapshot<Map<String, dynamic>> userDoc = await store
-          .collection(StoreName.user)
+          .collection(FirestoreCollections.user)
           .doc(user.uid)
           .get();
 
@@ -279,7 +277,7 @@ class AuthRepository implements IAuthRepository {
           updateData['lastName'] = lastName;
         }
 
-        await store.collection(StoreName.user).doc(user.uid).update(updateData);
+        await store.collection(FirestoreCollections.user).doc(user.uid).update(updateData);
       }
 
       return Right(unit);

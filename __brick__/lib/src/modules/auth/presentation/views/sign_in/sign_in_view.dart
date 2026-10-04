@@ -77,10 +77,10 @@ class _SignInFormState extends State<_SignInForm> {
   Future<void> _loadSavedEmail() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final signInInfoSave = prefs.getBool('signInInfoSave') ?? false;
+      final signInInfoSave = prefs.getBool(PrefKeys.signInInfoSave) ?? false;
 
       if (signInInfoSave) {
-        final savedEmail = prefs.getString('email') ?? '';
+        final savedEmail = prefs.getString(PrefKeys.rememberedEmail) ?? '';
 
         if (!mounted) return;
 

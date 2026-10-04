@@ -6,6 +6,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'src/app/app_module.dart';
 import 'src/app/app_widget.dart';
 import 'src/core/theme/theme.dart';
+import 'src/core/constants/constants.dart';
 import 'src/core/utils/utils.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,12 +21,12 @@ Future<void> setupFirebase() async {
   await FirebaseAppCheck.instance.activate(
     providerAndroid: kDebugMode
         ? AndroidDebugProvider(
-            debugToken: env.getOptionalString('androidDebugToken'),
+            debugToken: env.getOptionalString(EnvKeys.androidDebugToken),
           )
         : AndroidPlayIntegrityProvider(),
     providerApple: kDebugMode
         ? AppleDebugProvider(
-            debugToken: env.getOptionalString('appleDebugToken'),
+            debugToken: env.getOptionalString(EnvKeys.appleDebugToken),
           )
         : AppleAppAttestProvider(),
   );
@@ -42,22 +43,22 @@ Future<void> setupFirebase() async {
     );
   }
 
-  if (kDebugMode && env.getBool('useEmulators')) {
-    String host = env.getString('emulatorDebugHost');
+  if (kDebugMode && env.getBool(EnvKeys.useEmulators)) {
+    String host = env.getString(EnvKeys.emulatorDebugHost);
 
     await FirebaseAuth.instance.useAuthEmulator(
       host,
-      env.getInt('authEmulatorPort'),
+      env.getInt(EnvKeys.authEmulatorPort),
     );
 
     FirebaseFirestore.instance.useFirestoreEmulator(
       host,
-      env.getInt('firestoreEmulatorPort'),
+      env.getInt(EnvKeys.firestoreEmulatorPort),
     );
 
     await FirebaseStorage.instance.useStorageEmulator(
       host,
-      env.getInt('storageEmulatorPort'),
+      env.getInt(EnvKeys.storageEmulatorPort),
     );
 
     String? debugToken = await FirebaseAppCheck.instance.getToken();

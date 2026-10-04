@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants/pref_keys.dart';
 
 class ThemeService extends ChangeNotifier {
   ThemeMode _mode = ThemeMode.system;
@@ -9,7 +10,7 @@ class ThemeService extends ChangeNotifier {
   /// already uses the right theme.
   Future<void> load() async {
     final pref = await SharedPreferences.getInstance();
-    final v = pref.getString('theme_mode');
+    final v = pref.getString(PrefKeys.themeMode);
     _mode = switch (v) {
       'light' => ThemeMode.light,
       'dark' => ThemeMode.dark,
@@ -25,7 +26,7 @@ class ThemeService extends ChangeNotifier {
     _mode = current == Brightness.dark ? ThemeMode.light : ThemeMode.dark;
     final pref = await SharedPreferences.getInstance();
     await pref.setString(
-      'theme_mode',
+      PrefKeys.themeMode,
       _mode == ThemeMode.light ? 'light' : 'dark',
     );
     notifyListeners();
