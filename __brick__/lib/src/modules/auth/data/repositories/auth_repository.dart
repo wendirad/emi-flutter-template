@@ -45,20 +45,20 @@ class AuthRepository implements IAuthRepository {
       final UserCredential credential = await auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      if (credential.user == null) {
-        throw none();
+      final User? user = credential.user;
+
+      if (user == null) {
+        throw StateError('Sign up returned no user');
       }
 
-      AuthUserModel authUser = credential.user!.domain();
-
       try {
-        await store.collection('user').doc(authUser.uid).set({
+        await store.collection(StoreName.user).doc(user.uid).set({
           'businessName': businessName,
           'lastUpdateTime': FieldValue.serverTimestamp(),
         });
-      } catch (err) {
-        credential.user?.delete();
-        throw none();
+      } catch (_) {
+        await user.delete();
+        rethrow;
       }
 
       return Right(unit);
@@ -66,7 +66,7 @@ class AuthRepository implements IAuthRepository {
       return Left(SignUpWithEmailAndPasswordFailure.fromCode(e.code));
     } catch (_, stackTrace) {
       debugPrintStack(stackTrace: stackTrace);
-      return Left(SignUpWithEmailAndPasswordFailure.fromCode('unknow-error'));
+      return Left(SignUpWithEmailAndPasswordFailure.fromCode('unknown-error'));
     }
   }
 
