@@ -97,19 +97,23 @@ class _SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<_SignInForm> {
-  final GlobalKey<EmailFieldState> _emailKey = GlobalKey<EmailFieldState>();
-  final GlobalKey<PasswordFieldState> _passwordKey =
-      GlobalKey<PasswordFieldState>();
-  final GlobalKey<CheckboxFieldState> _saveInfoKey =
-      GlobalKey<CheckboxFieldState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadSavedCredentials();
+    _loadSavedEmail();
   }
 
-  Future<void> _loadSavedCredentials() async {
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadSavedEmail() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final signInInfoSave = prefs.getBool('signInInfoSave') ?? false;
@@ -117,19 +121,14 @@ class _SignInFormState extends State<_SignInForm> {
       if (signInInfoSave) {
         final savedEmail = prefs.getString('email') ?? '';
 
-        // Wait for the next frame to ensure fields are mounted
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            if (savedEmail.isNotEmpty && _emailKey.currentState != null) {
-              _emailKey.currentState!.widget.controller.text = savedEmail;
-            }
+        if (!mounted) return;
 
-            _saveInfoKey.currentState!.toggle();
-          }
-        });
+        if (savedEmail.isNotEmpty) _emailController.text = savedEmail;
+
+        ReadContext(context).read<SignInBloc>().add(const SignInToggleSaveInfo());
       }
     } catch (e) {
-      debugPrint('Error loading saved credentials: $e');
+      debugPrint('Error loading saved email: $e');
     }
   }
 
@@ -154,10 +153,10 @@ class _SignInFormState extends State<_SignInForm> {
           child: Column(
             spacing: 16,
             children: [
-              EmailField(key: _emailKey),
+              EmailField(controller: _emailController),
 
               PasswordField(
-                key: _passwordKey,
+                controller: _passwordController,
                 enforceStrength: false,
                 showPassword: state.showPassword,
                 onShowPasswordToggle: () => ReadContext(
@@ -169,9 +168,8 @@ class _SignInFormState extends State<_SignInForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CheckboxField(
-                    key: _saveInfoKey,
                     isChecked: state.saveInfo,
-                    onCheckboxToggle: () => ReadContext(
+                    onToggle: () => ReadContext(
                       context,
                     ).read<SignInBloc>().add(SignInToggleSaveInfo()),
                     suffix: Text('Remember my email'),
@@ -195,8 +193,8 @@ class _SignInFormState extends State<_SignInForm> {
                     ReadContext(context).read<SignInBloc>().add(
                       SignInRequested(
                         SignInParam(
-                          email: _emailKey.currentState!.widget.email,
-                          password: _passwordKey.currentState!.widget.password,
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text.trim(),
                           saveInfo: state.saveInfo,
                         ),
                       ),

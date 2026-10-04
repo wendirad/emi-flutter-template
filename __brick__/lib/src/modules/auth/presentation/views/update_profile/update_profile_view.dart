@@ -61,17 +61,22 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
   File? _profilePicture;
   bool _removeProfilePicture = false;
 
-  final GlobalKey<_ProfileFormFieldState> _businessNameKey =
-      GlobalKey<_ProfileFormFieldState>();
-  final GlobalKey<_ProfileFormFieldState> _firstNameKey =
-      GlobalKey<_ProfileFormFieldState>();
-  final GlobalKey<_ProfileFormFieldState> _lastNameKey =
-      GlobalKey<_ProfileFormFieldState>();
+  final TextEditingController _businessNameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadPrefilledData();
+  }
+
+  @override
+  void dispose() {
+    _businessNameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -160,19 +165,19 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                       ],
                       if (user is BusinessUser) ...[
                         ProfileFormField(
-                          key: _businessNameKey,
+                          controller: _businessNameController,
                           labelText: 'Business Name',
                           icon: Icons.business_center,
                         ),
                       ],
                       ProfileFormField(
-                        key: _firstNameKey,
+                        controller: _firstNameController,
                         labelText: 'First Name',
                         icon: Icons.text_fields,
                       ),
 
                       ProfileFormField(
-                        key: _lastNameKey,
+                        controller: _lastNameController,
                         labelText: 'Last Name',
                         icon: Icons.text_fields,
                       ),
@@ -188,12 +193,11 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                           ReadContext(context).read<UpdateProfileBloc>().add(
                             ProfileUpdateRequested(
                               UpdateProfileParam(
-                                businessName:
-                                    _businessNameKey.currentState?.widget.text,
-                                firstName:
-                                    _firstNameKey.currentState?.widget.text,
-                                lastName:
-                                    _lastNameKey.currentState?.widget.text,
+                                businessName: user is BusinessUser
+                                    ? _businessNameController.text.trim()
+                                    : null,
+                                firstName: _firstNameController.text.trim(),
+                                lastName: _lastNameController.text.trim(),
                                 profilePicture: _profilePicture,
                                 removeProfilePicture: _removeProfilePicture,
                               ),
@@ -219,99 +223,39 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
   }
 
   void _loadPrefilledData() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final user = Modular.args.data;
+    final user = Modular.args.data;
+    if (user is! AuthUser) return;
 
-      if (mounted) {
-        if ((user is BusinessUser) && _businessNameKey.currentState != null) {
-          _businessNameKey.currentState?.widget.controller.text =
-              user.businessName;
-        }
-
-        if (user.firstName != null && _firstNameKey.currentState != null) {
-          _firstNameKey.currentState?.widget.controller.text = user.firstName!;
-        }
-
-        if (user.lastName != null && _lastNameKey.currentState != null) {
-          _lastNameKey.currentState?.widget.controller.text = user.lastName!;
-        }
-      }
-    });
+    if (user is BusinessUser) {
+      _businessNameController.text = user.businessName;
+    }
+    _firstNameController.text = user.firstName ?? '';
+    _lastNameController.text = user.lastName ?? '';
   }
 }
 
-class ProfileFormField extends StatefulWidget {
+class ProfileFormField extends StatelessWidget {
+  final TextEditingController controller;
   final String labelText;
   final IconData icon;
 
   const ProfileFormField({
     super.key,
+    required this.controller,
     required this.labelText,
     required this.icon,
   });
-
-  @override
-  State<ProfileFormField> createState() => _ProfileFormFieldState();
-
-  TextValidator get validator {
-    final state = _getState();
-    return state._validator;
-  }
-
-  TextEditingController get controller {
-    final state = _getState();
-    return state._controller;
-  }
-
-  String get text {
-    final state = _getState();
-    return state._controller.text.trim();
-  }
-
-  _ProfileFormFieldState _getState() {
-    if (key is! GlobalKey<_ProfileFormFieldState>) {
-      throw StateError(
-        'ProfileFormField getters require a GlobalKey<_ProfileFormFieldState> as the widget key. '
-        'Example: ProfileFormField(key: GlobalKey<_ProfileFormFieldState>())',
-      );
-    }
-    final state = (key as GlobalKey<_ProfileFormFieldState>).currentState;
-    if (state == null) {
-      throw StateError(
-        'EmailField state is not available. Make sure the widget is mounted.',
-      );
-    }
-    return state;
-  }
-}
-
-class _ProfileFormFieldState extends State<ProfileFormField> {
-  late final TextValidator _validator;
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _validator = TextValidator();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       validator: TextValidator().call,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      controller: _controller,
+      controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(),
-        labelText: widget.labelText,
-        suffixIcon: Icon(widget.icon, color: context.cs.primary),
+        labelText: labelText,
+        suffixIcon: Icon(icon, color: context.cs.primary),
         floatingLabelStyle: context.tt.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
           color: context.cs.tertiary,

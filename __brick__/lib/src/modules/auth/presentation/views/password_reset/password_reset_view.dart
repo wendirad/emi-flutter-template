@@ -99,7 +99,13 @@ class _PasswordResetViewForm extends StatefulWidget {
 }
 
 class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
-  final GlobalKey<EmailFieldState> _emailKey = GlobalKey<EmailFieldState>();
+  final TextEditingController _emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +141,7 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
           child: Column(
             spacing: 16,
             children: [
-              EmailField(key: _emailKey),
+              EmailField(controller: _emailController),
 
               const SizedBox(height: 16),
 
@@ -149,7 +155,7 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
                     ReadContext(context).read<PasswordResetBloc>().add(
                       PasswordResetRequested(
                         SendPasswordResetEmailParam(
-                          email: _emailKey.currentState!.widget.email,
+                          email: _emailController.text.trim(),
                         ),
                       ),
                     );

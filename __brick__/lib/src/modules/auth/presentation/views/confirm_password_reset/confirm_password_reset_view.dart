@@ -126,10 +126,16 @@ class _ConfirmPasswordResetViewForm extends StatefulWidget {
 
 class _ConfirmPasswordResetViewFormState
     extends State<_ConfirmPasswordResetViewForm> {
-  final GlobalKey<PasswordFieldState> _newPasswordKey =
-      GlobalKey<PasswordFieldState>();
-  final GlobalKey<PasswordFieldState> _confirmNewPasswordKey =
-      GlobalKey<PasswordFieldState>();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmNewPasswordController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    _newPasswordController.dispose();
+    _confirmNewPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +162,7 @@ class _ConfirmPasswordResetViewFormState
             spacing: 16,
             children: [
               PasswordField(
-                key: _newPasswordKey,
+                controller: _newPasswordController,
                 showPassword: state.showPassword,
                 onShowPasswordToggle: () => ReadContext(context)
                     .read<ConfirmPasswordResetBloc>()
@@ -164,11 +170,10 @@ class _ConfirmPasswordResetViewFormState
               ),
 
               PasswordField(
-                key: _confirmNewPasswordKey,
-                passwordKey: _newPasswordKey,
+                controller: _confirmNewPasswordController,
+                confirms: _newPasswordController,
                 showPassword: state.showConfirmPassword,
                 hintText: 'Confirm Password',
-                isConfirmPassword: true,
                 onShowPasswordToggle: () => ReadContext(context)
                     .read<ConfirmPasswordResetBloc>()
                     .add(ConfirmPasswordResetToggleShowConfirmPassword()),
@@ -187,8 +192,7 @@ class _ConfirmPasswordResetViewFormState
                       ConfirmPasswordResetRequested(
                         ConfirmPasswordResetParam(
                           code: widget.code ?? '',
-                          newPassword:
-                              _newPasswordKey.currentState!.widget.password,
+                          newPassword: _newPasswordController.text.trim(),
                         ),
                       ),
                     );

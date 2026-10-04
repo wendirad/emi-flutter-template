@@ -95,13 +95,20 @@ class _SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<_SignUpForm> {
-  final GlobalKey<AppTextFieldState> _businessNameKey =
-      GlobalKey<AppTextFieldState>();
-  final GlobalKey<EmailFieldState> _emailKey = GlobalKey<EmailFieldState>();
-  final GlobalKey<PasswordFieldState> _passwordKey =
-      GlobalKey<PasswordFieldState>();
-  final GlobalKey<PasswordFieldState> _confirmPasswordKey =
-      GlobalKey<PasswordFieldState>();
+  final TextEditingController _businessNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    _businessNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,15 +132,15 @@ class _SignUpFormState extends State<_SignUpForm> {
             spacing: 16,
             children: [
               AppTextField(
-                key: _businessNameKey,
+                controller: _businessNameController,
                 hintText: 'Business Name',
                 icon: Icon(Icons.business_center, color: context.cs.secondary),
               ),
 
-              EmailField(key: _emailKey),
+              EmailField(controller: _emailController),
 
               PasswordField(
-                key: _passwordKey,
+                controller: _passwordController,
                 showPassword: state.showPassword,
                 onShowPasswordToggle: () => ReadContext(
                   context,
@@ -141,11 +148,10 @@ class _SignUpFormState extends State<_SignUpForm> {
               ),
 
               PasswordField(
-                key: _confirmPasswordKey,
-                passwordKey: _passwordKey,
+                controller: _confirmPasswordController,
+                confirms: _passwordController,
                 showPassword: state.showConfirmPassword,
                 hintText: 'Confirm Password',
-                isConfirmPassword: true,
                 onShowPasswordToggle: () => ReadContext(
                   context,
                 ).read<SignUpBloc>().add(SignUpToggleShowConfirmPassword()),
@@ -161,10 +167,9 @@ class _SignUpFormState extends State<_SignUpForm> {
                     ReadContext(context).read<SignUpBloc>().add(
                       SignUpRequested(
                         SignUpParam(
-                          email: _emailKey.currentState!.widget.email,
-                          password: _passwordKey.currentState!.widget.password,
-                          businessName:
-                              _businessNameKey.currentState!.widget.text,
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text.trim(),
+                          businessName: _businessNameController.text.trim(),
                         ),
                       ),
                     );
