@@ -213,6 +213,22 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
+  Future<Either<AuthSessionFailure, String?>> getRememberedEmail() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      if (!(prefs.getBool(PrefKeys.signInInfoSave) ?? false)) {
+        return const Right(null);
+      }
+
+      return Right(prefs.getString(PrefKeys.rememberedEmail));
+    } catch (e, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace, label: '$e');
+      return Left(AuthSessionFailure.fromCode('unknown-error'));
+    }
+  }
+
+  @override
   Future<Either<SignOutFailure, Unit>> signOut() async {
     try {
       await auth.signOut();

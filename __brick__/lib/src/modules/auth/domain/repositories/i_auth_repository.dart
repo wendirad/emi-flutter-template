@@ -11,6 +11,9 @@ abstract class IAuthRepository {
 
   Future<Either<AuthSessionFailure, AuthUser>> getSignedInUser();
 
+  /// The email saved by 'remember my email', or null when none is saved.
+  Future<Either<AuthSessionFailure, String?>> getRememberedEmail();
+
   Future<Either<SignUpWithEmailAndPasswordFailure, Unit>>
   signUpWithEmailAndPassword({
     required String email,

@@ -4,6 +4,7 @@ export 'send_password_reset_email_use_case.dart';
 export 'verify_password_reset_code_use_case.dart';
 export 'confirm_password_reset_use_case.dart';
 export 'get_current_user_use_case.dart';
+export 'get_remembered_email_use_case.dart';
 export 'observe_auth_session_use_case.dart';
 export 'sign_out_use_case.dart';
 export 'update_profile_use_case.dart';

@@ -67,6 +67,12 @@ class AuthModule extends Module {
       ),
     );
 
+    i.addLazySingleton<GetRememberedEmailUseCase>(
+      () => GetRememberedEmailUseCase(
+        authRepository: Modular.get<IAuthRepository>(),
+      ),
+    );
+
     i.addLazySingleton<ObserveAuthSessionUseCase>(
       () => ObserveAuthSessionUseCase(
         authRepository: Modular.get<IAuthRepository>(),

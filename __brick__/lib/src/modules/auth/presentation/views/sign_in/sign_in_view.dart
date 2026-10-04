@@ -4,9 +4,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/use_cases/use_cases.dart';
+import '../../blocs/remembered_email/remembered_email_bloc.dart';
 import '../../blocs/sign_in/sign_in_bloc.dart';
 import '../widgets/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});
@@ -20,9 +20,19 @@ class _SignInViewState extends State<SignInView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          SignInBloc(signIn: Modular.get<SignInWithEmailAndPasswordUseCase>()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => SignInBloc(
+            signIn: Modular.get<SignInWithEmailAndPasswordUseCase>(),
+          ),
+        ),
+        BlocProvider(
+          create: (_) => RememberedEmailBloc(
+            getRememberedEmail: Modular.get<GetRememberedEmailUseCase>(),
+          )..add(const RememberedEmailRequested()),
+        ),
+      ],
       child: BlocListener<SignInBloc, SignInState>(
         listenWhen: (p, c) => p != c,
         listener: (context, state) async {
@@ -62,101 +72,89 @@ class _SignInFormState extends State<_SignInForm> {
   bool _saveInfo = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadSavedEmail();
-  }
-
-  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadSavedEmail() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final signInInfoSave = prefs.getBool(PrefKeys.signInInfoSave) ?? false;
+  void _applyRememberedEmail(String? email) {
+    if (email == null || email.isEmpty) return;
 
-      if (signInInfoSave) {
-        final savedEmail = prefs.getString(PrefKeys.rememberedEmail) ?? '';
-
-        if (!mounted) return;
-
-        if (savedEmail.isNotEmpty) _emailController.text = savedEmail;
-
-        setState(() => _saveInfo = true);
-      }
-    } catch (e) {
-      debugPrint('Error loading saved email: $e');
-    }
+    _emailController.text = email;
+    setState(() => _saveInfo = true);
   }
 
   @override
   Widget build(BuildContext context) {
     final SignInState state = WatchContext(context).watch<SignInBloc>().state;
 
-    return Column(
-      spacing: 8,
-      children: [
-        if (state.failure case final failure?) ...[
-          AppAlert(
-            title: 'Sign In Failed',
-            value: failure.message,
-            variant: AlertVariant.danger,
-            icon: Icons.report_gmailerrorred_outlined,
+    return BlocListener<RememberedEmailBloc, RememberedEmailState>(
+      listenWhen: (p, c) => p != c,
+      listener: (context, remembered) => _applyRememberedEmail(remembered.data),
+      child: Column(
+        spacing: 8,
+        children: [
+          if (state.failure case final failure?) ...[
+            AppAlert(
+              title: 'Sign In Failed',
+              value: failure.message,
+              variant: AlertVariant.danger,
+              icon: Icons.report_gmailerrorred_outlined,
+            ),
+          ],
+
+          Form(
+            key: widget.formKey,
+            child: Column(
+              spacing: 16,
+              children: [
+                EmailField(controller: _emailController),
+
+                PasswordField(
+                  controller: _passwordController,
+                  enforceStrength: false,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CheckboxField(
+                      isChecked: _saveInfo,
+                      onToggle: () => setState(() => _saveInfo = !_saveInfo),
+                      suffix: Text('Remember my email'),
+                    ),
+                    AppTextButton(
+                      text: 'Forgot Password?',
+                      onPress: () async {
+                        await Modular.to.pushNamed(AppRoute.resetPassword.str);
+                      },
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                AppButton(
+                  onPress: () {
+                    if (widget.formKey.currentState!.validate()) {
+                      ReadContext(context).read<SignInBloc>().add(
+                        SignInRequested(
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text.trim(),
+                          saveInfo: _saveInfo,
+                        ),
+                      );
+                    }
+                  },
+                  isLoading: state.isInProgress,
+                  title: 'Sign In',
+                ),
+              ],
+            ),
           ),
         ],
-
-        Form(
-          key: widget.formKey,
-          child: Column(
-            spacing: 16,
-            children: [
-              EmailField(controller: _emailController),
-
-              PasswordField(
-                controller: _passwordController,
-                enforceStrength: false,
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CheckboxField(
-                    isChecked: _saveInfo,
-                    onToggle: () => setState(() => _saveInfo = !_saveInfo),
-                    suffix: Text('Remember my email'),
-                  ),
-                  AppTextButton(
-                    text: 'Forgot Password?',
-                    onPress: () async {
-                      await Modular.to.pushNamed(AppRoute.resetPassword.str);
-                    },
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              AppButton(
-                onPress: () {
-                  if (widget.formKey.currentState!.validate()) {
-                    ReadContext(context).read<SignInBloc>().add(
-                      SignInRequested(email: _emailController.text.trim(),
-                          password: _passwordController.text.trim(),
-                          saveInfo: _saveInfo),
-                    );
-                  }
-                },
-                isLoading: state.isInProgress,
-                title: 'Sign In',
-              ),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
