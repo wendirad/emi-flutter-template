@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../../core/app.dart';
+import '../../../core/constants/constants.dart';
+import '../../../core/extensions/build_context_extensions.dart';
+import '../../../modules/auth/domain/repositories/i_auth_repository.dart';
 import '../../../modules/auth/presentation/blocs/auth_session/auth_session_bloc.dart';
 import 'widgets/app_navigation_bar.dart';
 

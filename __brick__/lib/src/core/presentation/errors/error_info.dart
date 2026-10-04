@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../app.dart';
+import '../../extensions/build_context_extensions.dart';
+import '../widgets/widgets.dart';
 
 class ErrorInfo extends StatelessWidget {
   const ErrorInfo({

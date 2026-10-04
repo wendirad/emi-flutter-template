@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../app.dart';
+import '../../extensions/build_context_extensions.dart';
 
 class Illustration extends StatelessWidget {
   final String assetName;

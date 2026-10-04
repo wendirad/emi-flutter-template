@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../../../../core/app.dart';
+import '../../../../../../core/constants/constants.dart';
+import '../../../../../../core/extensions/build_context_extensions.dart';
 
 class PhotoUpdateWidget extends StatefulWidget {
   final String? photoUrl;

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:flutter_social_button/flutter_social_button.dart';
-import '../../../../../core/app.dart';
+import '../../../../../core/constants/constants.dart';
+import '../../../../../core/extensions/build_context_extensions.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({super.key});

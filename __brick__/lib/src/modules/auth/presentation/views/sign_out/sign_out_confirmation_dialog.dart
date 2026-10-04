@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/app.dart';
+import '../../../../../core/extensions/build_context_extensions.dart';
 
 class SignOutConfirmationDialog extends StatelessWidget {
   const SignOutConfirmationDialog({super.key});

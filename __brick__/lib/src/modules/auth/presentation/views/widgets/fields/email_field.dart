@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../../core/app.dart';
+import '../../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../../core/presentation/widgets/widgets.dart';
 import '../../../../domain/validators/email_validator.dart';
 
 class EmailField extends StatefulWidget {

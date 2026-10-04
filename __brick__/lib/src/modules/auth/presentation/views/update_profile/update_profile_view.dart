@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../../../../../core/app.dart';
-import '../../../../../core/presentation/widgets/app_alert.dart';
+import '../../../../../core/constants/constants.dart';
+import '../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/entities/auth_entities.dart';
 import '../../../domain/use_cases/update_profile_use_case.dart';
 import '../../../domain/validators/text_validator.dart';
 import '../../blocs/update_profile/update_profile_bloc.dart';
-import '../../../../../core/presentation/errors/error_view.dart';
+import '../../../../../core/presentation/errors/errors.dart';
 import 'widgets/photo_update_widget.dart';
 
 class UpdateProfileView extends StatefulWidget {

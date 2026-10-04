@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../../../../core/app.dart';
+import '../../../../../core/constants/constants.dart';
+import '../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../core/use_cases/use_cases.dart';
 import '../../blocs/sign_out/sign_out_bloc.dart';
 import 'sign_out_confirmation_dialog.dart';
 

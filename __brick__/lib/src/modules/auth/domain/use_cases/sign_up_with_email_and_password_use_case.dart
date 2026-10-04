@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import '../../../../core/app.dart';
+import '../../../../core/use_cases/use_cases.dart';
+import '../repositories/i_auth_repository.dart';
 import '../failures/auth_failures.dart';
 
 class SignUpWithEmailAndPasswordUseCase implements UseCase<Unit, SignUpParam> {

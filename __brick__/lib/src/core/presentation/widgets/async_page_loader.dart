@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-import '../../app.dart';
+import '../../constants/constants.dart';
+import '../../extensions/build_context_extensions.dart';
+import '../../failures/failure.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../errors/errors.dart';
 

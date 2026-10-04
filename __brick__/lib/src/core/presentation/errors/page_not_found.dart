@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../constants/app_route.dart';
+import '../../constants/constants.dart';
 import 'error_info.dart';
 
 class PageNotFound extends ErrorInfo {

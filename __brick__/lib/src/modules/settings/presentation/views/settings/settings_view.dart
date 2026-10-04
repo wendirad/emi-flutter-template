@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../../../../../core/app.dart';
-import '../../../../../core/presentation/widgets/async_page_loader.dart';
+import '../../../../../core/constants/constants.dart';
+import '../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../core/presentation/widgets/widgets.dart';
+import '../../../../../core/theme/theme.dart';
+import '../../../../auth/domain/repositories/i_auth_repository.dart';
 import '../../../../auth/domain/entities/auth_entities.dart';
 import '../../../../auth/domain/use_cases/use_cases.dart';
 import '../../../../auth/presentation/blocs/sign_out/sign_out_bloc.dart';
 import '../../../../auth/presentation/views/views.dart';
-import '../../../../../core/presentation/errors/error_view.dart';
+import '../../../../../core/presentation/errors/errors.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});

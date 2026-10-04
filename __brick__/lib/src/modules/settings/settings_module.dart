@@ -1,5 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../core/app.dart';
+import '../../core/constants/constants.dart';
 import '../auth/presentation/views/views.dart';
 import 'presentation/views/views.dart';
 

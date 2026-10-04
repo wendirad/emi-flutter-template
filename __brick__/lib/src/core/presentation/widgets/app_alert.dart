@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../app.dart';
+import '../../extensions/build_context_extensions.dart';
 
 enum AlertVariant { primary, success, info, warning, danger }
 

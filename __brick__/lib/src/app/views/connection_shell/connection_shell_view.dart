@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../../core/app.dart';
+import '../../../core/constants/constants.dart';
 import '../../blocs/connection_shell/connection_shell_bloc.dart';
-import '../../../core/presentation/errors/error_view.dart';
+import '../../../core/presentation/errors/errors.dart';
 
 class ConnectionShellView extends StatelessWidget {
   const ConnectionShellView({super.key});

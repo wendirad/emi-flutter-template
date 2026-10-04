@@ -1,4 +1,4 @@
-import '../../../../core/app.dart';
+import '../../../../core/failures/failure.dart';
 
 class AuthSessionFailure extends Failure {
   const AuthSessionFailure({required super.message, super.code});

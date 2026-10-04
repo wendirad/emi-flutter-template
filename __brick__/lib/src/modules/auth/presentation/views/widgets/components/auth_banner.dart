@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../core/app.dart';
+import '../../../../../../core/constants/constants.dart';
 
 class AuthBanner extends StatelessWidget {
   const AuthBanner({super.key});
