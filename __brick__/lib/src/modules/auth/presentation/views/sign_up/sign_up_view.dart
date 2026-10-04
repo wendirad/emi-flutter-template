@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide TextField;
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../../../../core/app.dart';
@@ -94,8 +94,8 @@ class _SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<_SignUpForm> {
-  final GlobalKey<TextFieldState> _businessNameKey =
-      GlobalKey<TextFieldState>();
+  final GlobalKey<AppTextFieldState> _businessNameKey =
+      GlobalKey<AppTextFieldState>();
   final GlobalKey<EmailFieldState> _emailKey = GlobalKey<EmailFieldState>();
   final GlobalKey<PasswordFieldState> _passwordKey =
       GlobalKey<PasswordFieldState>();
@@ -123,7 +123,7 @@ class _SignUpFormState extends State<_SignUpForm> {
           child: Column(
             spacing: 16,
             children: [
-              TextField(
+              AppTextField(
                 key: _businessNameKey,
                 hintText: 'Business Name',
                 icon: Icon(Icons.business_center, color: context.cs.secondary),

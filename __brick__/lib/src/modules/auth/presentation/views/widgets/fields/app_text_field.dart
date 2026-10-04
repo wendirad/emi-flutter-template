@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import '../../../../../../core/app.dart';
 import '../../../../domain/validators/validators.dart';
 
-class TextField extends StatefulWidget {
+class AppTextField extends StatefulWidget {
   final double radius;
   final String? hintText;
   final Icon? icon;
 
-  const TextField({super.key, this.hintText, this.icon, this.radius = 8});
+  const AppTextField({super.key, this.hintText, this.icon, this.radius = 8});
 
   TextValidator get validator {
     final state = _getState();
@@ -24,27 +24,27 @@ class TextField extends StatefulWidget {
     return state._controller.text.trim();
   }
 
-  TextFieldState _getState() {
-    if (key is! GlobalKey<TextFieldState>) {
+  AppTextFieldState _getState() {
+    if (key is! GlobalKey<AppTextFieldState>) {
       throw StateError(
-        'TextField getters require a GlobalKey<TextFieldState> as the widget key. '
-        'Example: TextField(key: GlobalKey<TextFieldState>())',
+        'AppTextField getters require a GlobalKey<AppTextFieldState> as the widget key. '
+        'Example: AppTextField(key: GlobalKey<AppTextFieldState>())',
       );
     }
-    final state = (key as GlobalKey<TextFieldState>).currentState;
+    final state = (key as GlobalKey<AppTextFieldState>).currentState;
     if (state == null) {
       throw StateError(
-        'TextField state is not available. Make sure the widget is mounted.',
+        'AppTextField state is not available. Make sure the widget is mounted.',
       );
     }
     return state;
   }
 
   @override
-  State<TextField> createState() => TextFieldState();
+  State<AppTextField> createState() => AppTextFieldState();
 }
 
-class TextFieldState extends State<TextField> {
+class AppTextFieldState extends State<AppTextField> {
   late final TextValidator _validator;
   late final TextEditingController _controller;
 

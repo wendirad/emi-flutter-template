@@ -60,10 +60,12 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
   File? _profilePicture;
   bool _removeProfilePicture = false;
 
-  final GlobalKey<_FormFieldState> _businessNameKey =
-      GlobalKey<_FormFieldState>();
-  final GlobalKey<_FormFieldState> _firstNameKey = GlobalKey<_FormFieldState>();
-  final GlobalKey<_FormFieldState> _lastNameKey = GlobalKey<_FormFieldState>();
+  final GlobalKey<_ProfileFormFieldState> _businessNameKey =
+      GlobalKey<_ProfileFormFieldState>();
+  final GlobalKey<_ProfileFormFieldState> _firstNameKey =
+      GlobalKey<_ProfileFormFieldState>();
+  final GlobalKey<_ProfileFormFieldState> _lastNameKey =
+      GlobalKey<_ProfileFormFieldState>();
 
   @override
   void initState() {
@@ -156,19 +158,19 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                         ),
                       ],
                       if (user is BusinessUser) ...[
-                        FormField(
+                        ProfileFormField(
                           key: _businessNameKey,
                           labelText: 'Business Name',
                           icon: Icons.business_center,
                         ),
                       ],
-                      FormField(
+                      ProfileFormField(
                         key: _firstNameKey,
                         labelText: 'First Name',
                         icon: Icons.text_fields,
                       ),
 
-                      FormField(
+                      ProfileFormField(
                         key: _lastNameKey,
                         labelText: 'Last Name',
                         icon: Icons.text_fields,
@@ -237,14 +239,18 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
   }
 }
 
-class FormField extends StatefulWidget {
+class ProfileFormField extends StatefulWidget {
   final String labelText;
   final IconData icon;
 
-  const FormField({super.key, required this.labelText, required this.icon});
+  const ProfileFormField({
+    super.key,
+    required this.labelText,
+    required this.icon,
+  });
 
   @override
-  State<FormField> createState() => _FormFieldState();
+  State<ProfileFormField> createState() => _ProfileFormFieldState();
 
   TextValidator get validator {
     final state = _getState();
@@ -261,14 +267,14 @@ class FormField extends StatefulWidget {
     return state._controller.text.trim();
   }
 
-  _FormFieldState _getState() {
-    if (key is! GlobalKey<_FormFieldState>) {
+  _ProfileFormFieldState _getState() {
+    if (key is! GlobalKey<_ProfileFormFieldState>) {
       throw StateError(
-        'EmailField getters require a GlobalKey<_FormFieldState> as the widget key. '
-        'Example: FormField(key: GlobalKey<_FormFieldState>())',
+        'ProfileFormField getters require a GlobalKey<_ProfileFormFieldState> as the widget key. '
+        'Example: ProfileFormField(key: GlobalKey<_ProfileFormFieldState>())',
       );
     }
-    final state = (key as GlobalKey<_FormFieldState>).currentState;
+    final state = (key as GlobalKey<_ProfileFormFieldState>).currentState;
     if (state == null) {
       throw StateError(
         'EmailField state is not available. Make sure the widget is mounted.',
@@ -278,7 +284,7 @@ class FormField extends StatefulWidget {
   }
 }
 
-class _FormFieldState extends State<FormField> {
+class _ProfileFormFieldState extends State<ProfileFormField> {
   late final TextValidator _validator;
   late final TextEditingController _controller;
 
