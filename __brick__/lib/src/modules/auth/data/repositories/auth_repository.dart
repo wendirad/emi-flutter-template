@@ -9,7 +9,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mime/mime.dart';
 import '../../../../core/app.dart';
 import '../../../../core/utils/env_loader.dart';
-import '../extentions/auth_extentions.dart';
+import '../extensions/auth_extensions.dart';
 import '../models/auth_models.dart';
 import '../../domain/entities/auth_entities.dart';
 import '../../domain/failures/auth_failures.dart';

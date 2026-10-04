@@ -2,7 +2,7 @@ export 'configs/theme/theme_service.dart';
 export 'configs/theme/app_theme.dart';
 export 'configs/app_module.dart';
 export 'configs/app_widget.dart';
-export 'extentions/build_context_extentions.dart';
+export 'extensions/build_context_extensions.dart';
 export 'constants/constants.dart';
 export 'presentation/widgets/widgets.dart';
 export 'presentation/view/views.dart';
