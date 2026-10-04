@@ -1,8 +1,10 @@
 class EmailValidator {
-  String? call(String? email) {
-    final emailRegex = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  static final RegExp _emailRegex = RegExp(
+    r'^[A-Za-z0-9._%+\-]+@(?:[A-Za-z0-9\-]+\.)+[A-Za-z]{2,}$',
+  );
 
-    if (!emailRegex.hasMatch(email.toString())) {
+  String? call(String? email) {
+    if (email == null || !_emailRegex.hasMatch(email.trim())) {
       return 'Enter a valid email.';
     }
 

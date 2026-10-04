@@ -7,6 +7,9 @@ class PasswordField extends StatefulWidget {
   final String hintText;
   final bool isConfirmPassword;
   final bool showPassword;
+
+  /// When false only checks that a value is present (e.g. sign-in).
+  final bool enforceStrength;
   final VoidCallback? onShowPasswordToggle;
   final GlobalKey<PasswordFieldState>? passwordKey;
 
@@ -16,6 +19,7 @@ class PasswordField extends StatefulWidget {
     this.hintText = 'Password',
     this.isConfirmPassword = false,
     this.showPassword = false,
+    this.enforceStrength = true,
     this.onShowPasswordToggle,
     this.passwordKey,
   }) {
@@ -98,7 +102,9 @@ class PasswordFieldState extends State<PasswordField> {
               currentPassword,
               widget.passwordKey!.currentState!.widget.password,
             )
-          : _passwordValidator.call(currentPassword),
+          : widget.enforceStrength
+          ? _passwordValidator.call(currentPassword)
+          : _passwordValidator.presence(currentPassword),
       kwargs: const {"autovalidateMode": AutovalidateMode.onUserInteraction},
     );
   }

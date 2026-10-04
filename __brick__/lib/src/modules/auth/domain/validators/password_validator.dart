@@ -1,8 +1,18 @@
 class PasswordValidator {
-  String? call(String? password) {
+  /// Presence check only. Use for sign-in, where existing passwords may
+  /// predate the current strength rules.
+  String? presence(String? password) {
     if (password == null || password.isEmpty) {
       return 'Password is required';
     }
+    return null;
+  }
+
+  String? call(String? password) {
+    final String? missing = presence(password);
+    if (missing != null) return missing;
+    if (password == null) return null;
+
     if (password.length < 8) {
       return 'Password must be at least 8 characters';
     }

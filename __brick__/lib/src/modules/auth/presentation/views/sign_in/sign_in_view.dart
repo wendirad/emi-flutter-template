@@ -157,6 +157,7 @@ class _SignInFormState extends State<_SignInForm> {
 
               PasswordField(
                 key: _passwordKey,
+                enforceStrength: false,
                 showPassword: state.showPassword,
                 onShowPasswordToggle: () => ReadContext(
                   context,
