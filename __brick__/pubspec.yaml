@@ -47,4 +47,4 @@ flutter:
   assets:
     - .env
     - assets/illustrations/
-    - assets/sp/
+    - assets/splash/

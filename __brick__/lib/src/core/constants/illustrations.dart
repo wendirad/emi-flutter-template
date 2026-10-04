@@ -8,6 +8,6 @@ class Illustrations {
   static const String splashScreenMain =
       'assets/illustrations/splash_robot.png';
 
-  static const String splashScreen = 'assets/sp/sp_light.png';
-  static const String splashScreenDark = 'assets/sp/sp_dark.png';
+  static const String splashScreen = 'assets/splash/splash_light.png';
+  static const String splashScreenDark = 'assets/splash/splash_dark.png';
 }
