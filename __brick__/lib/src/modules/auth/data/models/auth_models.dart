@@ -46,7 +46,6 @@ class AuthUserModel extends AuthUser with Equatable {
 
   AuthUserModel copyWith({
     String? uid,
-    bool? isActive,
     String? firstName,
     String? lastName,
     String? email,
@@ -62,6 +61,7 @@ class AuthUserModel extends AuthUser with Equatable {
       email: email ?? this.email,
       photoUrl: photoUrl ?? this.photoUrl,
       creationTime: creationTime ?? this.creationTime,
+      lastSignInTime: lastSignInTime ?? this.lastSignInTime,
       lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
     );
   }
