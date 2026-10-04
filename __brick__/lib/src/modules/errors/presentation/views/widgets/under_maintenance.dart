@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import '../views.dart';
 
-class UnderMaintainance extends ErrorInfo {
-  UnderMaintainance({
+class UnderMaintenance extends ErrorInfo {
+  UnderMaintenance({
     super.key,
     String? title,
     String? description,

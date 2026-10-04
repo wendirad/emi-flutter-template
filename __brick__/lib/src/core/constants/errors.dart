@@ -1,7 +1,7 @@
 enum ErrorTypes {
   pageNotFound,
   unknownError,
-  underMaintainance,
+  underMaintenance,
   noConnection,
   noData,
 }

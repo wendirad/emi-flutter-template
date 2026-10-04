@@ -39,7 +39,7 @@ class ErrorView extends StatelessWidget {
                   child: Illustration(switch (errorType) {
                     ErrorTypes.pageNotFound => Illustrations.pageNotFound,
                     ErrorTypes.noConnection => Illustrations.noConnection,
-                    ErrorTypes.underMaintainance =>
+                    ErrorTypes.underMaintenance =>
                       Illustrations.underMaintenance,
                     ErrorTypes.noData => Illustrations.noData,
                     _ => Illustrations.unknownError,
@@ -52,7 +52,7 @@ class ErrorView extends StatelessWidget {
               (switch (errorType) {
                 ErrorTypes.pageNotFound => PageNotFound.new,
                 ErrorTypes.noConnection => NoConnection.new,
-                ErrorTypes.underMaintainance => UnderMaintainance.new,
+                ErrorTypes.underMaintenance => UnderMaintenance.new,
                 ErrorTypes.noData => NoData.new,
                 _ => UnknownError.new,
               })(
