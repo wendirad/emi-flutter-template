@@ -22,12 +22,12 @@ class _PasswordResetViewState extends State<PasswordResetView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          PasswordResetBloc(Modular.get<SendPasswordResetEmailUseCase>()),
+          PasswordResetBloc(sendPasswordResetEmail: Modular.get<SendPasswordResetEmailUseCase>()),
 
       child: BlocListener<PasswordResetBloc, PasswordResetState>(
-        listenWhen: (p, c) => p.process != c.process || p.error != c.error,
+        listenWhen: (p, c) => p != c,
         listener: (context, state) async {
-          if (state.process == PasswordResetProcess.successful) {
+          if (state.isSuccess) {
             AppSnackBar.success(context, 'Password Reset Email Sent Successfully!');
             Modular.to.navigate(AppRoute.signIn.str);
           }
@@ -74,17 +74,16 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
     return Column(
       spacing: 8,
       children: [
-        if (state.process == PasswordResetProcess.failed &&
-            state.error != null) ...[
+        if (state.failure case final failure?) ...[
           AppAlert(
             title: 'Password Reset Failed',
-            value: state.error!.message,
+            value: failure.message,
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
         ],
 
-        if (state.process == PasswordResetProcess.idle &&
+        if (state.isIdle &&
             Modular.args.data is PasswordResetConfirmFailure) ...[
           AppAlert(
             title: 'Password Reset Confirmation Failed',
@@ -107,15 +106,12 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
                 onPress: () {
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<PasswordResetBloc>().add(
-                      PasswordResetRequested(
-                        SendPasswordResetEmailParam(
-                          email: _emailController.text.trim(),
-                        ),
+                      PasswordResetRequested(email: _emailController.text.trim(),
                       ),
                     );
                   }
                 },
-                isLoading: state.process == PasswordResetProcess.inProgress,
+                isLoading: state.isInProgress,
                 title: 'Send Password Reset Email',
               ),
             ],

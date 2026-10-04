@@ -1,34 +1,44 @@
-import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../../../core/presentation/blocs/process_state.dart';
 import '../../../domain/failures/auth_failures.dart';
-import '../../../domain/use_cases/update_profile_use_case.dart';
+import '../../../domain/use_cases/use_cases.dart';
 
 part 'update_profile_event.dart';
-part 'update_profile_state.dart';
+
+typedef UpdateProfileState = ProcessState<ProfileUpdateFailure>;
 
 class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
-  final UpdateProfileUseCase updateProfile;
+  final UpdateProfileUseCase _updateProfile;
 
-  UpdateProfileBloc(this.updateProfile) : super(UpdateProfileState.initial()) {
-    on<ProfileUpdateRequested>(_onProfileUpdateRequested);
+  UpdateProfileBloc({required UpdateProfileUseCase updateProfile})
+    : _updateProfile = updateProfile,
+      super(const UpdateProfileState.idle()) {
+    on<UpdateProfileRequested>(_onUpdateProfileRequested);
   }
 
-  FutureOr<void> _onProfileUpdateRequested(
-    ProfileUpdateRequested event,
+  Future<void> _onUpdateProfileRequested(
+    UpdateProfileRequested event,
     Emitter<UpdateProfileState> emit,
   ) async {
-    emit(state.copyWith(process: ProfileUpdateStatus.inProgress, error: null));
+    emit(const UpdateProfileState.inProgress());
 
-    final status = await updateProfile(param: event.param);
-
-    status.fold(
-      (failure) => emit(
-        state.copyWith(process: ProfileUpdateStatus.failed, error: failure),
+    final result = await _updateProfile(
+      param: UpdateProfileParam(
+        businessName: event.businessName,
+        firstName: event.firstName,
+        lastName: event.lastName,
+        profilePicture: event.profilePicture,
+        removeProfilePicture: event.removeProfilePicture,
       ),
-      (_) => emit(
-        state.copyWith(process: ProfileUpdateStatus.successful, error: null),
+    );
+
+    emit(
+      result.fold(
+        (failure) => UpdateProfileState.failure(failure),
+        (_) => const UpdateProfileState.success(),
       ),
     );
   }

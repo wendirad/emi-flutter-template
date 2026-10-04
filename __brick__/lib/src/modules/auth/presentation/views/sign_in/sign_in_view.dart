@@ -22,11 +22,11 @@ class _SignInViewState extends State<SignInView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          SignInBloc(Modular.get<SignInWithEmailAndPasswordUseCase>()),
+          SignInBloc(signIn: Modular.get<SignInWithEmailAndPasswordUseCase>()),
       child: BlocListener<SignInBloc, SignInState>(
-        listenWhen: (p, c) => p.process != c.process || p.error != c.error,
+        listenWhen: (p, c) => p != c,
         listener: (context, state) async {
-          if (state.process == SignInProcess.success) {
+          if (state.isSuccess) {
             AppSnackBar.success(context, 'Sign In successful');
 
             Modular.to.navigate(AppRoute.home.str);
@@ -100,10 +100,10 @@ class _SignInFormState extends State<_SignInForm> {
     return Column(
       spacing: 8,
       children: [
-        if (state.process == SignInProcess.failed && state.error != null) ...[
+        if (state.failure case final failure?) ...[
           AppAlert(
             title: 'Sign In Failed',
-            value: state.error!.message,
+            value: failure.message,
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
@@ -144,17 +144,13 @@ class _SignInFormState extends State<_SignInForm> {
                 onPress: () {
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<SignInBloc>().add(
-                      SignInRequested(
-                        SignInParam(
-                          email: _emailController.text.trim(),
+                      SignInRequested(email: _emailController.text.trim(),
                           password: _passwordController.text.trim(),
-                          saveInfo: _saveInfo,
-                        ),
-                      ),
+                          saveInfo: _saveInfo),
                     );
                   }
                 },
-                isLoading: state.process == SignInProcess.inProgress,
+                isLoading: state.isInProgress,
                 title: 'Sign In',
               ),
             ],

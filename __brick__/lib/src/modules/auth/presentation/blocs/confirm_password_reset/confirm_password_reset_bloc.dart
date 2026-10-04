@@ -1,47 +1,41 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../../../core/presentation/blocs/process_state.dart';
 import '../../../domain/failures/auth_failures.dart';
-import '../../../domain/use_cases/confirm_password_reset_use_case.dart';
+import '../../../domain/use_cases/use_cases.dart';
 
 part 'confirm_password_reset_event.dart';
-part 'confirm_password_reset_state.dart';
+
+typedef ConfirmPasswordResetState = ProcessState<PasswordResetConfirmFailure>;
 
 class ConfirmPasswordResetBloc
     extends Bloc<ConfirmPasswordResetEvent, ConfirmPasswordResetState> {
-  final ConfirmPasswordResetUseCase confirmPasswordReset;
+  final ConfirmPasswordResetUseCase _confirmPasswordReset;
 
-  ConfirmPasswordResetBloc(this.confirmPasswordReset)
-    : super(ConfirmPasswordResetState.initial()) {
+  ConfirmPasswordResetBloc({
+    required ConfirmPasswordResetUseCase confirmPasswordReset,
+  }) : _confirmPasswordReset = confirmPasswordReset,
+       super(const ConfirmPasswordResetState.idle()) {
     on<ConfirmPasswordResetRequested>(_onConfirmPasswordResetRequested);
   }
 
-  FutureOr<void> _onConfirmPasswordResetRequested(
+  Future<void> _onConfirmPasswordResetRequested(
     ConfirmPasswordResetRequested event,
     Emitter<ConfirmPasswordResetState> emit,
   ) async {
-    emit(
-      state.copyWith(
-        process: ConfirmPasswordResetProcess.inProgress,
-        error: null,
+    emit(const ConfirmPasswordResetState.inProgress());
+
+    final result = await _confirmPasswordReset(
+      param: ConfirmPasswordResetParam(
+        code: event.code,
+        newPassword: event.newPassword,
       ),
     );
 
-    final result = await confirmPasswordReset(param: event.param);
-
-    result.fold(
-      (error) => emit(
-        state.copyWith(
-          process: ConfirmPasswordResetProcess.failed,
-          error: error,
-        ),
-      ),
-      (_) => emit(
-        state.copyWith(
-          process: ConfirmPasswordResetProcess.successful,
-          error: null,
-        ),
+    emit(
+      result.fold(
+        (failure) => ConfirmPasswordResetState.failure(failure),
+        (_) => const ConfirmPasswordResetState.success(),
       ),
     );
   }

@@ -82,7 +82,7 @@ class _SettingsContent extends StatelessWidget {
 
               // Sign Out
               BlocProvider(
-                create: (context) => SignOutBloc(Modular.get<SignOutUseCase>()),
+                create: (context) => SignOutBloc(signOut: Modular.get<SignOutUseCase>()),
                 child: const SignOutCard(),
               ),
               const SizedBox(height: 32),

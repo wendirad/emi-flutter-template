@@ -1,32 +1,41 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../../../core/presentation/blocs/process_state.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
 
 part 'sign_in_event.dart';
-part 'sign_in_state.dart';
+
+typedef SignInState = ProcessState<SignInWithEmailAndPasswordFailure>;
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
-  final SignInWithEmailAndPasswordUseCase signIn;
+  final SignInWithEmailAndPasswordUseCase _signIn;
 
-  SignInBloc(this.signIn) : super(SignInState.initial()) {
+  SignInBloc({required SignInWithEmailAndPasswordUseCase signIn})
+    : _signIn = signIn,
+      super(const SignInState.idle()) {
     on<SignInRequested>(_onSignInRequested);
   }
 
-  FutureOr<void> _onSignInRequested(
+  Future<void> _onSignInRequested(
     SignInRequested event,
     Emitter<SignInState> emit,
   ) async {
-    emit(state.copyWith(process: SignInProcess.inProgress, error: null));
+    emit(const SignInState.inProgress());
 
-    final result = await signIn(param: event.param);
+    final result = await _signIn(
+      param: SignInParam(
+        email: event.email,
+        password: event.password,
+        saveInfo: event.saveInfo,
+      ),
+    );
 
-    result.fold(
-      (error) =>
-          emit(state.copyWith(process: SignInProcess.failed, error: error)),
-      (_) => emit(state.copyWith(process: SignInProcess.success, error: null)),
+    emit(
+      result.fold(
+        (failure) => SignInState.failure(failure),
+        (_) => const SignInState.success(),
+      ),
     );
   }
 }

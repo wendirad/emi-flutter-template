@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
-import '../../../../../core/use_cases/use_cases.dart';
 import '../../blocs/sign_out/sign_out_bloc.dart';
 import 'sign_out_confirmation_dialog.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
@@ -14,15 +13,13 @@ class SignOutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignOutBloc, SignOutState>(
-      listenWhen: (previous, current) =>
-          previous.process != current.process || current.error != null,
+      listenWhen: (previous, current) => previous != current,
       listener: (context, state) {
-        if (state.process == SignOutProcess.success) {
+        if (state.isSuccess) {
           AppSnackBar.success(context, 'Logout successful');
           Modular.to.navigate(AppRoute.signIn.str);
-        } else if (state.process == SignOutProcess.failed &&
-            state.error != null) {
-          AppSnackBar.error(context, state.error!.message);
+        } else if (state.failure case final failure?) {
+          AppSnackBar.error(context, failure.message);
         }
       },
       child: Card(
@@ -32,7 +29,7 @@ class SignOutCard extends StatelessWidget {
           subtitle: 'Sign out of your account',
           trailing: BlocBuilder<SignOutBloc, SignOutState>(
             builder: (context, state) {
-              if (state.process == SignOutProcess.inProgress) {
+              if (state.isInProgress) {
                 return SizedBox(
                   width: 20,
                   height: 20,
@@ -61,7 +58,7 @@ class SignOutCard extends StatelessWidget {
     if (shouldSignOut == true && context.mounted) {
       ReadContext(
         context,
-      ).read<SignOutBloc>().add(const SignOutRequested(NoParam()));
+      ).read<SignOutBloc>().add(const SignOutRequested());
     }
   }
 }

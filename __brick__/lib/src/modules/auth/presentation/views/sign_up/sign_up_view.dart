@@ -22,11 +22,11 @@ class _SignUpViewState extends State<SignUpView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          SignUpBloc(Modular.get<SignUpWithEmailAndPasswordUseCase>()),
+          SignUpBloc(signUp: Modular.get<SignUpWithEmailAndPasswordUseCase>()),
       child: BlocListener<SignUpBloc, SignUpState>(
-        listenWhen: (p, c) => p.process != c.process || p.error != c.error,
+        listenWhen: (p, c) => p != c,
         listener: (context, state) async {
-          if (state.process == SignUpProcess.successful) {
+          if (state.isSuccess) {
             AppSnackBar.success(context, 'Sign up successful');
             Modular.to.navigate(AppRoute.home.str);
           }
@@ -78,10 +78,10 @@ class _SignUpFormState extends State<_SignUpForm> {
     return Column(
       spacing: 8,
       children: [
-        if (state.process == SignUpProcess.failed && state.error != null) ...[
+        if (state.failure case final failure?) ...[
           AppAlert(
             title: 'Sign Up Failed',
-            value: state.error!.message,
+            value: failure.message,
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
@@ -116,17 +116,14 @@ class _SignUpFormState extends State<_SignUpForm> {
                 onPress: () {
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<SignUpBloc>().add(
-                      SignUpRequested(
-                        SignUpParam(
-                          email: _emailController.text.trim(),
+                      SignUpRequested(email: _emailController.text.trim(),
                           password: _passwordController.text.trim(),
                           businessName: _businessNameController.text.trim(),
-                        ),
                       ),
                     );
                   }
                 },
-                isLoading: state.process == SignUpProcess.inProgress,
+                isLoading: state.isInProgress,
                 title: 'Sign Up',
               ),
             ],

@@ -1,33 +1,41 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../../../core/presentation/blocs/process_state.dart';
 import '../../../domain/failures/auth_failures.dart';
-import '../../../domain/use_cases/sign_up_with_email_and_password_use_case.dart';
+import '../../../domain/use_cases/use_cases.dart';
 
 part 'sign_up_event.dart';
-part 'sign_up_state.dart';
+
+typedef SignUpState = ProcessState<SignUpWithEmailAndPasswordFailure>;
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
-  final SignUpWithEmailAndPasswordUseCase signUp;
+  final SignUpWithEmailAndPasswordUseCase _signUp;
 
-  SignUpBloc(this.signUp) : super(SignUpState.initial()) {
+  SignUpBloc({required SignUpWithEmailAndPasswordUseCase signUp})
+    : _signUp = signUp,
+      super(const SignUpState.idle()) {
     on<SignUpRequested>(_onSignUpRequested);
   }
 
-  FutureOr<void> _onSignUpRequested(
+  Future<void> _onSignUpRequested(
     SignUpRequested event,
     Emitter<SignUpState> emit,
   ) async {
-    emit(state.copyWith(process: SignUpProcess.inProgress, error: null));
+    emit(const SignUpState.inProgress());
 
-    final result = await signUp(param: event.param);
+    final result = await _signUp(
+      param: SignUpParam(
+        email: event.email,
+        password: event.password,
+        businessName: event.businessName,
+      ),
+    );
 
-    result.fold(
-      (error) =>
-          emit(state.copyWith(process: SignUpProcess.failed, error: error)),
-      (_) =>
-          emit(state.copyWith(process: SignUpProcess.successful, error: null)),
+    emit(
+      result.fold(
+        (failure) => SignUpState.failure(failure),
+        (_) => const SignUpState.success(),
+      ),
     );
   }
 }

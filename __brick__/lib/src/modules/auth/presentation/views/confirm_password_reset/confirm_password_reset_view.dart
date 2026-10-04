@@ -31,11 +31,11 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          ConfirmPasswordResetBloc(Modular.get<ConfirmPasswordResetUseCase>()),
+          ConfirmPasswordResetBloc(confirmPasswordReset: Modular.get<ConfirmPasswordResetUseCase>()),
       child: BlocListener<ConfirmPasswordResetBloc, ConfirmPasswordResetState>(
-        listenWhen: (p, c) => p.process != c.process || p.error != c.error,
+        listenWhen: (p, c) => p != c,
         listener: (context, state) {
-          if (state.process == ConfirmPasswordResetProcess.successful) {
+          if (state.isSuccess) {
             AppSnackBar.success(context, 'Password Reset Successfully!');
             Modular.to.navigate(AppRoute.signIn.str);
           }
@@ -107,11 +107,10 @@ class _ConfirmPasswordResetViewFormState
     return Column(
       spacing: 8,
       children: [
-        if (state.process == ConfirmPasswordResetProcess.failed &&
-            state.error != null) ...[
+        if (state.failure case final failure?) ...[
           AppAlert(
             title: 'Password Reset Failed',
-            value: state.error!.message,
+            value: failure.message,
             variant: AlertVariant.danger,
             icon: Icons.report_gmailerrorred_outlined,
           ),
@@ -138,16 +137,13 @@ class _ConfirmPasswordResetViewFormState
                 onPress: () {
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<ConfirmPasswordResetBloc>().add(
-                      ConfirmPasswordResetRequested(
-                        ConfirmPasswordResetParam(
-                          code: widget.code ?? '',
+                      ConfirmPasswordResetRequested(code: widget.code ?? '',
                           newPassword: _newPasswordController.text.trim(),
-                        ),
                       ),
                     );
                   }
                 },
-                isLoading: state.process == ConfirmPasswordResetProcess.inProgress,
+                isLoading: state.isInProgress,
                 title: 'Reset Password',
               ),
             ],

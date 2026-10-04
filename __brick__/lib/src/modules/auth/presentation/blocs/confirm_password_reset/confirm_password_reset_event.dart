@@ -4,16 +4,18 @@ sealed class ConfirmPasswordResetEvent extends Equatable {
   const ConfirmPasswordResetEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-
-
 class ConfirmPasswordResetRequested extends ConfirmPasswordResetEvent {
-  final ConfirmPasswordResetParam param;
+  final String code;
+  final String newPassword;
 
-  const ConfirmPasswordResetRequested(this.param);
+  const ConfirmPasswordResetRequested({
+    required this.code,
+    required this.newPassword,
+  });
 
   @override
-  List<Object> get props => [param];
+  List<Object?> get props => [code, newPassword];
 }

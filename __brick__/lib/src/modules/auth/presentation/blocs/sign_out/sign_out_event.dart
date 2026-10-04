@@ -4,11 +4,9 @@ sealed class SignOutEvent extends Equatable {
   const SignOutEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class SignOutRequested extends SignOutEvent {
-  final NoParam param;
-
-  const SignOutRequested(this.param);
+  const SignOutRequested();
 }

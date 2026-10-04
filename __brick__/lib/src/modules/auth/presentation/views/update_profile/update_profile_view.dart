@@ -128,11 +128,11 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
         ),
         BlocProvider(
           create: (context) =>
-              UpdateProfileBloc(Modular.get<UpdateProfileUseCase>()),
+              UpdateProfileBloc(updateProfile: Modular.get<UpdateProfileUseCase>()),
           child: BlocConsumer<UpdateProfileBloc, UpdateProfileState>(
-            listenWhen: (p, c) => p.process != c.process || p.error != c.error,
+            listenWhen: (p, c) => p != c,
             listener: (context, state) async {
-              if (state.process == ProfileUpdateStatus.successful) {
+              if (state.isSuccess) {
                 AppSnackBar.success(context, 'Profile Update Successful!');
                 await Modular.to.popAndPushNamed(AppRoute.settings.str);
               }
@@ -146,11 +146,10 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                     spacing: 32,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (state.process == ProfileUpdateStatus.failed &&
-                          state.error != null) ...[
+                      if (state.failure case final failure?) ...[
                         AppAlert(
                           title: 'Profile Update Failure',
-                          value: state.error!.message,
+                          value: failure.message,
                           variant: AlertVariant.danger,
                           icon: Icons.report_gmailerrorred_outlined,
                         ),
@@ -179,20 +178,16 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                           if (!widget.formKey.currentState!.validate()) return;
 
                           ReadContext(context).read<UpdateProfileBloc>().add(
-                            ProfileUpdateRequested(
-                              UpdateProfileParam(
-                                businessName: user is BusinessUser
+                            UpdateProfileRequested(businessName: user is BusinessUser
                                     ? _businessNameController.text.trim()
                                     : null,
                                 firstName: _firstNameController.text.trim(),
                                 lastName: _lastNameController.text.trim(),
                                 profilePicture: _profilePicture,
-                                removeProfilePicture: _removeProfilePicture,
-                              ),
-                            ),
+                                removeProfilePicture: _removeProfilePicture),
                           );
                         },
-                        isLoading: state.process == ProfileUpdateStatus.inProgress,
+                        isLoading: state.isInProgress,
                 title: 'Update Profile',
                       ),
                     ],
