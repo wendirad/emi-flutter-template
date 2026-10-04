@@ -115,17 +115,12 @@ class _SignInFormState extends State<_SignInForm> {
 
       if (signInInfoSave) {
         final savedEmail = prefs.getString('email') ?? '';
-        final savedPassword = prefs.getString('password') ?? '';
 
         // Wait for the next frame to ensure fields are mounted
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             if (savedEmail.isNotEmpty && _emailKey.currentState != null) {
               _emailKey.currentState!.widget.controller.text = savedEmail;
-            }
-
-            if (savedPassword.isNotEmpty && _passwordKey.currentState != null) {
-              _passwordKey.currentState!.widget.controller.text = savedPassword;
             }
 
             _saveInfoKey.currentState!.toggle();
@@ -177,7 +172,7 @@ class _SignInFormState extends State<_SignInForm> {
                     onCheckboxToggle: () => ReadContext(
                       context,
                     ).read<SignInBloc>().add(SignInToggleSaveInfo()),
-                    suffix: Text('Remember Me'),
+                    suffix: Text('Remember my email'),
                   ),
                   AppTextButton(
                     text: 'Forgot Password?',

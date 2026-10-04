@@ -88,12 +88,13 @@ class AuthRepository implements IAuthRepository {
       if (saveInfo) {
         await prefs.setBool('signInInfoSave', true);
         await prefs.setString('email', email);
-        await prefs.setString('password', password);
       } else {
         await prefs.setBool('signInInfoSave', false);
         await prefs.remove('email');
-        await prefs.remove('password');
       }
+
+      // Passwords are never persisted. Clear any value stored by older builds.
+      await prefs.remove('password');
 
       return Right(unit);
     } on FirebaseAuthException catch (e) {
