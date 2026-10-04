@@ -13,7 +13,11 @@ import '../core/presentation/errors/errors.dart';
 import '../modules/settings/settings_module.dart';
 
 class AppModule extends Module {
-  AppModule() : super() {
+  final ThemeService _themeService;
+
+  AppModule({required ThemeService themeService})
+    : _themeService = themeService,
+      super() {
     Modular.setInitialRoute(AppRoute.home.str);
   }
 
@@ -41,7 +45,7 @@ class AppModule extends Module {
 
   @override
   void binds(i) {
-    i.addSingleton(ThemeService.new);
+    i.addInstance<ThemeService>(_themeService);
     i.addLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
     i.addLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
     i.addLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);

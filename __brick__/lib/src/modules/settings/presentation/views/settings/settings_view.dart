@@ -223,7 +223,10 @@ class _ThemeToggle extends StatelessWidget {
     final isDark = context.isDark;
     final themeService = Modular.get<ThemeService>();
 
-    return Switch(value: isDark, onChanged: (_) => themeService.toggleTheme());
+    return Switch(
+      value: isDark,
+      onChanged: (_) => themeService.toggle(context.brightness),
+    );
   }
 }
 

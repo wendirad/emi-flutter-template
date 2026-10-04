@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'src/app/app_module.dart';
 import 'src/app/app_widget.dart';
+import 'src/core/theme/theme.dart';
 import 'src/core/utils/utils.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -71,5 +72,13 @@ void main() async {
 
   await setupFirebase();
 
-  runApp(ModularApp(module: AppModule(), child: AppWidget()));
+  final ThemeService themeService = ThemeService();
+  await themeService.load();
+
+  runApp(
+    ModularApp(
+      module: AppModule(themeService: themeService),
+      child: AppWidget(),
+    ),
+  );
 }
