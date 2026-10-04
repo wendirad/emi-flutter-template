@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../core/presentation/launch_link.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
+import '../widgets/app_version_text.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../auth/auth.dart';
 import '../../../../../core/presentation/errors/errors.dart';
@@ -85,7 +87,12 @@ class _SettingsContent extends StatelessWidget {
               const SizedBox(height: 32),
 
               // App Version
-              _AppVersion(),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: AppVersionText(),
+                ),
+              ),
             ],
           ),
         ),
@@ -182,31 +189,6 @@ class _GeneralSettings extends StatelessWidget {
                 subtitle: 'Switch between light and dark mode',
                 trailing: _ThemeToggle(),
               ),
-              const Divider(height: 1),
-              _SettingsTile(
-                icon: Icons.notifications_outlined,
-                title: 'Notifications',
-                subtitle: 'Manage notification preferences',
-                trailing: Switch(
-                  value: true, // TODO: Get from settings state
-                  onChanged: (value) {
-                    // TODO: Update notification settings
-                  },
-                ),
-                onTap: () {
-                  // TODO: Navigate to notification settings
-                },
-              ),
-              const Divider(height: 1),
-              _SettingsTile(
-                icon: Icons.language_outlined,
-                title: 'Language',
-                subtitle: 'English (US)',
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  // TODO: Navigate to language settings
-                },
-              ),
             ],
           ),
         ),
@@ -252,36 +234,26 @@ class _AccountSettings extends StatelessWidget {
         Card(
           child: Column(
             children: [
-              _SettingsTile(
-                icon: Icons.lock_outline,
-                title: 'Change Password',
-                subtitle: 'Update your account password',
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  // TODO: Navigate to change password
-                },
-              ),
-              const Divider(height: 1),
-              _SettingsTile(
-                icon: Icons.privacy_tip_outlined,
-                title: 'Privacy Policy',
-                subtitle: 'Read our privacy policy',
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  // TODO: Open privacy policy
-                },
-              ),
-              const Divider(height: 1),
-              _SettingsTile(
-                icon: Icons.description_outlined,
-                title: 'Terms of Service',
-                subtitle: 'Read our terms of service',
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  // TODO: Open terms of service
-                },
-              ),
-              const Divider(height: 1),
+              if (AppLinks.privacyPolicy.isNotEmpty) ...[
+                _SettingsTile(
+                  icon: Icons.privacy_tip_outlined,
+                  title: 'Privacy Policy',
+                  subtitle: 'Read our privacy policy',
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => launchLink(context, AppLinks.privacyPolicy),
+                ),
+                const Divider(height: 1),
+              ],
+              if (AppLinks.termsOfService.isNotEmpty) ...[
+                _SettingsTile(
+                  icon: Icons.description_outlined,
+                  title: 'Terms of Service',
+                  subtitle: 'Read our terms of service',
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => launchLink(context, AppLinks.termsOfService),
+                ),
+                const Divider(height: 1),
+              ],
               _SettingsTile(
                 icon: Icons.info_outline,
                 title: 'About',
@@ -295,25 +267,6 @@ class _AccountSettings extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _AppVersion extends StatelessWidget {
-  const _AppVersion();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: Text(
-          'Version 0.1.0',
-          style: context.tt.bodySmall?.copyWith(
-            color: context.cs.onSurface.withValues(alpha: 0.5),
-          ),
-        ),
-      ),
     );
   }
 }

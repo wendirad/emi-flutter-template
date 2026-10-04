@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:flutter_social_button/flutter_social_button.dart';
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
-import '../../../../../core/presentation/widgets/widgets.dart';
+import '../../../../../core/presentation/launch_link.dart';
+import '../widgets/app_version_text.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({super.key});
@@ -107,7 +106,7 @@ class _AppDescription extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'AI-powered virtual receptionist that answers calls, gathers key info, texts concise summaries, and cleverly stalls spam callers.',
+              r'''{{{description}}}''',
               style: context.tt.bodyMedium?.copyWith(
                 color: context.cs.onSurface.withValues(alpha: 0.8),
                 height: 1.5,
@@ -128,12 +127,7 @@ class _VersionInfo extends StatelessWidget {
     final int year = DateTime.now().year;
     return Column(
       children: [
-        Text(
-          'Version 0.1.0',
-          style: context.tt.bodySmall?.copyWith(
-            color: context.cs.onSurface.withValues(alpha: 0.5),
-          ),
-        ),
+        const AppVersionText(),
         const SizedBox(height: 8),
         Row(
           spacing: 8,
@@ -148,23 +142,16 @@ class _VersionInfo extends StatelessWidget {
 class _SocialMedia extends StatelessWidget {
   const _SocialMedia();
 
-  Future<bool> canLaunchUrl(Uri url) async {
-    return UrlLauncherPlatform.instance.canLaunch(url.toString());
-  }
-
-  Future<void> _launchUrl(String url, BuildContext context) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      if (context.mounted) {
-        AppSnackBar.info(context, 'Could not open $url');
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final Map<ButtonType, String> links = {
+      ButtonType.facebook: AppLinks.facebook,
+      ButtonType.twitter: AppLinks.twitter,
+      ButtonType.linkedin: AppLinks.linkedin,
+    }..removeWhere((_, url) => url.isEmpty);
+
+    if (links.isEmpty) return const SizedBox.shrink();
+
     return Column(
       children: [
         const SizedBox(height: 16),
@@ -179,51 +166,15 @@ class _SocialMedia extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Transform.scale(
-              scale: 0.7,
-              child: FlutterSocialButton(
-                onTap: () =>
-                    _launchUrl('https://example.com/', context),
-                mini: true,
-              ),
-            ),
-            Transform.scale(
-              scale: 0.7,
-              child: FlutterSocialButton(
-                onTap: () =>
-                    _launchUrl('https://example.com/', context),
-                mini: true,
-                buttonType: ButtonType.google,
-              ),
-            ),
-            Transform.scale(
-              scale: 0.7,
-              child: FlutterSocialButton(
-                onTap: () =>
-                    _launchUrl('https://example.com/', context),
-                mini: true,
-                buttonType: ButtonType.facebook,
-              ),
-            ),
-            Transform.scale(
-              scale: 0.7,
-              child: FlutterSocialButton(
-                onTap: () => _launchUrl('https://example.com/', context),
-                mini: true,
-                buttonType: ButtonType.twitter,
-              ),
-            ),
-            Transform.scale(
-              scale: 0.7,
-              child: FlutterSocialButton(
-                onTap: () => _launchUrl(
-                  'https://example.com/',
-                  context,
+            for (final MapEntry(key: type, value: url) in links.entries)
+              Transform.scale(
+                scale: 0.7,
+                child: FlutterSocialButton(
+                  onTap: () => launchLink(context, url),
+                  mini: true,
+                  buttonType: type,
                 ),
-                mini: true,
-                buttonType: ButtonType.linkedin,
               ),
-            ),
           ],
         ),
       ],
