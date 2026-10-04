@@ -1,13 +1,29 @@
 # Agent guide
 
-Read this and `STATUS.md` before changing anything. Open only the files the task needs; do not scan `lib/`.
+Read this before changing anything. Open only the files the task needs; do not scan `lib/`. Read project state through `tool/status.sh`, never by opening `STATUS.md`.
 
 ## Workflow
 
-1. Read `STATUS.md`. Find the task or add it, and mark it `[~]`.
+1. Find your task with `bash tool/status.sh open <area>`, or add it with `status.sh add`. Mark it `doing`.
 2. Change only what the task asks. Do not touch unrelated files, reformat untouched code, or add a dependency the task does not need.
 3. Run `bash tool/check.sh`. It must pass before you call the task done.
-4. Update `STATUS.md` (see its header), then commit one category per commit as `type(scope): summary` in lowercase imperative, e.g. `feat(auth): add sign-in cubit`. Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`. Scope is the feature or layer (`auth`, `profile`, `core`, `l10n`, `theme`); omit it only for repo-wide changes.
+4. Mark the task `done` and update the feature state if it changed (see Status), then commit one category per commit as `type(scope): summary` in lowercase imperative, e.g. `feat(auth): add sign-in cubit`. Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`. Scope is the feature or layer (`auth`, `profile`, `core`, `l10n`, `theme`); omit it only for repo-wide changes.
+
+## Status
+
+`STATUS.md` grows, so read and edit single lines only. Each feature (`F-<name>`) and task (`T<nnn>`) is one line with a stable ID; subtasks are `T<nnn>.<n>` lines under their task. Never open, rewrite or reorder the whole file.
+
+| Need | Command |
+|---|---|
+| Open tasks, optionally for one area | `bash tool/status.sh open [area]` |
+| One task with its subtasks, or one feature | `bash tool/status.sh show T012` / `show F-auth` |
+| Feature table | `bash tool/status.sh features` |
+| New task or subtask | `bash tool/status.sh add <area> "<title>" [parent-ID]` |
+| Change a task (`todo`, `doing`, `done`, `blocked`) | `bash tool/status.sh set T012 doing` |
+| Change a feature's state | `bash tool/status.sh feature F-home done` |
+| Move finished tasks out of `STATUS.md` | `bash tool/status.sh archive` |
+
+Before a multi-step task, add its steps as subtasks, and `set` each one as it lands. `STATUS_ARCHIVE.md` holds finished work; search it with `grep`, do not read it.
 
 ## Environment
 

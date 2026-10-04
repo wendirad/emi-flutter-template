@@ -1,41 +1,37 @@
 # Status
 
-The current state of the project. Agents read this first and update it last (see `AGENTS.md`).
+Project state. Do not read or edit this file whole: use `bash tool/status.sh` (see `AGENTS.md`).
 
-## How to use this file
+## Format
 
-- **Start of a task:** find it under Backlog, or add it. Set it to `[~]` and put your name or session in parentheses. Keep one `[~]` task per agent.
-- **Subtasks:** break a task into indented `- [ ]` lines before starting. Tick each as it lands.
-- **End of a task:** set `[x]`, move the line under Done with a one-line outcome, and update the Features table if a feature changed state. Then commit.
-- **Blocked or deferred:** set `[!]` and say why on the same line.
-- Add new work to the end of Backlog. Do not reorder or delete other people's lines.
-- States: `[ ]` todo, `[~]` in progress, `[x]` done, `[!]` blocked.
+One line per item, so a single `grep` finds it.
+
+- Feature row: `| F-<name> | <Feature> | <state> | <notes> |` in the table below. States: `done`, `partial`, `placeholder`, `untested`, `todo`.
+- Task: `- [<mark>] T<nnn> <area>: <title>`. Marks: `[ ]` todo, `[~]` in progress, `[x]` done, `[!]` blocked (reason in the title).
+- Subtask: indented under its task as `  - [<mark>] T<nnn>.<n> <title>`.
+- `<area>` is the feature or layer: `auth`, `profile`, `settings`, `core`, `l10n`, `theme`, `app`.
+- Finished top-level tasks move to `STATUS_ARCHIVE.md` with `bash tool/status.sh archive`.
 
 ## Features
 
-| Feature | State | Notes |
-|---|---|---|
-| App shell (splash, nav bar, connection banner, error views) | done | `lib/src/app`, `core/presentation/errors` |
-| Auth: sign up, sign in, sign out, password reset, session guard, remembered email | done | `modules/auth`, Firebase Auth + Firestore |
-| Profile: edit name and photo | done | `modules/profile` |
-| Settings: theme, language, privacy and terms links, About | done | `modules/settings`, links come from `.env` |
-| Theme: light, dark, system | done | `core/theme` |
-| Localization: English, Amharic | done | Amharic text awaits native review |
-| Home tab | placeholder | shows the word "Home" |
-| Firestore and Storage rules | written, untested | `firestore.rules`, `storage.rules` |
-| Screen tests | partial | `AppButton` and `AuthFooter` only |
+| ID | Feature | State | Notes |
+|---|---|---|---|
+| F-shell | App shell: splash, nav bar, connection banner, error views | done | `lib/src/app` |
+| F-auth | Auth: sign up, sign in, sign out, password reset, session guard, remembered email | done | `modules/auth` |
+| F-profile | Profile: edit name and photo | done | `modules/profile` |
+| F-settings | Settings: theme, language, privacy and terms links, About | done | links come from `.env` |
+| F-theme | Theme: light, dark, system | done | `core/theme` |
+| F-l10n | Localization: English, Amharic | done | Amharic awaits native review |
+| F-home | Home tab | placeholder | shows the word "Home" |
+| F-rules | Firestore and Storage rules | untested | `firestore.rules`, `storage.rules` |
+| F-tests | Screen and repository tests | partial | `AppButton` and `AuthFooter` only |
 
-## Backlog
+## Tasks
 
-- [ ] Native-speaker review of `app_am.arb`
-- [ ] Test `firestore.rules` and `storage.rules` against the Firebase emulator
-- [ ] Build the Home tab
-- [ ] Widget tests for the sign-in, sign-up, settings and profile screens
-- [ ] Repository tests for `AuthRepository` and `ProfileRepository` with fakes
-
-## Done
-
-- Localization with English and Amharic and a language picker
-- `profile` module split out of auth and settings
-- Single-use-case blocs replaced by `ProcessCubit` and `LoadCubit`
-- Hard-coded colors replaced by theme tokens
+- [ ] T001 l10n: native-speaker review of `app_am.arb`
+- [ ] T002 core: test `firestore.rules` and `storage.rules` against the Firebase emulator
+- [ ] T003 app: build the Home tab
+- [ ] T004 auth: widget tests for the sign-in and sign-up screens
+- [ ] T005 settings: widget tests for the settings screen
+- [ ] T006 profile: widget tests for the edit-profile screen
+- [ ] T007 auth: repository tests for `AuthRepository` and `ProfileRepository` with fakes
