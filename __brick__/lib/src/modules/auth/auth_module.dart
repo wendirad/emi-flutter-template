@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../core/constants/constants.dart';
 import 'data/repositories/auth_repository.dart';
@@ -26,6 +27,7 @@ class AuthModule extends Module {
       () => AuthRepository(
         auth: Modular.get<FirebaseAuth>(),
         store: Modular.get<FirebaseFirestore>(),
+        storage: Modular.get<FirebaseStorage>(),
       ),
     );
 
@@ -55,6 +57,12 @@ class AuthModule extends Module {
 
     i.addLazySingleton<ConfirmPasswordResetUseCase>(
       () => ConfirmPasswordResetUseCase(
+        authRepository: Modular.get<IAuthRepository>(),
+      ),
+    );
+
+    i.addLazySingleton<GetCurrentUserUseCase>(
+      () => GetCurrentUserUseCase(
         authRepository: Modular.get<IAuthRepository>(),
       ),
     );

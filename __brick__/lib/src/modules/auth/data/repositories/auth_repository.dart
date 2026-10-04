@@ -5,7 +5,6 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mime/mime.dart';
 import '../../../../core/constants/constants.dart';
 import '../../domain/repositories/i_auth_repository.dart';
@@ -19,8 +18,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthRepository implements IAuthRepository {
   final FirebaseAuth auth;
   final FirebaseFirestore store;
+  final FirebaseStorage storage;
 
-  const AuthRepository({required this.auth, required this.store});
+  const AuthRepository({
+    required this.auth,
+    required this.store,
+    required this.storage,
+  });
 
   @override
   Future<bool> get isAuthenticated async => auth.currentUser != null;
@@ -164,48 +168,49 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<Option<AuthUser>> getSignedInUser() async {
+  Future<Either<AuthSessionFailure, AuthUser>> getSignedInUser() async {
     try {
-      // await auth.currentUser?.reload();
-
       final User? user = auth.currentUser;
 
-      if (user == null) return none();
+      if (user == null) {
+        return Left(AuthSessionFailure.fromCode('no-current-user'));
+      }
 
-      final AuthUserModel userDomain = user.toModel();
+      final AuthUserModel userDomain = user.toModel(
+        photoUrl: await _resolvePhotoUrl(user.photoURL),
+      );
 
       final DocumentSnapshot<Map<String, dynamic>> userDoc = await store
           .collection(StoreName.user)
           .doc(user.uid)
           .get();
 
-      if (userDoc.exists) {
-        final Map<String, dynamic>? userData = userDoc.data();
+      if (!userDoc.exists) return Right(userDomain.entity());
 
-        userData?.addAll(userDomain.toJson()..removeWhere((k, v) => v == null));
+      final Map<String, dynamic> userData = {
+        ...?userDoc.data(),
+        ...userDomain.toJson()..removeWhere((k, v) => v == null),
+      };
 
-        final DocumentSnapshot<Map<String, dynamic>> adminDoc = await store
-            .collection(StoreName.admin)
-            .doc(user.email)
-            .get();
+      final DocumentSnapshot<Map<String, dynamic>> adminDoc = await store
+          .collection(StoreName.admin)
+          .doc(user.email)
+          .get();
 
-        return some(
-          (adminDoc.exists
-                  ? AdminAuthUserModel.fromJson
-                  : BusinessUserModel.fromJson)(userData!)
-              .entity(),
-        );
-      }
-
-      return some(userDomain.entity());
+      return Right(
+        (adminDoc.exists
+                ? AdminAuthUserModel.fromJson
+                : BusinessUserModel.fromJson)(userData)
+            .entity(),
+      );
     } on FirebaseAuthException catch (e, stackTrace) {
       debugPrintStack(stackTrace: stackTrace);
-      throw AuthSessionFailure.fromCode(e.code);
+      return Left(AuthSessionFailure.fromCode(e.code));
     } catch (e, stackTrace) {
       if (e is FirebaseException) await signOut();
 
       debugPrintStack(stackTrace: stackTrace);
-      throw AuthSessionFailure.fromCode('unknown-error');
+      return Left(AuthSessionFailure.fromCode('unknown-error'));
     }
   }
 
@@ -245,7 +250,7 @@ class AuthRepository implements IAuthRepository {
         await _uploadProfilePhoto(profilePicture, refName);
 
         final String photoUrl =
-            'gs://${Modular.get<FirebaseStorage>().bucket}/$refName';
+            'gs://${storage.bucket}/$refName';
 
         await user.updatePhotoURL(photoUrl);
       } else if (removeProfilePicture) {
@@ -286,10 +291,21 @@ class AuthRepository implements IAuthRepository {
     }
   }
 
+  /// Turns a stored gs:// path into a download URL, or null if it cannot be
+  /// resolved (no photo, or the object is gone).
+  Future<String?> _resolvePhotoUrl(String? stored) async {
+    if (stored == null || stored.isEmpty) return null;
+
+    try {
+      return await storage.refFromURL(stored).getDownloadURL();
+    } catch (e) {
+      debugPrint('Could not resolve profile photo: $e');
+      return null;
+    }
+  }
+
   Future<void> _uploadProfilePhoto(File profilePicture, String refName) async {
-    final profilePictureRef = Modular.get<FirebaseStorage>().ref().child(
-      refName,
-    );
+    final profilePictureRef = storage.ref().child(refName);
 
     try {
       await profilePictureRef.delete();

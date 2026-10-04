@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart' as dartz;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,34 +10,34 @@ import '../../../../../core/theme/theme.dart';
 import '../../../../auth/auth.dart';
 import '../../../../../core/presentation/errors/errors.dart';
 
-class SettingsView extends StatefulWidget {
+class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
   @override
-  State<SettingsView> createState() => _SettingsViewState();
-}
-
-class _SettingsViewState extends State<SettingsView> {
-  late final Future<dartz.Option<AuthUser>> _userFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _userFuture = Modular.get<IAuthRepository>().getSignedInUser();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _userFuture,
-      builder: (context, snapshot) =>
-          AsyncPageLoader.fromSnapshot<dartz.Option<AuthUser>>(
-            snapshot: snapshot,
-            builder: (data) => data.fold(
-              () => const ErrorView(errorType: ErrorTypes.noData),
-              (user) => _SettingsContent(user: user),
-            ),
-          ),
+    return BlocProvider(
+      create: (_) =>
+          CurrentUserBloc(getCurrentUser: Modular.get<GetCurrentUserUseCase>())
+            ..add(const CurrentUserRequested()),
+      child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
+        builder: (context, state) {
+          if (state.data case final user?) {
+            return _SettingsContent(user: user);
+          }
+
+          if (state.failure case final failure?) {
+            return ErrorView(
+              title: 'Oops!',
+              description: failure.message,
+              onButtonPress: () async => ReadContext(
+                context,
+              ).read<CurrentUserBloc>().add(const CurrentUserRequested()),
+            );
+          }
+
+          return AsyncPageLoader.loading();
+        },
+      ),
     );
   }
 }

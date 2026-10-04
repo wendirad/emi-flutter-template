@@ -9,7 +9,7 @@ abstract class IAuthRepository {
 
   Future<Either<AuthSessionFailure, Stream<bool>>> get authStateChanges;
 
-  Future<Option<AuthUser>> getSignedInUser();
+  Future<Either<AuthSessionFailure, AuthUser>> getSignedInUser();
 
   Future<Either<SignUpWithEmailAndPasswordFailure, Unit>>
   signUpWithEmailAndPassword({
