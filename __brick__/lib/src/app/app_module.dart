@@ -4,12 +4,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../core/constants/constants.dart';
 import '../core/theme/theme.dart';
-import '../modules/auth/presentation/guards/guards.dart';
+import '../modules/auth/auth.dart';
 import 'views/app_shell/app_shell_view.dart';
 import 'views/connection_shell/connection_shell_view.dart';
 import 'views/home/home_view.dart';
 import 'views/splash/splash_view.dart';
-import '../modules/auth/auth_module.dart';
 import '../core/presentation/errors/errors.dart';
 import '../modules/settings/settings_module.dart';
 
