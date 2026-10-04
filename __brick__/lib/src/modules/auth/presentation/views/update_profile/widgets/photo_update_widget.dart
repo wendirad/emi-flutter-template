@@ -9,13 +9,15 @@ import '../../../../../../core/app.dart';
 class PhotoUpdateWidget extends StatefulWidget {
   final String? photoUrl;
   final String initials;
-  final Function(File? imageFile) onPhotoSelected;
+  final ValueChanged<File> onPhotoSelected;
+  final VoidCallback onPhotoRemoved;
 
   const PhotoUpdateWidget({
     super.key,
     this.photoUrl,
     required this.initials,
     required this.onPhotoSelected,
+    required this.onPhotoRemoved,
   });
 
   @override
@@ -39,7 +41,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
         setState(() {
           _selectedImage = File(image.path);
         });
-        widget.onPhotoSelected(_selectedImage);
+        widget.onPhotoSelected(_selectedImage!);
       }
     } catch (e, stackTrace) {
       if (mounted) {
@@ -93,7 +95,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
                   setState(() {
                     _selectedImage = null;
                   });
-                  widget.onPhotoSelected(null);
+                  widget.onPhotoRemoved();
                 },
               ),
           ],

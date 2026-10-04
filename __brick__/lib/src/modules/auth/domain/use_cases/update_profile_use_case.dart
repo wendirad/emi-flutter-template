@@ -19,23 +19,24 @@ class UpdateProfileUseCase implements UseCase<Unit, UpdateProfileParam> {
       firstName: param.firstName,
       lastName: param.lastName,
       profilePicture: param.profilePicture,
+      removeProfilePicture: param.removeProfilePicture,
     );
   }
 }
 
 class UpdateProfileParam extends Equatable {
   final String? businessName;
-  final String? email;
   final String? firstName;
   final String? lastName;
   final File? profilePicture;
+  final bool removeProfilePicture;
 
   const UpdateProfileParam({
     this.businessName,
-    this.email,
     this.firstName,
     this.lastName,
     this.profilePicture,
+    this.removeProfilePicture = false,
   });
 
   @override
@@ -44,5 +45,6 @@ class UpdateProfileParam extends Equatable {
     firstName,
     lastName,
     profilePicture,
+    removeProfilePicture,
   ];
 }

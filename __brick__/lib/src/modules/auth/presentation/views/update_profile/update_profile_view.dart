@@ -58,6 +58,7 @@ class _ProfileUpdateForm extends StatefulWidget {
 
 class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
   File? _profilePicture;
+  bool _removeProfilePicture = false;
 
   final GlobalKey<_FormFieldState> _businessNameKey =
       GlobalKey<_FormFieldState>();
@@ -89,8 +90,14 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
         PhotoUpdateWidget(
           initials: user.initials,
           photoUrl: user.photoUrl,
-          onPhotoSelected: (selectedPhoto) =>
-              setState(() => _profilePicture = selectedPhoto),
+          onPhotoSelected: (selectedPhoto) => setState(() {
+            _profilePicture = selectedPhoto;
+            _removeProfilePicture = false;
+          }),
+          onPhotoRemoved: () => setState(() {
+            _profilePicture = null;
+            _removeProfilePicture = true;
+          }),
         ),
 
         if (user is BusinessUser) ...[
@@ -185,6 +192,7 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                                 lastName:
                                     _lastNameKey.currentState?.widget.text,
                                 profilePicture: _profilePicture,
+                                removeProfilePicture: _removeProfilePicture,
                               ),
                             ),
                           );

@@ -227,12 +227,15 @@ class AuthRepository implements IAuthRepository {
     String? firstName,
     String? lastName,
     File? profilePicture,
+    bool removeProfilePicture = false,
   }) async {
     try {
       await auth.currentUser?.reload();
       final User? user = auth.currentUser;
 
-      if (user == null) throw none();
+      if (user == null) {
+        return Left(ProfileUpdateFailure.fromCode('no-current-user'));
+      }
 
       if (profilePicture != null) {
         final String format = profilePicture.path.split('.').last;
@@ -244,8 +247,8 @@ class AuthRepository implements IAuthRepository {
             'gs://${Modular.get<FirebaseStorage>().bucket}/$refName';
 
         await user.updatePhotoURL(photoUrl);
-      } else {
-        user.updatePhotoURL(null);
+      } else if (removeProfilePicture) {
+        await user.updatePhotoURL(null);
       }
 
       final DocumentSnapshot<Map<String, dynamic>> userDoc = await store
@@ -288,17 +291,14 @@ class AuthRepository implements IAuthRepository {
     );
 
     try {
-      try {
-        await profilePictureRef.delete();
-      } catch (_) {}
-
-      await profilePictureRef.putFile(
-        profilePicture.absolute,
-        SettableMetadata(contentType: lookupMimeType(profilePicture.path)),
-      );
-    } on FirebaseException catch (e, st) {
-      debugPrint('Profile Upload Error: $e');
-      debugPrintStack(stackTrace: st);
+      await profilePictureRef.delete();
+    } catch (_) {
+      // Nothing to replace on the first upload.
     }
+
+    await profilePictureRef.putFile(
+      profilePicture.absolute,
+      SettableMetadata(contentType: lookupMimeType(profilePicture.path)),
+    );
   }
 }

@@ -45,5 +45,6 @@ abstract class IAuthRepository {
     String? firstName,
     String? lastName,
     File? profilePicture,
+    bool removeProfilePicture,
   });
 }
