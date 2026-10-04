@@ -6,6 +6,7 @@ import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/use_cases/use_cases.dart';
 import '../../blocs/sign_out/sign_out_bloc.dart';
 import 'sign_out_confirmation_dialog.dart';
+import '../../../../../core/presentation/widgets/widgets.dart';
 
 class SignOutCard extends StatelessWidget {
   const SignOutCard({super.key});
@@ -17,24 +18,11 @@ class SignOutCard extends StatelessWidget {
           previous.process != current.process || current.error != null,
       listener: (context, state) {
         if (state.process == SignOutProcess.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Logout successful'),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          AppSnackBar.success(context, 'Logout successful');
           Modular.to.navigate(AppRoute.signIn.str);
         } else if (state.process == SignOutProcess.failed &&
             state.error != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error!.message),
-              backgroundColor: context.cs.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          AppSnackBar.error(context, state.error!.message);
         }
       },
       child: Card(

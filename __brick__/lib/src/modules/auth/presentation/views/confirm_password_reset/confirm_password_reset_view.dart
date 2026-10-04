@@ -38,14 +38,7 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
         listenWhen: (p, c) => p.process != c.process || p.error != c.error,
         listener: (context, state) {
           if (state.process == ConfirmPasswordResetProcess.successful) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Password Reset Successfully!'),
-                backgroundColor: Colors.green,
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 2),
-              ),
-            );
+            AppSnackBar.success(context, 'Password Reset Successfully!');
             Modular.to.navigate(AppRoute.signIn.str);
           }
         },
@@ -183,10 +176,6 @@ class _ConfirmPasswordResetViewFormState
 
               AppButton(
                 onPress: () {
-                  if (state.process == ConfirmPasswordResetProcess.inProgress) {
-                    return;
-                  }
-
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<ConfirmPasswordResetBloc>().add(
                       ConfirmPasswordResetRequested(
@@ -198,13 +187,8 @@ class _ConfirmPasswordResetViewFormState
                     );
                   }
                 },
-                child: state.process == ConfirmPasswordResetProcess.inProgress
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      )
-                    : Text('Reset Password'),
+                isLoading: state.process == ConfirmPasswordResetProcess.inProgress,
+                title: 'Reset Password',
               ),
             ],
           ),

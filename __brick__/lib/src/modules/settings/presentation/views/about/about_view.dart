@@ -4,6 +4,7 @@ import 'package:url_launcher_platform_interface/url_launcher_platform_interface.
 import 'package:flutter_social_button/flutter_social_button.dart';
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../core/presentation/widgets/widgets.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({super.key});
@@ -157,13 +158,7 @@ class _SocialMedia extends StatelessWidget {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Could not open $url'),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        AppSnackBar.info(context, 'Could not open $url');
       }
     }
   }

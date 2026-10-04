@@ -28,14 +28,7 @@ class _SignUpViewState extends State<SignUpView> {
         listenWhen: (p, c) => p.process != c.process || p.error != c.error,
         listener: (context, state) async {
           if (state.process == SignUpProcess.successful) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Sign up successful'),
-                backgroundColor: Colors.green,
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 2),
-              ),
-            );
+            AppSnackBar.success(context, 'Sign up successful');
             Modular.to.navigate(AppRoute.home.str);
           }
         },
@@ -161,8 +154,6 @@ class _SignUpFormState extends State<_SignUpForm> {
 
               AppButton(
                 onPress: () {
-                  if (state.process == SignUpProcess.inProgress) return;
-
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<SignUpBloc>().add(
                       SignUpRequested(
@@ -175,13 +166,8 @@ class _SignUpFormState extends State<_SignUpForm> {
                     );
                   }
                 },
-                child: state.process == SignUpProcess.inProgress
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      )
-                    : Text('Sign Up'),
+                isLoading: state.process == SignUpProcess.inProgress,
+                title: 'Sign Up',
               ),
             ],
           ),

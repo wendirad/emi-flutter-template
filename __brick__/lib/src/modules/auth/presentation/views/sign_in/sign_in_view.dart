@@ -29,14 +29,7 @@ class _SignInViewState extends State<SignInView> {
         listenWhen: (p, c) => p.process != c.process || p.error != c.error,
         listener: (context, state) async {
           if (state.process == SignInProcess.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Sign In successful'),
-                backgroundColor: Colors.green,
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 2),
-              ),
-            );
+            AppSnackBar.success(context, 'Sign In successful');
 
             Modular.to.navigate(AppRoute.home.str);
           }
@@ -187,8 +180,6 @@ class _SignInFormState extends State<_SignInForm> {
 
               AppButton(
                 onPress: () {
-                  if (state.process == SignInProcess.inProgress) return;
-
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<SignInBloc>().add(
                       SignInRequested(
@@ -201,13 +192,8 @@ class _SignInFormState extends State<_SignInForm> {
                     );
                   }
                 },
-                child: state.process == SignInProcess.inProgress
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      )
-                    : Text('Sign In'),
+                isLoading: state.process == SignInProcess.inProgress,
+                title: 'Sign In',
               ),
             ],
           ),

@@ -5,6 +5,7 @@ import '../../../core/constants/constants.dart';
 import '../../../core/extensions/build_context_extensions.dart';
 import '../../../modules/auth/auth.dart';
 import 'widgets/app_navigation_bar.dart';
+import '../../../core/presentation/widgets/widgets.dart';
 
 class AppShellView extends StatefulWidget {
   const AppShellView({super.key});
@@ -34,14 +35,7 @@ class _AppShellViewState extends State<AppShellView> {
   void _handleAuthState(BuildContext context, AuthSessionState state) async {
     if (!state.isAuthenticated) {
       if (state.error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state.error!.message),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        AppSnackBar.error(context, state.error!.message);
       }
 
       Modular.to.navigate(AppRoute.signIn.str);

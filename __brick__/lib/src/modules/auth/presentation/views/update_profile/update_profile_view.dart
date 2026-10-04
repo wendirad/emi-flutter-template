@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
@@ -134,14 +133,7 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
             listenWhen: (p, c) => p.process != c.process || p.error != c.error,
             listener: (context, state) async {
               if (state.process == ProfileUpdateStatus.successful) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Profile Update Successful!'),
-                    backgroundColor: Colors.green,
-                    behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
+                AppSnackBar.success(context, 'Profile Update Successful!');
                 await Modular.to.popAndPushNamed(AppRoute.settings.str);
               }
             },
@@ -184,10 +176,6 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
 
                       AppButton(
                         onPress: () {
-                          if (state.process == ProfileUpdateStatus.inProgress) {
-                            return;
-                          }
-
                           if (!widget.formKey.currentState!.validate()) return;
 
                           ReadContext(context).read<UpdateProfileBloc>().add(
@@ -204,12 +192,8 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                             ),
                           );
                         },
-                        child: state.process == ProfileUpdateStatus.inProgress
-                            ? LoadingAnimationWidget.halfTriangleDot(
-                                color: Colors.white,
-                                size: 30,
-                              )
-                            : Text('Update Profile'),
+                        isLoading: state.process == ProfileUpdateStatus.inProgress,
+                title: 'Update Profile',
                       ),
                     ],
                   ),

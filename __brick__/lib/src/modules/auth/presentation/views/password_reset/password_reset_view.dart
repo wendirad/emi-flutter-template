@@ -30,14 +30,7 @@ class _PasswordResetViewState extends State<PasswordResetView> {
         listenWhen: (p, c) => p.process != c.process || p.error != c.error,
         listener: (context, state) async {
           if (state.process == PasswordResetProcess.successful) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Password Reset Email Sent Successfully!'),
-                backgroundColor: Colors.green,
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 2),
-              ),
-            );
+            AppSnackBar.success(context, 'Password Reset Email Sent Successfully!');
             Modular.to.navigate(AppRoute.signIn.str);
           }
         },
@@ -147,10 +140,6 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
 
               AppButton(
                 onPress: () {
-                  if (state.process == PasswordResetProcess.inProgress) {
-                    return;
-                  }
-
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<PasswordResetBloc>().add(
                       PasswordResetRequested(
@@ -161,13 +150,8 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
                     );
                   }
                 },
-                child: state.process == PasswordResetProcess.inProgress
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white),
-                      )
-                    : Text('Send Password Reset Email'),
+                isLoading: state.process == PasswordResetProcess.inProgress,
+                title: 'Send Password Reset Email',
               ),
             ],
           ),

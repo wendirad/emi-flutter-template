@@ -6,6 +6,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../../core/constants/constants.dart';
 import '../../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../../core/presentation/widgets/widgets.dart';
 
 class PhotoUpdateWidget extends StatefulWidget {
   final String? photoUrl;
@@ -48,12 +49,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
       if (mounted) {
         debugPrint('$e');
         debugPrintStack(stackTrace: stackTrace);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error picking image'),
-            backgroundColor: context.cs.error,
-          ),
-        );
+        AppSnackBar.error(context, 'Error picking image');
       }
     }
   }
