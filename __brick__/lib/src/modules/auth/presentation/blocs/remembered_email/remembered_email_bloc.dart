@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../../core/presentation/blocs/load_state.dart';
 import '../../../../../core/use_cases/use_cases.dart';
