@@ -119,30 +119,6 @@ dart run flutter_native_splash:create
 - Add your own modules under `lib/src/modules/` and register their routes in `lib/src/core/configs/app_module.dart` and `lib/src/core/constants/app_route.dart`.
 - Android deep links use the host `<project-name>.web.app`. Change it in `AndroidManifest.xml` if you use a different domain.
 
-## Editing this brick
-
-The project files live in `__brick__/`. Mason fills these placeholders in file contents and in file and folder names:
-
-| Placeholder | Example output for `my_app` |
-|---|---|
-| `{{project_name.snakeCase()}}` | `my_app` |
-| `{{project_name.camelCase()}}` | `myApp` |
-| `{{project_name.paramCase()}}` | `my-app` |
-| `{{project_name.titleCase()}}` | `My App` |
-| `{{org_name}}` | `com.acme` |
-
-Do not use `{{` for other purposes in files under `__brick__/`. Escape it with `{{#raw}}...{{/raw}}` if you must.
-
-`hooks/post_gen.dart` runs after generation. Test changes locally:
-
-```sh
-mkdir /tmp/brick-test && cd /tmp/brick-test
-mason init
-mason add flutter_template --path /path/to/this/repo
-mason make flutter_template -o out
-cd out && flutter analyze
-```
-
 ## License
 
 See [LICENSE](LICENSE).
