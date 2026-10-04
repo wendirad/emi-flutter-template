@@ -21,14 +21,14 @@ One line per item, so a single `grep` finds it.
 | F-profile | Profile: edit name and photo | done | `modules/profile` |
 | F-settings | Settings: theme, language, privacy and terms links, About | done | links come from `.env` |
 | F-theme | Theme: light, dark, system | done | `core/theme` |
-| F-l10n | Localization: English, Amharic | done | Amharic awaits native review |
+| F-l10n | Localization: English, Amharic | done | Amharic reviewed |
 | F-home | Home tab | placeholder | shows the word "Home" |
 | F-rules | Firestore and Storage rules | untested | `firestore.rules`, `storage.rules` |
 | F-tests | Screen and repository tests | partial | `AppButton` and `AuthFooter` only |
 
 ## Tasks
 
-- [ ] T001 l10n: native-speaker review of `app_am.arb`
+- [x] T001 l10n: native-speaker review of `app_am.arb`
 - [ ] T002 core: test `firestore.rules` and `storage.rules` against the Firebase emulator
 - [ ] T003 app: build the Home tab
 - [ ] T004 auth: widget tests for the sign-in and sign-up screens
