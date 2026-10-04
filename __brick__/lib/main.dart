@@ -12,6 +12,7 @@ import 'firebase_options.dart';
 import 'src/app/app_module.dart';
 import 'src/app/app_widget.dart';
 import 'src/core/constants/constants.dart';
+import 'src/core/l10n/l10n.dart';
 import 'src/core/theme/theme.dart';
 import 'src/core/utils/utils.dart';
 
@@ -81,9 +82,15 @@ void main() async {
   final ThemeService themeService = ThemeService();
   await themeService.load();
 
+  final LocaleService localeService = LocaleService();
+  await localeService.load();
+
   runApp(
     ModularApp(
-      module: AppModule(themeService: themeService),
+      module: AppModule(
+        themeService: themeService,
+        localeService: localeService,
+      ),
       child: AppWidget(),
     ),
   );

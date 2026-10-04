@@ -4,12 +4,14 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../core/l10n/l10n.dart';
 import '../../../../../core/presentation/errors/errors.dart';
 import '../../../../../core/presentation/launch_link.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../auth/auth.dart';
 import '../widgets/app_version_text.dart';
+import '../widgets/language_sheet.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -189,6 +191,20 @@ class _GeneralSettings extends StatelessWidget {
                 title: 'Theme',
                 subtitle: 'Switch between light and dark mode',
                 trailing: _ThemeToggle(),
+              ),
+              const Divider(height: 1),
+              ListenableBuilder(
+                listenable: Modular.get<LocaleService>(),
+                builder: (context, _) => _SettingsTile(
+                  icon: Icons.language,
+                  title: context.l10n.settingsLanguageTitle,
+                  subtitle: currentLanguageLabel(
+                    context,
+                    Modular.get<LocaleService>().locale,
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => showLanguageSheet(context),
+                ),
               ),
             ],
           ),

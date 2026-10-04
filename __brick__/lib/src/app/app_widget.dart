@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
+import '../core/l10n/l10n.dart';
 import '../core/theme/theme.dart';
 
 class AppWidget extends StatelessWidget {
@@ -9,12 +11,20 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeService themeService = Modular.get<ThemeService>();
+    final LocaleService localeService = Modular.get<LocaleService>();
 
     return ListenableBuilder(
-      listenable: themeService,
+      listenable: Listenable.merge([themeService, localeService]),
       builder: (context, _) {
         return MaterialApp.router(
-          locale: Locale('en'),
+          locale: localeService.locale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
           title: '{{project_name.titleCase()}}',
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),

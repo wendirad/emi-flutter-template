@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../core/constants/constants.dart';
+import '../core/l10n/l10n.dart';
 import '../core/presentation/errors/errors.dart';
 import '../core/theme/theme.dart';
 import '../modules/auth/auth.dart';
@@ -16,9 +17,13 @@ import 'views/splash/splash_view.dart';
 
 class AppModule extends Module {
   final ThemeService _themeService;
+  final LocaleService _localeService;
 
-  AppModule({required ThemeService themeService})
-    : _themeService = themeService,
+  AppModule({
+    required ThemeService themeService,
+    required LocaleService localeService,
+  }) : _themeService = themeService,
+       _localeService = localeService,
       super() {
     Modular.setInitialRoute(AppRoute.home.str);
   }
@@ -49,6 +54,7 @@ class AppModule extends Module {
   @override
   void binds(i) {
     i.addInstance<ThemeService>(_themeService);
+    i.addInstance<LocaleService>(_localeService);
     i.addLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
     i.addLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
     i.addLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
