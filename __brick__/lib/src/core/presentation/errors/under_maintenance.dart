@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../views.dart';
+import 'error_info.dart';
 
 class UnderMaintenance extends ErrorInfo {
   UnderMaintenance({

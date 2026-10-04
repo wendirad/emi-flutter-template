@@ -10,7 +10,7 @@ import '../../../../auth/domain/entities/auth_entities.dart';
 import '../../../../auth/domain/use_cases/use_cases.dart';
 import '../../../../auth/presentation/blocs/sign_out/sign_out_bloc.dart';
 import '../../../../auth/presentation/views/views.dart';
-import '../../../../errors/presentation/views/error_view.dart';
+import '../../../../../core/presentation/errors/error_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});

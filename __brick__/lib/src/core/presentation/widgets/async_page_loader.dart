@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import '../../app.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../../../modules/errors/presentation/views/views.dart';
+import '../errors/errors.dart';
 
 class AsyncPageLoader extends StatelessWidget {
   final String title;

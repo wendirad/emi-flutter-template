@@ -7,7 +7,7 @@ import '../presentation/view/app_shell/app_shell_view.dart';
 import '../presentation/view/home/home_view.dart';
 import '../../modules/auth/auth_module.dart';
 import '../../modules/auth/data/repositories/auth_repository.dart';
-import '../../modules/errors/presentation/views/error_view.dart';
+import '../presentation/errors/error_view.dart';
 import '../../modules/settings/settings_module.dart';
 
 class AppModule extends Module {

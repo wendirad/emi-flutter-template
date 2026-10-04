@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/app.dart';
-import 'views.dart';
-import 'widgets/no_connection.dart';
+import '../../app.dart';
+import 'no_connection.dart';
+import 'no_data.dart';
+import 'page_not_found.dart';
+import 'under_maintenance.dart';
+import 'unknown_error.dart';
 
 class ErrorView extends StatelessWidget {
   final ErrorTypes errorType;

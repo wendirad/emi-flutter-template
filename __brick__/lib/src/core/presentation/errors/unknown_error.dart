@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../views.dart';
+import 'error_info.dart';
 
 class UnknownError extends ErrorInfo {
   UnknownError({

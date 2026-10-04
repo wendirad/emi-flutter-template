@@ -10,7 +10,7 @@ import '../../../domain/entities/auth_entities.dart';
 import '../../../domain/use_cases/update_profile_use_case.dart';
 import '../../../domain/validators/text_validator.dart';
 import '../../blocs/update_profile/update_profile_bloc.dart';
-import '../../../../errors/presentation/views/error_view.dart';
+import '../../../../../core/presentation/errors/error_view.dart';
 import 'widgets/photo_update_widget.dart';
 
 class UpdateProfileView extends StatefulWidget {
