@@ -1,27 +1,5 @@
 import '../../../../core/failures/failure.dart';
-
-const String _unknownMessage = 'An unknown exception occurred.';
-
-/// Messages shared by every auth failure. A failure's own table wins over
-/// these; unmatched codes fall back to the failure's default message.
-const Map<String, String> _commonMessages = {
-  'network-request-failed':
-      'Network error. Please check your internet connection.',
-  'internal-error': 'An internal error occurred. Please try again later.',
-  'user-disabled':
-      'This user has been disabled. Please contact support for help.',
-  'operation-not-allowed': 'Operation is not allowed. Please contact support.',
-  'too-many-requests': 'Too many requests. Please try again later.',
-  'no-current-user': 'No user is currently signed in.',
-  'requires-recent-login':
-      'This operation requires recent authentication. Please sign in again.',
-};
-
-String _messageFor(
-  String? code,
-  Map<String, String> own, {
-  String fallback = _unknownMessage,
-}) => own[code] ?? _commonMessages[code] ?? fallback;
+import '../../../../core/failures/failure_messages.dart';
 
 class AuthSessionFailure extends Failure {
   const AuthSessionFailure({required super.message, super.code});
@@ -33,7 +11,7 @@ class AuthSessionFailure extends Failure {
   };
 
   factory AuthSessionFailure.fromCode(String? code) =>
-      AuthSessionFailure(code: code, message: _messageFor(code, _messages));
+      AuthSessionFailure(code: code, message: failureMessageFor(code, _messages));
 }
 
 class SignUpWithEmailAndPasswordFailure extends Failure {
@@ -53,7 +31,7 @@ class SignUpWithEmailAndPasswordFailure extends Failure {
   factory SignUpWithEmailAndPasswordFailure.fromCode(String? code) =>
       SignUpWithEmailAndPasswordFailure(
         code: code,
-        message: _messageFor(code, _messages),
+        message: failureMessageFor(code, _messages),
       );
 }
 
@@ -69,7 +47,7 @@ class SignInWithEmailAndPasswordFailure extends Failure {
   factory SignInWithEmailAndPasswordFailure.fromCode(String? code) =>
       SignInWithEmailAndPasswordFailure(
         code: code,
-        message: _messageFor(
+        message: failureMessageFor(
           code,
           _messages,
           fallback: 'Please make sure your email and password are correct.',
@@ -82,7 +60,7 @@ class PasswordResetFailure extends Failure {
 
   factory PasswordResetFailure.fromCode(String? code) => PasswordResetFailure(
     code: code,
-    message: _messageFor(code, const {}),
+    message: failureMessageFor(code, const {}),
   );
 }
 
@@ -100,7 +78,7 @@ class PasswordResetConfirmFailure extends Failure {
   factory PasswordResetConfirmFailure.fromCode(String? code) =>
       PasswordResetConfirmFailure(
         code: code,
-        message: _messageFor(code, _messages),
+        message: failureMessageFor(code, _messages),
       );
 }
 
@@ -109,7 +87,7 @@ class SignOutFailure extends Failure {
 
   factory SignOutFailure.fromCode(String? code) => SignOutFailure(
     code: code,
-    message: _messageFor(
+    message: failureMessageFor(
       code,
       const {},
       fallback: 'An unknown error occurred while signing out.',
@@ -122,7 +100,7 @@ class ProfileUpdateFailure extends Failure {
 
   factory ProfileUpdateFailure.fromCode(String? code) => ProfileUpdateFailure(
     code: code,
-    message: _messageFor(
+    message: failureMessageFor(
       code,
       const {},
       fallback: 'An unknown error occurred while updating profile.',
