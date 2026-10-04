@@ -1,0 +1,51 @@
+name: Brick CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  generate-and-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install Mason
+        run: dart pub global activate mason_cli
+
+      - name: Generate a project from the brick
+        run: |
+          export PATH="$PATH":"$HOME/.pub-cache/bin"
+          mkdir -p "$RUNNER_TEMP/gen" && cd "$RUNNER_TEMP/gen"
+          mason init
+          mason add flutter_template --path "$GITHUB_WORKSPACE"
+          mason make flutter_template --on-conflict overwrite -o out \
+            --project_name demo_app \
+            --description "It's a demo with \"quotes\": and \$dollars" \
+            --org_name com.example \
+            --use_firebase true --use_camera true --use_photo_library true
+
+      - name: No unrendered placeholders
+        working-directory: ${{ runner.temp }}/gen/out
+        run: |
+          if grep -rn '{{' lib test pubspec.yaml; then
+            echo "Unrendered Mason placeholders in the generated project"
+            exit 1
+          fi
+          grep -q "title: 'Demo App'" lib/src/app/app_widget.dart
+
+      - name: Analyze the generated project
+        working-directory: ${{ runner.temp }}/gen/out
+        run: flutter analyze
+
+      - name: Test the generated project
+        working-directory: ${{ runner.temp }}/gen/out
+        run: flutter test
