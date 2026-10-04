@@ -1,4 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../../core/constants/constants.dart';
 import '../auth/auth.dart';
 import 'presentation/views/views.dart';
@@ -13,7 +14,7 @@ class SettingsModule extends Module {
   @override
   void routes(RouteManager r) {
     super.routes(r);
-    for (ModularRoute route in _routes) {
+    for (final ModularRoute route in _routes) {
       r.add(route);
     }
   }

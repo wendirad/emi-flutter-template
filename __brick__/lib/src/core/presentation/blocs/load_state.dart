@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../failures/failure.dart';
 import 'process_state.dart';
 

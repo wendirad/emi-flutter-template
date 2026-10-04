@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import '../../extensions/build_context_extensions.dart';
 import '../widgets/widgets.dart';
 
@@ -46,7 +47,7 @@ class ErrorInfo extends StatelessWidget {
             button ??
                 AppButton(
                   onPress: () async => await onPress(),
-                  title: buttonText ?? "Retry".toUpperCase(),
+                  title: buttonText ?? 'Retry'.toUpperCase(),
                 ),
             const SizedBox(height: 16),
           ],

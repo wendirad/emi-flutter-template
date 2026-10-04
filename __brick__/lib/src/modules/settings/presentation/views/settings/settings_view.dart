@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../core/presentation/errors/errors.dart';
 import '../../../../../core/presentation/launch_link.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
-import '../widgets/app_version_text.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../auth/auth.dart';
-import '../../../../../core/presentation/errors/errors.dart';
+import '../widgets/app_version_text.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});

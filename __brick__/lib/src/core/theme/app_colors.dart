@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'palette.dart';
 
 /// Colors the Material [ColorScheme] has no slot for. Read them with

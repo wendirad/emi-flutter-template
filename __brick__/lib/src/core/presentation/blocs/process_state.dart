@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../failures/failure.dart';
 
 enum ProcessStatus { idle, inProgress, success, failure }

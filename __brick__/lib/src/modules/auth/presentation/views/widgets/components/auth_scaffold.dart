@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../../../core/extensions/build_context_extensions.dart';
 import 'auth_banner.dart';
 import 'header.dart';

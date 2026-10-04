@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../../core/constants/constants.dart';
 import 'data/repositories/auth_repository.dart';
 import 'domain/repositories/i_auth_repository.dart';
-import 'presentation/guards/guards.dart';
 import 'domain/use_cases/use_cases.dart';
+import 'presentation/guards/guards.dart';
 import 'presentation/views/views.dart';
 
 class AuthModule extends Module {
@@ -93,7 +94,7 @@ class AuthModule extends Module {
 
   @override
   void routes(RouteManager r) {
-    for (ModularRoute route in _routes) {
+    for (final ModularRoute route in _routes) {
       r.add(route);
     }
     super.routes(r);

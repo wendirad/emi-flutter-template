@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
 import '../../../../../core/extensions/build_context_extensions.dart';
 
 /// "Version x.y.z" read from the installed package.

@@ -1,5 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../core/presentation/blocs/process_state.dart';
 import '../../../../../core/use_cases/use_cases.dart';
 import '../../../domain/failures/auth_failures.dart';
@@ -28,7 +29,7 @@ class SignOutBloc extends Bloc<SignOutEvent, SignOutState> {
 
     emit(
       result.fold(
-        (failure) => SignOutState.failure(failure),
+        SignOutState.failure,
         (_) => const SignOutState.success(),
       ),
     );

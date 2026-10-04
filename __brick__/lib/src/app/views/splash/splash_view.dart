@@ -1,6 +1,7 @@
 // Version A: tiny private StatelessWidgets that read from context
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../../../core/constants/constants.dart';
 import '../../../core/extensions/build_context_extensions.dart';
 import '../../../core/presentation/widgets/widgets.dart';

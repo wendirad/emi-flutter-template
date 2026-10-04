@@ -1,5 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../core/presentation/blocs/load_state.dart';
 import '../../../../../core/use_cases/use_cases.dart';
 import '../../../domain/failures/auth_failures.dart';
@@ -30,8 +31,8 @@ class RememberedEmailBloc
 
     emit(
       result.fold(
-        (failure) => RememberedEmailState.failure(failure),
-        (email) => RememberedEmailState.success(email),
+        RememberedEmailState.failure,
+        RememberedEmailState.success,
       ),
     );
   }

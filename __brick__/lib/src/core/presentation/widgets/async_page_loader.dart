@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../extensions/build_context_extensions.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import '../../extensions/build_context_extensions.dart';
 
 class AsyncPageLoader extends StatelessWidget {
   final String title;

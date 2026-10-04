@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../core/theme/theme.dart';
 
 class AppWidget extends StatelessWidget {
@@ -14,7 +15,7 @@ class AppWidget extends StatelessWidget {
       builder: (context, _) {
         return MaterialApp.router(
           locale: Locale('en'),
-          title: '{{project_name.titleCase()}}',
+          title: 'Demo App',
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),
           themeMode: themeService.mode,

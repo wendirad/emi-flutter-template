@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../extensions/build_context_extensions.dart';
 
 /// Floating snack bars with one look across the app.

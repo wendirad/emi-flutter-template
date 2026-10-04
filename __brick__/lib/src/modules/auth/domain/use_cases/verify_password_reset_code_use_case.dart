@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+
 import '../../../../core/use_cases/use_cases.dart';
-import '../repositories/i_auth_repository.dart';
 import '../failures/auth_failures.dart';
+import '../repositories/i_auth_repository.dart';
 
 class VerifyPasswordResetCodeUseCase
     implements UseCase<bool, VerifyPasswordResetCodeParam> {

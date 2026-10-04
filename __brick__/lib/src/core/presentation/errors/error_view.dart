@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../../constants/constants.dart';
 import '../../extensions/build_context_extensions.dart';
 import '../widgets/illustration.dart';

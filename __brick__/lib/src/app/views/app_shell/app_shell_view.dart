@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../../../core/constants/constants.dart';
 import '../../../core/extensions/build_context_extensions.dart';
+import '../../../core/presentation/widgets/widgets.dart';
 import '../../../modules/auth/auth.dart';
 import 'widgets/app_navigation_bar.dart';
-import '../../../core/presentation/widgets/widgets.dart';
 
 class AppShellView extends StatefulWidget {
   const AppShellView({super.key});
@@ -23,7 +24,7 @@ class _AppShellViewState extends State<AppShellView> {
       )..add(AuthSessionUserSubscriptionRequested()),
       child: BlocListener<AuthSessionBloc, AuthSessionState>(
         listenWhen: (p, c) => p != c,
-        listener: (context, state) => _handleAuthState(context, state),
+        listener: _handleAuthState,
         child: _RouterOutlet(),
       ),
     );

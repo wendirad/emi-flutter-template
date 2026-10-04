@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_social_button/flutter_social_button.dart';
+
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/launch_link.dart';
@@ -85,7 +86,7 @@ class _AppInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      '{{project_name.titleCase()}}',
+      'Demo App',
       style: context.tt.headlineMedium?.copyWith(
         fontWeight: FontWeight.bold,
         color: context.cs.onSurface,
@@ -106,7 +107,7 @@ class _AppDescription extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              r'''{{{description}}}''',
+              r'''A demo app''',
               style: context.tt.bodyMedium?.copyWith(
                 color: context.cs.onSurface.withValues(alpha: 0.8),
                 height: 1.5,

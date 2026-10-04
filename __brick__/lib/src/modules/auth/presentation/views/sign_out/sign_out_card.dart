@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
+import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../blocs/sign_out/sign_out_bloc.dart';
 import 'sign_out_confirmation_dialog.dart';
-import '../../../../../core/presentation/widgets/widgets.dart';
 
 class SignOutCard extends StatelessWidget {
   const SignOutCard({super.key});

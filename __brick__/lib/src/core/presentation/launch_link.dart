@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'widgets/app_snack_bar.dart';
 
 /// Opens [url] outside the app, telling the user when it cannot be opened.

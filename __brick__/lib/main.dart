@@ -1,17 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
+import 'firebase_options.dart';
 import 'src/app/app_module.dart';
 import 'src/app/app_widget.dart';
-import 'src/core/theme/theme.dart';
 import 'src/core/constants/constants.dart';
+import 'src/core/theme/theme.dart';
 import 'src/core/utils/utils.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'firebase_options.dart';
 
 Future<void> setupFirebase() async {
   final EnvLoader env = EnvLoader.instance;
@@ -35,7 +36,7 @@ Future<void> setupFirebase() async {
     persistenceEnabled: false,
   );
 
-  FirebaseAuth.instance.setLanguageCode('en');
+  await FirebaseAuth.instance.setLanguageCode('en');
 
   if (kDebugMode) {
     await FirebaseAuth.instance.setSettings(
@@ -44,7 +45,7 @@ Future<void> setupFirebase() async {
   }
 
   if (kDebugMode && env.getBool(EnvKeys.useEmulators)) {
-    String host = env.getString(EnvKeys.emulatorDebugHost);
+    final String host = env.getString(EnvKeys.emulatorDebugHost);
 
     await FirebaseAuth.instance.useAuthEmulator(
       host,
@@ -61,8 +62,8 @@ Future<void> setupFirebase() async {
       env.getInt(EnvKeys.storageEmulatorPort),
     );
 
-    String? debugToken = await FirebaseAppCheck.instance.getToken();
-    debugPrint("Debug Token: ${debugToken?.isNotEmpty}");
+    final String? debugToken = await FirebaseAppCheck.instance.getToken();
+    debugPrint('Debug Token: ${debugToken?.isNotEmpty}');
   }
 }
 

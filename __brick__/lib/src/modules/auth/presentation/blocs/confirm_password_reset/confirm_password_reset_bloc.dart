@@ -1,5 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../core/presentation/blocs/process_state.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
@@ -34,7 +35,7 @@ class ConfirmPasswordResetBloc
 
     emit(
       result.fold(
-        (failure) => ConfirmPasswordResetState.failure(failure),
+        ConfirmPasswordResetState.failure,
         (_) => const ConfirmPasswordResetState.success(),
       ),
     );

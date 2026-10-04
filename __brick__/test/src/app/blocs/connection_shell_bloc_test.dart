@@ -1,3 +1,7 @@
+// The package import carries the generated project name, which can sort
+// differently from here.
+// ignore_for_file: directives_ordering
+
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';

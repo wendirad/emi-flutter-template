@@ -2,15 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
 import '../core/constants/constants.dart';
+import '../core/presentation/errors/errors.dart';
 import '../core/theme/theme.dart';
 import '../modules/auth/auth.dart';
+import '../modules/settings/settings_module.dart';
 import 'views/app_shell/app_shell_view.dart';
 import 'views/connection_shell/connection_shell_view.dart';
 import 'views/home/home_view.dart';
 import 'views/splash/splash_view.dart';
-import '../core/presentation/errors/errors.dart';
-import '../modules/settings/settings_module.dart';
 
 class AppModule extends Module {
   final ThemeService _themeService;
@@ -56,7 +57,7 @@ class AppModule extends Module {
 
   @override
   void routes(r) {
-    for (ModularRoute route in _routes) {
+    for (final ModularRoute route in _routes) {
       r.add(route);
     }
   }

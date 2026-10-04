@@ -6,14 +6,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../core/constants/constants.dart';
-import '../../domain/repositories/i_auth_repository.dart';
 import '../../../../core/utils/utils.dart';
-import '../extensions/auth_extensions.dart';
-import '../models/auth_models.dart';
 import '../../domain/entities/auth_entities.dart';
 import '../../domain/failures/auth_failures.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../domain/repositories/i_auth_repository.dart';
+import '../extensions/auth_extensions.dart';
+import '../models/auth_models.dart';
 
 class AuthRepository implements IAuthRepository {
   final FirebaseAuth auth;

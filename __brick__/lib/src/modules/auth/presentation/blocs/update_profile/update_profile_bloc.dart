@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../core/presentation/blocs/process_state.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
@@ -37,7 +38,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
 
     emit(
       result.fold(
-        (failure) => UpdateProfileState.failure(failure),
+        UpdateProfileState.failure,
         (_) => const UpdateProfileState.success(),
       ),
     );

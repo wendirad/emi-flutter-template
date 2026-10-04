@@ -1,5 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../../core/presentation/blocs/load_state.dart';
 import '../../../../../core/use_cases/use_cases.dart';
 import '../../../domain/entities/auth_entities.dart';
@@ -29,8 +30,8 @@ class CurrentUserBloc extends Bloc<CurrentUserEvent, CurrentUserState> {
 
     emit(
       result.fold(
-        (failure) => CurrentUserState.failure(failure),
-        (user) => CurrentUserState.success(user),
+        CurrentUserState.failure,
+        CurrentUserState.success,
       ),
     );
   }
