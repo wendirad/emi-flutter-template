@@ -69,7 +69,7 @@ class EmailFieldState extends State<EmailField> {
       prefixIcon: Icon(Icons.email, color: context.cs.secondary),
       controller: _controller,
       validator: _validator.call,
-      kwargs: const {"autovalidateMode": AutovalidateMode.onUserInteraction},
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }

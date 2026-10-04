@@ -69,7 +69,7 @@ class AppTextFieldState extends State<AppTextField> {
       prefixIcon: widget.icon,
       controller: _controller,
       validator: _validator.call,
-      kwargs: const {"autovalidateMode": AutovalidateMode.onUserInteraction},
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }

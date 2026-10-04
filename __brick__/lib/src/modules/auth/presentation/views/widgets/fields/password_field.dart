@@ -105,7 +105,7 @@ class PasswordFieldState extends State<PasswordField> {
           : widget.enforceStrength
           ? _passwordValidator.call(currentPassword)
           : _passwordValidator.presence(currentPassword),
-      kwargs: const {"autovalidateMode": AutovalidateMode.onUserInteraction},
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }

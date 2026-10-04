@@ -16,7 +16,7 @@ class InputField extends StatelessWidget {
     this.textInputAction,
     this.obscureText = false,
     this.onChanged,
-    this.onSubmitted,
+    this.onFieldSubmitted,
     this.onTap,
     this.enabled = true,
     this.readOnly = false,
@@ -32,8 +32,7 @@ class InputField extends StatelessWidget {
     this.isPasswordField = false,
     this.onToggleObscure,
     this.validator,
-    this.args,
-    this.kwargs,
+    this.autovalidateMode,
   });
 
   final TextEditingController? controller;
@@ -54,7 +53,7 @@ class InputField extends StatelessWidget {
   final bool obscureText;
 
   final ValueChanged<String>? onChanged;
-  final ValueChanged<String>? onSubmitted;
+  final ValueChanged<String>? onFieldSubmitted;
   final VoidCallback? onTap;
 
   final bool enabled;
@@ -74,10 +73,9 @@ class InputField extends StatelessWidget {
 
   /// Called when the eye icon is tapped. Parent should flip [obscureText].
   final VoidCallback? onToggleObscure;
-  final Function(String? value)? validator;
 
-  final List<dynamic>? args;
-  final Map<String, dynamic>? kwargs;
+  final FormFieldValidator<String>? validator;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   Widget build(BuildContext context) {
@@ -103,24 +101,27 @@ class InputField extends StatelessWidget {
       borderSide: BorderSide.none,
     );
 
-    final params = {
-      'controller': controller,
-      'focusNode': focusNode,
-      'keyboardType': keyboardType,
-      'textInputAction': textInputAction,
-      'obscureText': isPasswordField ? obscureText : false,
-      'onChanged': onChanged,
-      'onTap': onTap,
-      'enabled': enabled,
-      'readOnly': readOnly,
-      'maxLines': isPasswordField ? 1 : maxLines,
-      'minLines': minLines,
-      'autofillHints': autofillHints,
-      'inputFormatters': inputFormatters,
-      'style': theme.textTheme.bodyMedium?.copyWith(
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      obscureText: isPasswordField ? obscureText : false,
+      onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted,
+      onTap: onTap,
+      enabled: enabled,
+      readOnly: readOnly,
+      maxLines: isPasswordField ? 1 : maxLines,
+      minLines: minLines,
+      autofillHints: autofillHints,
+      inputFormatters: inputFormatters,
+      validator: validator,
+      autovalidateMode: autovalidateMode,
+      style: theme.textTheme.bodyMedium?.copyWith(
         color: theme.colorScheme.onSecondaryContainer,
       ),
-      'decoration': InputDecoration(
+      decoration: InputDecoration(
         filled: true,
         fillColor: fill,
         hintText: hintText,
@@ -135,12 +136,6 @@ class InputField extends StatelessWidget {
         focusedBorder: border,
         disabledBorder: border,
       ),
-      'validator': validator?.call,
-      ...?kwargs,
-    };
-
-    final symbolMap = {for (var e in params.entries) Symbol(e.key): e.value};
-
-    return Function.apply(TextFormField.new, [], symbolMap);
+    );
   }
 }
