@@ -1,10 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-import '../../constants/constants.dart';
 import '../../extensions/build_context_extensions.dart';
-import '../../failures/failure.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import '../errors/errors.dart';
 
 class AsyncPageLoader extends StatelessWidget {
   final String title;
@@ -31,19 +27,6 @@ class AsyncPageLoader extends StatelessWidget {
     subtitle: subtitle ?? 'Just a moment.',
     showLoading: true,
   );
-
-  static Widget fromSnapshot<T>({
-    required AsyncSnapshot<T> snapshot,
-    Key? key,
-    Widget Function(T data)? builder,
-  }) {
-    return switch (snapshot.connectionState) {
-      ConnectionState.none => ErrorView(key: key, errorType: ErrorTypes.noData),
-      ConnectionState.waiting ||
-      ConnectionState.active => AsyncPageLoader.loading(key: key),
-      ConnectionState.done => _onSnapshotDone<T>(key, snapshot, builder),
-    };
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,49 +78,6 @@ class AsyncPageLoader extends StatelessWidget {
           ],
         ],
       ),
-    );
-  }
-
-  static Widget _onSnapshotDone<T>(
-    Key? key,
-    AsyncSnapshot<T> snapshot,
-    Widget Function(T data)? builder,
-  ) {
-    if (snapshot.hasError) {
-      return ErrorView(
-        key: key,
-        title: 'Oops!',
-        description: snapshot.error.toString(),
-      );
-    }
-
-    if (snapshot.hasData && snapshot.data != none()) {
-      if (builder == null) {
-        return ErrorView(
-          key: key,
-          errorType: ErrorTypes.unknownError,
-          title: 'Oops',
-          description: "Something didn't work. Try again!",
-        );
-      }
-
-      if (snapshot.data is Failure) {
-        return ErrorView(
-          key: key,
-          errorType: ErrorTypes.unknownError,
-          title: 'Oops',
-          description: snapshot.data.toString(),
-        );
-      }
-
-      return builder(snapshot.data as T);
-    }
-
-    return ErrorView(
-      key: key,
-      errorType: ErrorTypes.noData,
-      title: 'Nothing to show',
-      description: "There isn't anything here yet.",
     );
   }
 }
