@@ -6,7 +6,8 @@ A [Mason](https://github.com/felangel/mason) brick for starting a Flutter app wi
 
 - **app**: composition root and shell screens (`flutter_modular` module, app widget, splash, home, connection and auth shells)
 - **core**: feature-agnostic building blocks (theme, shared widgets, error views, constants, env loader, base `UseCase` and `Failure`)
-- **auth**: sign up, sign in, sign out, password reset, profile update (Firebase Auth, Firestore, Storage)
+- **auth**: sign up, sign in, sign out, password reset (Firebase Auth, Firestore)
+- **profile**: edit profile name and photo (Firestore, Storage)
 - **settings**: settings and about screens
 - State management with `flutter_bloc`, a Home placeholder tab, Android and iOS runners
 - Reference tests under `test/`, strict analysis options, and a bundled Poppins font

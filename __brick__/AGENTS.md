@@ -26,7 +26,7 @@ test/                  mirrors lib/ (test/src/...)
 Dependencies point one way:
 
 - `core` imports nothing from `modules/` or `app/`. If deleting a feature would break a `core` file, the file is in the wrong place.
-- `modules/<feature>` may import `core`. It imports another feature only through that feature's public barrel (`modules/auth/auth.dart`), never its internals.
+- `modules/<feature>` may import `core`. It imports another feature only through that feature's public barrel (`modules/auth/auth.dart`), never its internals. `modules/profile` is the smallest example of a feature that builds on `auth`.
 - `app/` may import everything. It is the only place that wires features together (routes, DI, shell screens).
 - Inside a feature: `domain` imports no Flutter, no `data`, no `presentation`. `data` implements `domain`. `presentation` uses `domain` through blocs.
 

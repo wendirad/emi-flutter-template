@@ -94,16 +94,3 @@ class SignOutFailure extends Failure {
     ),
   );
 }
-
-class ProfileUpdateFailure extends Failure {
-  const ProfileUpdateFailure({required super.message, super.code});
-
-  factory ProfileUpdateFailure.fromCode(String? code) => ProfileUpdateFailure(
-    code: code,
-    message: failureMessageFor(
-      code,
-      const {},
-      fallback: 'An unknown error occurred while updating profile.',
-    ),
-  );
-}

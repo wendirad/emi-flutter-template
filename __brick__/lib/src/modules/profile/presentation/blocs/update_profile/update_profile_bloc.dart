@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/presentation/blocs/process_state.dart';
-import '../../../domain/failures/auth_failures.dart';
+import '../../../domain/failures/profile_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
 
 part 'update_profile_event.dart';

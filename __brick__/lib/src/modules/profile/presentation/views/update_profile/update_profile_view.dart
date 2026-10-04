@@ -8,10 +8,10 @@ import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/errors/errors.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
-import '../../../domain/entities/auth_entities.dart';
+import '../../../../auth/auth.dart';
 import '../../../domain/use_cases/update_profile_use_case.dart';
-import '../../../domain/validators/text_validator.dart';
 import '../../blocs/update_profile/update_profile_bloc.dart';
+import '../widgets/profile_form_field.dart';
 import 'widgets/photo_update_widget.dart';
 
 class UpdateProfileView extends StatefulWidget {
@@ -211,37 +211,5 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
     }
     _firstNameController.text = user.firstName ?? '';
     _lastNameController.text = user.lastName ?? '';
-  }
-}
-
-class ProfileFormField extends StatelessWidget {
-  final TextEditingController controller;
-  final String labelText;
-  final IconData icon;
-
-  const ProfileFormField({
-    super.key,
-    required this.controller,
-    required this.labelText,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      validator: TextValidator().call,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      controller: controller,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: labelText,
-        suffixIcon: Icon(icon, color: context.cs.primary),
-        floatingLabelStyle: context.tt.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: context.cs.tertiary,
-        ),
-        contentPadding: EdgeInsets.all(18).copyWith(top: 24, bottom: 24),
-      ),
-    );
   }
 }

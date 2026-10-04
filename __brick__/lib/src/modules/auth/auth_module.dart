@@ -84,11 +84,6 @@ class AuthModule extends Module {
       () => SignOutUseCase(authRepository: Modular.get<IAuthRepository>()),
     );
 
-    i.addLazySingleton<UpdateProfileUseCase>(
-      () =>
-          UpdateProfileUseCase(authRepository: Modular.get<IAuthRepository>()),
-    );
-
     super.exportedBinds(i);
   }
 

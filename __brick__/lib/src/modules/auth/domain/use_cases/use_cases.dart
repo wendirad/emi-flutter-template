@@ -6,5 +6,4 @@ export 'send_password_reset_email_use_case.dart';
 export 'sign_in_with_email_and_password_use_case.dart';
 export 'sign_out_use_case.dart';
 export 'sign_up_with_email_and_password_use_case.dart';
-export 'update_profile_use_case.dart';
 export 'verify_password_reset_code_use_case.dart';

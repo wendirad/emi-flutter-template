@@ -22,8 +22,10 @@ class AppRoute {
 
   static final AppRouteNode settings = appShell.child('/settings', title: 'Settings');
   static final AppRouteNode about = settings.child('/about', title: 'About');
-  static final AppRouteNode updateProfile = settings.child(
-    '/update-profile',
+
+  static final AppRouteNode profile = appShell.child('/profile', title: 'Profile');
+  static final AppRouteNode updateProfile = profile.child(
+    '/edit',
     title: 'Edit Profile',
   );
 

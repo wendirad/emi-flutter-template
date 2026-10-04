@@ -4,19 +4,19 @@ import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/use_cases/use_cases.dart';
-import '../failures/auth_failures.dart';
-import '../repositories/i_auth_repository.dart';
+import '../failures/profile_failures.dart';
+import '../repositories/i_profile_repository.dart';
 
 class UpdateProfileUseCase implements UseCase<Unit, UpdateProfileParam> {
-  final IAuthRepository authRepository;
+  final IProfileRepository profileRepository;
 
-  UpdateProfileUseCase({required this.authRepository});
+  UpdateProfileUseCase({required this.profileRepository});
 
   @override
   Future<Either<ProfileUpdateFailure, Unit>> call({
     required UpdateProfileParam param,
   }) async {
-    return authRepository.updateProfile(
+    return profileRepository.updateProfile(
       businessName: param.businessName,
       firstName: param.firstName,
       lastName: param.lastName,

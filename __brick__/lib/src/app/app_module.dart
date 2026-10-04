@@ -7,6 +7,7 @@ import '../core/constants/constants.dart';
 import '../core/presentation/errors/errors.dart';
 import '../core/theme/theme.dart';
 import '../modules/auth/auth.dart';
+import '../modules/profile/profile.dart';
 import '../modules/settings/settings_module.dart';
 import 'views/app_shell/app_shell_view.dart';
 import 'views/connection_shell/connection_shell_view.dart';
@@ -34,6 +35,7 @@ class AppModule extends Module {
           guards: [AuthGuard()],
           children: [
             ChildRoute(AppRoute.home.base, child: (_) => HomeView()),
+            ModuleRoute(AppRoute.profile.base, module: ProfileModule()),
             ModuleRoute(AppRoute.settings.base, module: SettingsModule()),
           ],
         ),

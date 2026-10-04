@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:fpdart/fpdart.dart';
 
 import '../entities/auth_entities.dart';
@@ -43,12 +41,4 @@ abstract class IAuthRepository {
   });
 
   Future<Either<SignOutFailure, Unit>> signOut();
-
-  Future<Either<ProfileUpdateFailure, Unit>> updateProfile({
-    String? businessName,
-    String? firstName,
-    String? lastName,
-    File? profilePicture,
-    bool removeProfilePicture,
-  });
 }

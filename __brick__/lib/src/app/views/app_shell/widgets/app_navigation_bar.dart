@@ -79,7 +79,10 @@ class _AppNavigationBarState extends State<AppNavigationBar> {
   int? _indexForCurrentRoute() {
     final current = AppRoute.current;
     if (current.isOrIsChildOf(AppRoute.home)) return 0;
-    if (current.isOrIsChildOf(AppRoute.settings)) return 1;
+    if (current.isOrIsChildOf(AppRoute.settings) ||
+        current.isOrIsChildOf(AppRoute.profile)) {
+      return 1;
+    }
     return null;
   }
 

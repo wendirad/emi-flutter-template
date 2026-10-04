@@ -37,9 +37,5 @@ void main() {
 
   test('a null or unknown code falls back to the default message', () {
     expect(PasswordResetFailure.fromCode(null).message, isNotEmpty);
-    expect(
-      ProfileUpdateFailure.fromCode('nope').message,
-      'An unknown error occurred while updating profile.',
-    );
   });
 }
