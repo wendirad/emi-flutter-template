@@ -11,11 +11,10 @@ mason make flutter_template --on-conflict overwrite -o /tmp/brick_check --projec
   --description "A demo app" --org_name com.example \
   --use_firebase true --use_camera true --use_photo_library true
 cd /tmp/brick_check/demo_app
-flutter analyze
-flutter test
+bash tool/check.sh
 ```
 
-Both must pass. `__brick__/` itself is not a buildable Flutter project, because `pubspec.yaml`, tests and a few strings contain placeholders.
+It must pass. `__brick__/` itself is not a buildable Flutter project, because `pubspec.yaml`, tests and a few strings contain placeholders.
 
 ## Placeholders
 

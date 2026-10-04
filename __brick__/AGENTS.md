@@ -1,161 +1,117 @@
-# Working in this project
+# Agent guide
 
-Read this before you add, change or delete code. It describes the conventions the code already follows so new work looks like the old work.
+Read this and `STATUS.md` before changing anything. Open only the files the task needs; do not scan `lib/`.
 
-## Check your work
+## Workflow
 
-```sh
-flutter analyze   # strict: strict-casts, strict-raw-types, sorted imports
-flutter test
-```
+1. Read `STATUS.md`. Find the task or add it, and mark it `[~]`.
+2. Change only what the task asks. Do not touch unrelated files, reformat untouched code, or add a dependency the task does not need.
+3. Run `bash tool/check.sh`. It must pass before you call the task done.
+4. Update `STATUS.md` (see its header), then commit one category per commit: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`.
 
-Both must pass. CI runs both. Run `dart format` on files you create. Do not reformat files you are not otherwise changing.
+## Environment
 
-## Layout and dependency rules
+Dart `^3.9.2` and the stable Flutter channel (see `pubspec.yaml`). Keep `pubspec.yaml` dependencies alphabetical. Never edit `*.g.dart` or `lib/src/core/l10n/generated/`.
 
-```
-lib/
-  main.dart            boot: env, Firebase, theme, runApp
-  src/
-    app/               composition root and shell screens
-    core/              feature-agnostic building blocks
-    modules/<feature>/ one folder per feature
-test/                  mirrors lib/ (test/src/...)
-```
+## Commands
 
-Dependencies point one way:
+`bash tool/check.sh` runs the whole sequence in this order and stops at the first failure: `flutter gen-l10n` (when `.arb` files changed), `build_runner` (when a `@JsonSerializable` model changed), `dart fix --apply` (sorts imports and fixes lints), `dart format` on changed files, `flutter analyze`, `flutter test`.
 
-- `core` imports nothing from `modules/` or `app/`. If deleting a feature would break a `core` file, the file is in the wrong place.
-- `modules/<feature>` may import `core`. It imports another feature only through that feature's public barrel (`modules/auth/auth.dart`), never its internals. `modules/profile` is the smallest example of a feature that builds on `auth`.
-- `app/` may import everything. It is the only place that wires features together (routes, DI, shell screens).
-- Inside a feature: `domain` imports no Flutter, no `data`, no `presentation`. `data` implements `domain`. `presentation` uses `domain` through blocs.
+A Claude Code hook (`.claude/settings.json`) already runs `dart fix` and `dart format` on each edited Dart file and `gen-l10n` on each edited `.arb`. Do not sort or format by hand. Do not weaken `analysis_options.yaml` to pass; fix the code.
 
-A feature looks like this (`modules/auth` is the reference):
+## Layout and boundaries
 
 ```
-<feature>.dart                  public barrel, the only file others import
-<feature>_module.dart           routes and DI binds
-domain/
-  entities/                     plain Dart classes
-  failures/                     Failure subclasses
-  repositories/                 abstract interfaces (IFooRepository)
-  use_cases/                    one use case per file, plus a barrel
-  validators/
-data/
-  models/ repositories/ extensions/
-presentation/
-  blocs/<name>/                 <name>_bloc.dart, <name>_event.dart
-  views/<screen>/               <screen>_view.dart
-  views/widgets/                widgets used by several screens of this feature
-  guards/                       route guards
+lib/main.dart            boot
+lib/src/app/             composition root, shell screens
+lib/src/core/            feature-agnostic code
+lib/src/modules/<name>/  one folder per feature (auth is the reference, profile the smallest)
+test/src/...             mirrors lib/src/...
 ```
+
+| Layer | May import | Must not import |
+|---|---|---|
+| `core` | `core` | `modules`, `app` |
+| `modules/<a>` | `core`, `modules/<b>/<b>.dart` | another feature's internals, `app` |
+| `app` | everything | |
+| `domain/` | `core` (pure Dart) | Flutter, `data`, `presentation` |
+| `data/` | `domain`, `core` | `presentation` |
+| `presentation/` | `domain`, `core` | `data` |
+
+Feature layout: `<name>.dart` (public barrel), `<name>_module.dart` (routes and binds), `domain/{entities,failures,repositories,use_cases,validators}`, `data/{models,repositories,extensions}`, `presentation/{blocs,cubits,views,extensions,guards}`.
 
 ## Imports and files
 
-- Inside the package use relative imports. Order: `dart:`, `package:`, relative, each sorted, then exports. `directives_ordering` enforces it.
-- Import a `core` sub-package through its barrel (`core/constants/constants.dart`, `core/presentation/widgets/widgets.dart`, `core/theme/theme.dart`, `core/presentation/errors/errors.dart`, `core/utils/utils.dart`). Files inside that package import their siblings directly, never their own barrel.
-- One public class per file, file named after the class in snake_case (`SignInBloc` is `sign_in_bloc.dart`). Allowed exceptions: a use case with its `*Param`, events or states in the bloc's `part` files, and grouped entities, models and failures in `<feature>_entities.dart`, `_models.dart`, `_failures.dart`.
-- Add every new public file to its folder's barrel. Remove it from the barrel when you delete it.
-- Do not use `Route`, `TextField`, `FormField` or other names that shadow Flutter. Custom widgets are `AppX` or named for their feature.
-- Never edit `*.g.dart`. After changing a `@JsonSerializable` model run `dart run build_runner build --delete-conflicting-outputs`.
+- Relative imports inside the package. Import a `core` sub-package through its barrel (`constants/`, `presentation/widgets/`, `theme/`, `presentation/errors/`, `utils/`, `l10n/`); files inside that package import siblings directly.
+- Every new public file is exported from its folder's barrel and removed from it when deleted. Do not leave a barrel entry or an empty folder behind.
+- One public class per file, named `snake_case` after the class. Exceptions: a use case with its `*Param`, bloc `part` files, grouped `*_entities.dart`, `*_models.dart`, `*_failures.dart`.
+- Never name a class `Route`, `TextField`, `FormField` or anything else that shadows Flutter. Custom widgets are `AppX` or named for their feature.
+- Move or rename with `git mv`, then fix every import, export and `part` line.
 
-## State: blocs
+## State
 
-Every piece of screen state that comes from doing work is a bloc. Local `State` is only for pure UI state: a text controller, an obscure-password toggle, a checkbox. Do not add events like `ToggleShowPassword`.
-
-A bloc that runs one use case uses `ProcessState<F>` (`core/presentation/blocs/process_state.dart`):
-
-| Status | Meaning | Check with |
+| Need | Use | Public API |
 |---|---|---|
-| `idle` | nothing has happened yet | `state.isIdle` |
-| `inProgress` | the use case is running | `state.isInProgress` |
-| `success` | it finished | `state.isSuccess` |
-| `failure` | it failed; `state.failure` is the typed failure | `state.isFailure` |
+| Run one use case on demand | `ProcessCubit<F>` | `submit(...)` |
+| Load one value | `LoadCubit<T, F>` | `load()` |
+| Streams, several events, timers | `Bloc` | events |
 
-A bloc that loads a value uses `LoadState<T, F>` and reads it from `state.data`. Expose the state through a typedef in the bloc file: `typedef SignInState = ProcessState<SignInWithEmailAndPasswordFailure>;`. `AuthSessionBloc` and `ConnectionShellBloc` have their own state classes because they model a status, not a request.
+- Cubits live in `presentation/cubits/<name>/<name>_cubit.dart`, blocs in `presentation/blocs/<name>/` (`<name>_bloc.dart` + `<name>_event.dart`). Name them `<Verb><Noun>Cubit` / `Bloc`.
+- Expose the state with a typedef: `typedef SignInState = ProcessState<SignInWithEmailAndPasswordFailure>;`. `ProcessState` has `idle`, `inProgress`, `success`, `failure(F)`; `LoadState` adds `data`.
+- The constructor takes use cases as named required parameters. A cubit or bloc never touches a repository or Firebase.
+- Local `State` holds only pure UI state (text controllers, an obscure toggle). No events or cubit methods for it.
+- In widgets use `ReadContext(context).read<T>()` and `WatchContext(context).watch<T>()`; plain `context.read` is ambiguous with `flutter_modular`. Await `submit()` in async callbacks (`unawaited_futures` is on).
+- Provide the cubit with `BlocProvider(create: ...)` in the view; `Modular.get` is allowed only in module binds, route builders, `create:` callbacks and guards.
 
-Rules:
+## Errors and data
 
-- Name them `<Verb><Noun>Bloc`, events `<Verb><Noun>Requested`, in `blocs/<snake_name>/`.
-- The constructor takes the use case as a named required parameter: `SignInBloc(signIn: ...)`.
-- A bloc depends on use cases, never on a repository or a Firebase class.
-- Events carry primitives. The bloc builds the use case's `Param`.
-- Emit `inProgress` first, then `success` or `failure`. Never emit a state in which the status and `failure` disagree.
-- In widgets use `ReadContext(context).read<T>()` and `WatchContext(context).watch<T>()`. Plain `context.read` is ambiguous because both `flutter_bloc` and `flutter_modular` define it.
-
-## Errors and data access
-
-- Repositories and use cases return `Either<Failure, T>` (`fpdart`). They do not throw to the caller.
-- A feature's failures live in `domain/failures/`. Each has a `const` constructor and `fromCode(String?)`, resolved through the failure's own message table, then the shared `_commonMessages`, then a default.
-- Only a repository touches Firebase, `SharedPreferences` or the network. Views, blocs and use cases never do. `ThemeService` is the one core service that reads preferences.
-- Inject dependencies through constructors. Bind them in the owning module's `exportedBinds`/`binds`. `Modular.get` is allowed in module binds, route builders, `BlocProvider.create` and guards, nowhere else.
+- Repositories and use cases return `Either<Failure, T>` (`fpdart`) and never throw to the caller. Only a repository touches Firebase, `SharedPreferences` or the network (`ThemeService` and `LocaleService` are the exceptions).
+- A failure has a `const` constructor and `fromCode(String?)`, resolved through its own message table, then `failureMessageFor`'s shared table in `core/failures`. `Failure.message` is English for logs and tests; never show it.
+- Validators return a `ValidationError`, not text.
 - Never persist a password. Remember-me stores the email only.
+- Changing a Firestore field or collection updates the model, `FirestoreCollections`, `firestore.rules` and the repository together. The same goes for `StoragePaths` and `storage.rules`.
 
-## Strings and keys
+## Strings, keys and constants
 
-No inline keys. Add them to the matching class in `core/constants/`:
+No inline keys or user-facing text.
 
-| Kind | Class | Notes |
-|---|---|---|
-| `.env` key | `EnvKeys` | document it in the README table |
-| `SharedPreferences` key | `PrefKeys` | stored values must not change without a migration |
-| Firestore collection | `FirestoreCollections` | keep in sync with `firestore.rules` |
-| Storage path | `StoragePaths` | keep in sync with `storage.rules` |
-| Asset path | `Illustrations` | |
-| Route | `AppRoute` | add the route to the right module as well |
+| Kind | Where |
+|---|---|
+| `.env` key | `EnvKeys` (also the README table) |
+| `SharedPreferences` key | `PrefKeys` (do not change a value without a migration) |
+| Firestore collection / Storage path | `FirestoreCollections` / `StoragePaths` |
+| Asset path | `Illustrations` |
+| Route | `AppRoute`, plus the owning module's `routes` |
+| User-facing text | `lib/src/core/l10n/arb/app_en.arb` and `app_am.arb`, read with `context.l10n.<key>` |
+| Failure text | `<feature>/presentation/extensions/*_failure_message.dart`: `failure.localized(context.l10n)` |
+| Validation text | `error.message(context.l10n)` |
 
-`.env` is bundled into the app. It is configuration, not a place for secrets.
-
-User-facing text is localized (English and Amharic). Never write it inline in a widget:
-
-- Add the key to both `lib/src/core/l10n/arb/app_en.arb` and `app_am.arb`, with a `{placeholder}` and an `@key` entry for each parameter in `app_en.arb`. Then run `flutter gen-l10n` and commit the output in `lib/src/core/l10n/generated/`. `arb_files_test.dart` fails when a key is missing from either file.
-- Read it with `context.l10n.<key>` (`core/extensions/build_context_extensions.dart`). Keys are camelCase and start with the area: `signInTitle`, `settingsGeneral`, `failureNetwork`.
-- Domain code has no `BuildContext` and no Flutter, so it returns data, not text. Validators return a `ValidationError`; failures carry a `code`. The screen turns them into text: `error.message(context.l10n)` and `failure.localized(context.l10n)` (`presentation/extensions/`). `Failure.message` is English for logs and tests; do not show it.
-- Developer-facing text (exceptions, `debugPrint`) stays English and unlocalized.
-- The Amharic strings were written without a native review. Have a speaker check them before release.
-- To add a language, add `app_<code>.arb` next to the others and run `flutter gen-l10n`. The picker in Settings lists every supported locale. Poppins has no Ethiopic glyphs, so Amharic text uses the platform fallback font.
+Add a string to both `.arb` files (a `{placeholder}` and its `@key` entry go in `app_en.arb`), with a camelCase key that starts with its area (`signInTitle`, `failureNetwork`). Developer-facing text (exceptions, `debugPrint`) stays English and unlocalized. `.env` is bundled into the app: configuration only, never secrets.
 
 ## UI
 
-- Colors and text styles come from the theme: `context.cs`, `context.tt`, `context.appColors`, `context.isDark`. No `Colors.*` (except `Colors.transparent`) and no `Color(0x...)` outside `core/theme/`. A new raw color goes in `AppPalette`; a new semantic color goes in `AppColors`.
-- Reuse the shared widgets in `core/presentation/widgets/`: `AppButton` (`isLoading` shows the spinner and blocks taps), `AppSnackBar.success/error/info`, `AppAlert`, `InputField`, `UserAvatar`, `AsyncPageLoader`, and `ErrorView` for failure screens.
-- Auth screens use `AuthScaffold` and `AuthFooter`. A new screen that looks like them should too.
-- Forms own their `TextEditingController`s: create them in `initState`, dispose them in `dispose`, pass them to the field widgets, and read `controller.text`. Do not expose widget state through `GlobalKey`.
-- Show a failure with `AppAlert` inside the form, or `AppSnackBar.error` for a one-off. Show a loading state with `AppButton(isLoading:)`.
-- Fonts: Poppins is bundled in `google_fonts/` and runtime fetching is off. A new weight needs its file added there and a line in `test/src/core/theme/bundled_fonts_test.dart`.
-
-## How to
-
-**Add a use case.** Add `domain/use_cases/<name>_use_case.dart` implementing `UseCase<T, Param>` with its `Param` (or `NoParam`), export it from `use_cases.dart`, add the repository method to the interface and implement it in `data/repositories/`, bind it in `<feature>_module.dart`, and add a use case test.
-
-**Add a bloc and screen.** Create `blocs/<name>/` with the bloc and event files, using `ProcessState` or `LoadState`. Create `views/<screen>/<screen>_view.dart`, provide the bloc with `BlocProvider(create: ...)` in the view, export the view from `views/views.dart`, add the route to `AppRoute` and to the module's `routes`, and add a bloc test.
-
-**Add a feature module.** Copy the `modules/auth` shape (`modules/profile` is the smallest example), add `<feature>.dart` with only what others may use, register `<Feature>Module` in `app/app_module.dart` (`ModuleRoute` and `imports`), and add its routes to `AppRoute`.
-
-**Add a failure.** Add the class to `domain/failures/<feature>_failures.dart` following the existing ones and add any new code to its English message table. Add the text for the code to both `.arb` files and map it in the feature's `presentation/extensions/<feature>_failure_message.dart`, then extend `auth_failures_test.dart` and `auth_failure_message_test.dart`-style tests.
-
-**Rename or move a file.** Use `git mv`. Update every relative import and export, the folder barrel, and any `part` / `part of` line. Run `flutter analyze`; an unresolved import is an error, an unused one is a warning.
-
-**Delete a file or feature.** Remove it from its barrel, its module's routes and binds, `AppRoute`, and any other module that imported it. Delete its tests. Then `flutter analyze` must report nothing.
-
-**Change a Firestore field or collection.** Update the model, `FirestoreCollections`, `firestore.rules`, and the repository together.
+- Take colors and text styles from the theme: `context.cs`, `context.tt`, `context.appColors`, `context.isDark`. No `Colors.*` except `Colors.transparent`, and no `Color(0x...)` outside `core/theme/`. A new raw color goes in `AppPalette`, a semantic one in `AppColors`.
+- Reuse `core/presentation/widgets/`: `AppButton(isLoading:)`, `AppSnackBar.success/error/info`, `AppAlert`, `InputField`, `UserAvatar`, `AsyncPageLoader.loading()`, `ErrorView`. Auth-style screens use `AuthScaffold` and `AuthFooter`.
+- Forms create their `TextEditingController`s in `initState`, dispose them, and read `controller.text`. No `GlobalKey` into widget state.
+- Show a failure with `AppAlert` inside the form or `AppSnackBar.error` once; show loading with `AppButton(isLoading:)`.
+- Fonts: Poppins is bundled in `google_fonts/` with runtime fetching off. A new weight needs its file there and a line in `test/src/core/theme/bundled_fonts_test.dart`.
 
 ## Tests
 
-`test/` mirrors `lib/`: `test/src/modules/auth/domain/...` tests `lib/src/modules/auth/domain/...`. Use `mocktail` for mocks and `bloc_test` for blocs. The existing tests are the pattern:
+`test/` mirrors `lib/`. Use `mocktail` and `bloc_test`.
 
-| Layer | Example |
-|---|---|
-| validators, failures | `validators_test.dart`, `auth_failures_test.dart` |
-| use case | `sign_in_with_email_and_password_use_case_test.dart` |
-| bloc | `sign_in_bloc_test.dart`, `connection_shell_bloc_test.dart` |
-| widget | `app_button_test.dart`, `auth_footer_test.dart` |
+- Mock the use case or repository interface. For a custom `Param` matched with `any(named: 'param')`, add `class FakeXParam extends Fake implements XParam {}` and `setUpAll(() => registerFallbackValue(FakeXParam()))`.
+- Stub with `thenAnswer((_) async => const Right(unit))` or `Left(XFailure.fromCode('x'))`. Assert states and results with `Right(...)` / `Left(...)`; failures compare by message and code.
+- Cubit and bloc tests use `blocTest` and expect the full state sequence (`inProgress`, then `success` or `failure`). Capture the `Param` with `verify(...).captured` to check the cubit built it correctly.
+- Widget tests build a minimal theme: `ThemeData(colorScheme: AppColorSchemes.light, extensions: const [AppColors.light])`. Never `AppTheme.light()` (it loads Google Fonts).
+- After changing bundled assets delete `build/unit_test_assets`; `flutter test` caches it.
+- Examples: `sign_in_cubit_test.dart`, `connection_shell_bloc_test.dart`, `cubits_test.dart`, `auth_failures_test.dart`, `validators_test.dart`, `app_button_test.dart`.
 
-In widget tests build a minimal theme (`ThemeData(colorScheme: AppColorSchemes.light, extensions: const [AppColors.light])`). Do not use `AppTheme.light()`; it loads Google Fonts. After changing bundled assets delete `build/unit_test_assets`, because `flutter test` reuses it and can pass against files that are gone.
+## Recipes
 
-## Do not
-
-- Add a dependency without a reason that `core` or a feature actually needs. Keep `pubspec.yaml` dependencies alphabetical.
-- Catch an error to silence it. Return a `Failure` or let it propagate.
-- Call a repository from a widget, or build a `Param` in a widget.
-- Weaken the lints in `analysis_options.yaml` to make a change pass. Fix the code.
+- **Use case:** `domain/use_cases/<name>_use_case.dart` implementing `UseCase<T, Param>` (or `NoParam`), exported from `use_cases.dart`; add the method to the repository interface and implementation; bind it in the module; add a use case test.
+- **Screen:** a cubit (or bloc) under the State rules; `views/<screen>/<screen>_view.dart` exported from `views/views.dart`; the route in `AppRoute` and the module's `routes`; strings in both `.arb` files; a cubit test.
+- **Failure:** the class and its English table in `domain/failures/`; the code's text in both `.arb` files and the feature's `*_failure_message.dart`; extend the failure and message tests.
+- **Feature module:** copy `modules/profile`; add `<name>.dart` with only the public API; register `<Name>Module` in `app/app_module.dart` and its routes in `AppRoute`; add a row to `STATUS.md`.
+- **Delete a feature or file:** remove it from its barrel, module routes and binds, `AppRoute`, other importers and tests; `flutter analyze` must report nothing.
+- **Catch blocks:** never swallow an error. Return a `Failure` or let it propagate.

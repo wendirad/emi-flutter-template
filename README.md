@@ -134,11 +134,10 @@ The app reads these keys from `.env` (see `lib/src/core/constants/env_keys.dart`
 ## Check your work
 
 ```sh
-flutter analyze
-flutter test
+bash tool/check.sh
 ```
 
-CI runs both on every push. Analysis is strict (`strict-casts`, `strict-raw-types`, sorted imports), so a new file should follow `AGENTS.md` to pass.
+It generates l10n and model code, fixes lints and import order, formats changed files, then runs `flutter analyze` and `flutter test`. CI runs analyze and test on every push, and analysis is strict (`strict-casts`, `strict-raw-types`, sorted imports). Project state and open work are in [`STATUS.md`](__brick__/STATUS.md).
 
 ## After generating
 
