@@ -12,23 +12,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 
 Future<void> setupFirebase() async {
-  EnvLoader env = EnvLoader.instance;
-  final String? demoProjectId = env.getOptionalString('demoProjectId');
-  final String? projectName = env.getOptionalString('projectName');
+  final EnvLoader env = EnvLoader.instance;
 
-  if (projectName == demoProjectId && projectName == null) {
-    throw Exception('You must provide "demoProjectId" or "projectName"');
-  }
-
-  if (projectName == demoProjectId) {
-    throw Exception('You must provide "demoProjectId" or "projectName"');
-  }
-
-  await Firebase.initializeApp(
-    // demoProjectId: demoProjectId,
-    // name: projectName,
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await FirebaseAppCheck.instance.activate(
     providerAndroid: kDebugMode
@@ -48,11 +34,14 @@ Future<void> setupFirebase() async {
   );
 
   FirebaseAuth.instance.setLanguageCode('en');
-  await FirebaseAuth.instance.setSettings(
-    appVerificationDisabledForTesting: true,
-  );
 
-  if (env.getBool('debugDebug', defaultValue: true)) {
+  if (kDebugMode) {
+    await FirebaseAuth.instance.setSettings(
+      appVerificationDisabledForTesting: true,
+    );
+  }
+
+  if (kDebugMode && env.getBool('useEmulators')) {
     String host = env.getString('emulatorDebugHost');
 
     await FirebaseAuth.instance.useAuthEmulator(
@@ -76,9 +65,9 @@ Future<void> setupFirebase() async {
 }
 
 void main() async {
-  await EnvLoader.instance.load();
-
   WidgetsFlutterBinding.ensureInitialized();
+
+  await EnvLoader.instance.load();
 
   await setupFirebase();
 
