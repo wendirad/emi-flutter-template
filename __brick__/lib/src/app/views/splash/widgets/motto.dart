@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../app.dart';
+import '../../../../core/app.dart';
 
 class Motto extends StatelessWidget {
   const Motto({super.key});

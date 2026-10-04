@@ -1,11 +1,8 @@
 export 'theme/theme_service.dart';
 export 'theme/app_theme.dart';
-export 'configs/app_module.dart';
-export 'configs/app_widget.dart';
 export 'extensions/build_context_extensions.dart';
 export 'constants/constants.dart';
 export 'presentation/widgets/widgets.dart';
-export 'presentation/view/views.dart';
 export '../modules/auth/presentation/guards/guards.dart';
 export 'failures/failure.dart';
 export '../modules/auth/domain/repositories/i_auth_repository.dart';

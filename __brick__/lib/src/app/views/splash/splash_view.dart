@@ -1,7 +1,7 @@
 // Version A: tiny private StatelessWidgets that read from context
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../../app.dart';
+import '../../../core/app.dart';
 import 'widgets/motto.dart';
 
 class SplashView extends StatelessWidget {

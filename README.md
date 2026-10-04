@@ -116,7 +116,7 @@ dart run flutter_native_splash:create
 
 - Replace the placeholder links (`https://example.com/`) in the settings About screen.
 - Replace `assets/splash/splash_logo.png` and the app icons.
-- Add your own modules under `lib/src/modules/` and register their routes in `lib/src/core/configs/app_module.dart` and `lib/src/core/constants/app_route.dart`.
+- Add your own modules under `lib/src/modules/` and register their routes in `lib/src/app/app_module.dart` and `lib/src/core/constants/app_route.dart`.
 - Android deep links use the host `<project-name>.web.app`. Change it in `AndroidManifest.xml` if you use a different domain.
 
 ## License

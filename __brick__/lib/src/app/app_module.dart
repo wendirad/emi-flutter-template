@@ -2,13 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../app.dart';
-import '../presentation/view/app_shell/app_shell_view.dart';
-import '../presentation/view/home/home_view.dart';
-import '../../modules/auth/auth_module.dart';
-import '../../modules/auth/data/repositories/auth_repository.dart';
-import '../presentation/errors/error_view.dart';
-import '../../modules/settings/settings_module.dart';
+import '../core/app.dart';
+import 'views/app_shell/app_shell_view.dart';
+import 'views/connection_shell/connection_shell_view.dart';
+import 'views/home/home_view.dart';
+import 'views/splash/splash_view.dart';
+import '../modules/auth/auth_module.dart';
+import '../modules/auth/data/repositories/auth_repository.dart';
+import '../core/presentation/errors/error_view.dart';
+import '../modules/settings/settings_module.dart';
 
 class AppModule extends Module {
   AppModule() : super() {

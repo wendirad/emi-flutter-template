@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../../app.dart';
-import '../../../../modules/auth/presentation/blocs/auth_session/auth_session_bloc.dart';
+import '../../../core/app.dart';
+import '../../../modules/auth/presentation/blocs/auth_session/auth_session_bloc.dart';
+import 'widgets/app_navigation_bar.dart';
 
 class AppShellView extends StatefulWidget {
   const AppShellView({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import '../../constants/app_route.dart';
-import '../../extensions/build_context_extensions.dart';
+import '../../../../core/constants/app_route.dart';
+import '../../../../core/extensions/build_context_extensions.dart';
 
 class AppNavigationBar extends StatefulWidget {
   const AppNavigationBar({super.key});
