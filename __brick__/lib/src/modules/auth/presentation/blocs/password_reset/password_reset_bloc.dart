@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../domain/failures/auth_failures.dart';
-import '../../../domain/use_cases/send_password_reset_use_case.dart';
+import '../../../domain/use_cases/send_password_reset_email_use_case.dart';
 
 part 'password_reset_event.dart';
 part 'password_reset_state.dart';

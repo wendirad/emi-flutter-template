@@ -147,7 +147,7 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
                   if (widget.formKey.currentState!.validate()) {
                     ReadContext(context).read<PasswordResetBloc>().add(
                       PasswordResetRequested(
-                        PasswordResetParam(
+                        SendPasswordResetEmailParam(
                           email: _emailKey.currentState!.widget.email,
                         ),
                       ),

@@ -8,7 +8,7 @@ class PasswordResetEvent extends Equatable {
 }
 
 class PasswordResetRequested extends PasswordResetEvent {
-  final PasswordResetParam param;
+  final SendPasswordResetEmailParam param;
 
   const PasswordResetRequested(this.param);
 

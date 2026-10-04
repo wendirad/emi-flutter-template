@@ -36,7 +36,7 @@ class AuthRepository implements IAuthRepository {
 
   @override
   Future<Either<SignUpWithEmailAndPasswordFailure, Unit>>
-  signUpWithEmailandPassword({
+  signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String businessName,
@@ -171,7 +171,7 @@ class AuthRepository implements IAuthRepository {
 
       if (user == null) return none();
 
-      final AuthUserModel userDomain = user.domain();
+      final AuthUserModel userDomain = user.toModel();
 
       final DocumentSnapshot<Map<String, dynamic>> userDoc = await store
           .collection(StoreName.user)

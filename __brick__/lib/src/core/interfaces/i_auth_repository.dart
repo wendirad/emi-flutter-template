@@ -12,7 +12,7 @@ abstract class IAuthRepository {
   Future<Option<AuthUser>> getSignedInUser();
 
   Future<Either<SignUpWithEmailAndPasswordFailure, Unit>>
-  signUpWithEmailandPassword({
+  signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String businessName,

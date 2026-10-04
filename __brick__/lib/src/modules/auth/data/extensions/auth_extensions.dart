@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/auth_models.dart';
 
 extension AuthUserMapperExtensions on User {
-  AuthUserModel domain() {
+  AuthUserModel toModel() {
     return AuthUserModel(
       uid: uid,
       email: email,

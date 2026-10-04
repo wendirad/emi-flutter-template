@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../domain/failures/auth_failures.dart';
-import '../../../domain/use_cases/sign_up_use_case.dart';
+import '../../../domain/use_cases/sign_up_with_email_and_password_use_case.dart';
 
 part 'sign_up_event.dart';
 part 'sign_up_state.dart';

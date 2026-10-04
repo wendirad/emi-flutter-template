@@ -12,7 +12,7 @@ class SignUpWithEmailAndPasswordUseCase implements UseCase<Unit, SignUpParam> {
   Future<Either<SignUpWithEmailAndPasswordFailure, Unit>> call({
     required SignUpParam param,
   }) async {
-    return await authRepository.signUpWithEmailandPassword(
+    return await authRepository.signUpWithEmailAndPassword(
       email: param.email,
       password: param.password,
       businessName: param.businessName,
