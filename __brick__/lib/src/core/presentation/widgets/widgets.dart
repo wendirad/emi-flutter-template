@@ -7,3 +7,4 @@ export 'async_page_loader.dart';
 export 'illustration.dart';
 export 'input_field.dart';
 export 'theme_toggle_button.dart';
+export 'user_avatar.dart';

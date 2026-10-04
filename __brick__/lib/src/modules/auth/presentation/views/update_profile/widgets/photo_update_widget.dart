@@ -1,10 +1,6 @@
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../../../../core/constants/constants.dart';
 import '../../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../../core/presentation/widgets/widgets.dart';
 
@@ -28,6 +24,7 @@ class PhotoUpdateWidget extends StatefulWidget {
 
 class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
   File? _selectedImage;
+  bool _removed = false;
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage(ImageSource source) async {
@@ -42,6 +39,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
       if (image != null) {
         setState(() {
           _selectedImage = File(image.path);
+          _removed = false;
         });
         widget.onPhotoSelected(_selectedImage!);
       }
@@ -80,7 +78,8 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
                 _pickImage(ImageSource.camera);
               },
             ),
-            if (_selectedImage != null || widget.photoUrl != null)
+            if (_selectedImage != null ||
+                (widget.photoUrl != null && !_removed))
               ListTile(
                 leading: Icon(Icons.delete_outline, color: context.cs.error),
                 title: Text(
@@ -91,6 +90,7 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
                   Navigator.pop(context);
                   setState(() {
                     _selectedImage = null;
+                    _removed = true;
                   });
                   widget.onPhotoRemoved();
                 },
@@ -101,116 +101,43 @@ class _PhotoUpdateWidgetState extends State<PhotoUpdateWidget> {
     );
   }
 
-  Future<String> _resolvePhotoUrl() async {
-    if (widget.photoUrl != null) {
-      return await Modular.get<FirebaseStorage>()
-          .refFromURL(widget.photoUrl!)
-          .getDownloadURL();
-    } else {
-      return EndPoints.avatarsPublicProvider;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _resolvePhotoUrl(),
-      builder: (context, snapshot) {
-        final String photoUrl =
-            snapshot.data ?? EndPoints.avatarsPublicProvider;
-
-        return Padding(
-          padding: const EdgeInsets.all(50.0).copyWith(bottom: 30),
-          child: Center(
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // Profile Picture
-                Container(
-                  width: 120,
-                  height: 120,
+    return Padding(
+      padding: const EdgeInsets.all(50.0).copyWith(bottom: 30),
+      child: Center(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            UserAvatar(
+              size: 120,
+              initials: widget.initials,
+              photoUrl: _removed ? null : widget.photoUrl,
+              file: _selectedImage,
+            ),
+            // Edit Icon Overlay
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: _showImageSourceDialog,
+                child: Container(
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [context.cs.primary, context.cs.primaryContainer],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    color: context.cs.primary,
+                    border: Border.all(color: context.cs.surface, width: 3),
                   ),
-                  child:
-                      _selectedImage == null &&
-                          (snapshot.connectionState ==
-                                  ConnectionState.waiting ||
-                              snapshot.connectionState ==
-                                  ConnectionState.active)
-                      ? Center(
-                          child: LoadingAnimationWidget.inkDrop(
-                            color: context.cs.onPrimary,
-                            size: 36,
-                          ),
-                        )
-                      : _buildProfileImage(photoUrl: photoUrl),
-                ),
-                // Edit Icon Overlay
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: _showImageSourceDialog,
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: context.cs.primary,
-                        border: Border.all(color: context.cs.surface, width: 3),
-                      ),
-                      child: Icon(
-                        Icons.edit,
-                        size: 18,
-                        color: context.cs.onPrimary,
-                      ),
-                    ),
+                  child: Icon(
+                    Icons.edit,
+                    size: 18,
+                    color: context.cs.onPrimary,
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildProfileImage({required String photoUrl}) {
-    // Show selected image if available
-    if (_selectedImage != null) {
-      return ClipOval(
-        child: Image.file(
-          _selectedImage!,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _buildPlaceholder(),
-        ),
-      );
-    }
-
-    // Show network image if available
-
-    return ClipOval(
-      child: Image.network(
-        photoUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _buildPlaceholder(),
-      ),
-    );
-  }
-
-  Widget _buildPlaceholder() {
-    return Center(
-      child: Text(
-        widget.initials,
-        style: context.tt.headlineMedium?.copyWith(
-          color: context.cs.onPrimary,
-          fontWeight: FontWeight.bold,
+          ],
         ),
       ),
     );

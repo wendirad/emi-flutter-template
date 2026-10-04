@@ -1,8 +1,6 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
@@ -101,139 +99,55 @@ class _ProfileSettings extends StatelessWidget {
 
   const _ProfileSettings({required this.user});
 
-  Future<String> _resolvePhotoUrl() async {
-    if (user.photoUrl != null) {
-      return await Modular.get<FirebaseStorage>()
-          .refFromURL(user.photoUrl!)
-          .getDownloadURL();
-    } else {
-      return EndPoints.avatarsPublicProvider;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // TODO: Update values when back is pressed after editing profile
-    final displayName = user.displayName;
-    final email = user.email ?? 'No email';
-    final initials = user.initials;
-
-    return FutureBuilder(
-      future: _resolvePhotoUrl(),
-      builder: (context, snapshot) {
-        final String photoUrl =
-            snapshot.data ?? EndPoints.avatarsPublicProvider;
-
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Stack(
-              children: [
-                Positioned(
-                  top: -15,
-                  right: -10,
-                  child: IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    onPressed: () async => await Modular.to.pushNamed(
-                      AppRoute.updateProfile.str,
-                      arguments: user,
-                    ),
-                    tooltip: 'Edit Profile',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 0,
-                      minHeight: 0,
-                    ),
-                  ),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Stack(
+          children: [
+            Positioned(
+              top: -15,
+              right: -10,
+              child: IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: () async => await Modular.to.pushNamed(
+                  AppRoute.updateProfile.str,
+                  arguments: user,
                 ),
-                Row(
-                  children: [
-                    // Avatar
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            context.cs.primary,
-                            context.cs.primaryContainer,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                tooltip: 'Edit Profile',
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+              ),
+            ),
+            Row(
+              children: [
+                UserAvatar(initials: user.initials, photoUrl: user.photoUrl),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.displayName,
+                        style: context.tt.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: context.cs.onSurface,
                         ),
                       ),
-                      child: ClipOval(
-                        child:
-                            snapshot.connectionState ==
-                                    ConnectionState.waiting ||
-                                snapshot.connectionState ==
-                                    ConnectionState.active
-                            ? Center(
-                                child: LoadingAnimationWidget.inkDrop(
-                                  color: context.cs.onPrimary,
-                                  size: 24,
-                                ),
-                              )
-                            : Image.network(
-                                photoUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, stackTrace) {
-                                  debugPrintStack(stackTrace: stackTrace);
-                                  return _AvatarPlaceholder(initials: initials);
-                                },
-                              ),
+                      const SizedBox(height: 4),
+                      Text(
+                        user.email ?? 'No email',
+                        style: context.tt.bodyMedium?.copyWith(
+                          color: context.cs.onSurface.withValues(alpha: 0.7),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    // User Info
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            displayName,
-                            style: context.tt.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: context.cs.onSurface,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            email,
-                            style: context.tt.bodyMedium?.copyWith(
-                              color: context.cs.onSurface.withValues(
-                                alpha: 0.7,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _AvatarPlaceholder extends StatelessWidget {
-  final String initials;
-
-  const _AvatarPlaceholder({required this.initials});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        initials,
-        style: context.tt.headlineMedium?.copyWith(
-          color: context.cs.onPrimary,
-          fontWeight: FontWeight.bold,
+          ],
         ),
       ),
     );
