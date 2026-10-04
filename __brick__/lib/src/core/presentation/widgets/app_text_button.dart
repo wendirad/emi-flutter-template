@@ -1,0 +1,28 @@
+import 'package:flutter/material.dart';
+import '../../app.dart';
+
+class AppTextButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPress;
+
+  const AppTextButton({super.key, required this.text, required this.onPress});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPress,
+      style: context.theme.textButtonTheme.style?.copyWith(
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+        splashFactory: NoSplash.splashFactory,
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontWeight: FontWeight.w900,
+          color: context.isDark ? Colors.white : context.theme.primaryColor,
+          fontSize: 15,
+        ),
+      ),
+    );
+  }
+}

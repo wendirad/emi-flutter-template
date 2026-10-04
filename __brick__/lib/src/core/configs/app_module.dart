@@ -1,0 +1,63 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import '../app.dart';
+import '../presentation/view/app_shell/app_shell_view.dart';
+import '../presentation/view/home/home_view.dart';
+import '../../modules/auth/auth_module.dart';
+import '../../modules/auth/data/repositories/auth_repository.dart';
+import '../../modules/errors/presentation/views/error_view.dart';
+import '../../modules/settings/settings_module.dart';
+
+class AppModule extends Module {
+  AppModule() : super() {
+    Modular.setInitialRoute(AppRoute.home.str);
+  }
+
+  List<ModularRoute> get _routes => [
+    ChildRoute(AppRoute.splash.str, child: (_) => SplashView()),
+    ChildRoute(
+      AppRoute.app.base,
+      child: (_) => ConnectionShellView(),
+      children: [
+        ChildRoute(
+          AppRoute.appShell.base,
+          child: (_) => AppShellView(),
+          guards: [AuthGuard()],
+          children: [
+            ChildRoute(AppRoute.home.base, child: (_) => HomeView()),
+            ModuleRoute(AppRoute.settings.base, module: SettingsModule()),
+          ],
+        ),
+        ModuleRoute(AppRoute.auth.base, module: AuthModule()),
+      ],
+    ),
+
+    WildcardRoute(child: (_) => ErrorView(errorType: ErrorTypes.pageNotFound)),
+  ];
+
+  @override
+  void binds(i) {
+    i.addSingleton(ThemeService.new);
+    i.addLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+    i.addLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+    i.addLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
+    i.addLazySingleton<IAuthRepository>(
+      () => AuthRepository(
+        auth: Modular.get<FirebaseAuth>(),
+        store: Modular.get<FirebaseFirestore>(),
+      ),
+    );
+  }
+
+  @override
+  List<Module> get imports => [AuthModule(), ...super.imports];
+
+  @override
+  void routes(r) {
+    for (ModularRoute route in _routes) {
+      r.add(route);
+    }
+  }
+}

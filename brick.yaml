@@ -1,0 +1,37 @@
+name: flutter_template
+description: Flutter starter with core, auth, errors and settings modules (Firebase, Modular, Bloc).
+version: 0.1.0
+
+environment:
+  mason: ">=0.1.0 <0.2.0"
+
+vars:
+  project_name:
+    type: string
+    description: Project name (snake_case recommended, e.g. my_app)
+    prompt: What is your project name?
+  description:
+    type: string
+    description: Short project description
+    default: A new Flutter project.
+    prompt: Project description?
+  org_name:
+    type: string
+    description: Organization / reverse domain (e.g. com.acme)
+    default: com.example
+    prompt: Organization name (e.g. com.acme)?
+  use_firebase:
+    type: boolean
+    description: Include Firebase config files (rules, indexes, firebase_options placeholder)
+    default: true
+    prompt: Include Firebase config files?
+  use_camera:
+    type: boolean
+    description: iOS camera permission (NSCameraUsageDescription)
+    default: true
+    prompt: Add camera permission (profile photo)?
+  use_photo_library:
+    type: boolean
+    description: iOS photo library permission (NSPhotoLibraryUsageDescription)
+    default: true
+    prompt: Add photo library permission (profile photo)?

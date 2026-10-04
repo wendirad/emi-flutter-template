@@ -1,0 +1,58 @@
+// Version A: tiny private StatelessWidgets that read from context
+import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import '../../../app.dart';
+import 'widgets/motto.dart';
+
+class SplashView extends StatelessWidget {
+  const SplashView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: context.cs.surface,
+      body: SafeArea(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                context.isDark
+                    ? Illustrations.splashScreenDark
+                    : Illustrations.splashScreen,
+              ),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Align(
+                  alignment: Alignment.topRight,
+                  child: ThemeToggleButton(),
+                ),
+
+                const Spacer(flex: 2),
+
+                const Motto(),
+
+                const Spacer(flex: 2),
+
+                AppButton(
+                  title: 'Sign In'.toUpperCase(),
+                  onPress: () => Modular.to.navigate(AppRoute.signIn.str),
+                ),
+
+                AppTextButton(
+                  text: 'Create an account',
+                  onPress: () => Modular.to.navigate(AppRoute.signUp.str),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,36 @@
+import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
+import '../../../../core/app.dart';
+import '../failures/auth_failures.dart';
+
+class SignUpWithEmailAndPasswordUseCase implements UseCase<Unit, SignUpParam> {
+  final IAuthRepository authRepository;
+
+  SignUpWithEmailAndPasswordUseCase({required this.authRepository});
+
+  @override
+  Future<Either<SignUpWithEmailAndPasswordFailure, Unit>> call({
+    required SignUpParam param,
+  }) async {
+    return await authRepository.signUpWithEmailandPassword(
+      email: param.email,
+      password: param.password,
+      businessName: param.businessName,
+    );
+  }
+}
+
+class SignUpParam extends Equatable {
+  final String email;
+  final String password;
+  final String businessName;
+
+  const SignUpParam({
+    required this.email,
+    required this.password,
+    required this.businessName,
+  });
+
+  @override
+  List<Object?> get props => [email, password, businessName];
+}
