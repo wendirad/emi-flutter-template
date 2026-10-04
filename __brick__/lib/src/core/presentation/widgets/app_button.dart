@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import '../../extensions/build_context_extensions.dart';
 
 class AppButton extends StatelessWidget {
@@ -20,30 +19,25 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasPreviousRoute = Modular.to.navigateHistory.length > 1;
-    return hasPreviousRoute
-        ? ElevatedButton(
-            onPressed: isLoading ? null : () async => onPress(),
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 48),
-              backgroundColor: context.cs.primary,
-              foregroundColor: context.cs.onPrimary,
-              disabledBackgroundColor: context.cs.primary,
-              disabledForegroundColor: context.cs.onPrimary,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
-            ),
-            child: isLoading
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      color: context.cs.onPrimary,
-                    ),
-                  )
-                : child ?? Text(title!),
-          )
-        : SizedBox.shrink();
+    return ElevatedButton(
+      onPressed: isLoading ? null : () async => onPress(),
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size(double.infinity, 48),
+        backgroundColor: context.cs.primary,
+        foregroundColor: context.cs.onPrimary,
+        disabledBackgroundColor: context.cs.primary,
+        disabledForegroundColor: context.cs.onPrimary,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+      ),
+      child: isLoading
+          ? SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(color: context.cs.onPrimary),
+            )
+          : child ?? Text(title!),
+    );
   }
 }
