@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../../core/extensions/build_context_extensions.dart';
 
@@ -16,7 +15,7 @@ class Header extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: GoogleFonts.inter(
+          style: context.tt.headlineMedium?.copyWith(
             fontSize: 30,
             fontWeight: FontWeight.w700,
             color: context.cs.secondary,

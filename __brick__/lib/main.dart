@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'firebase_options.dart';
 import 'src/app/app_module.dart';
@@ -69,6 +70,9 @@ Future<void> setupFirebase() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Fonts ship in google_fonts/ so text renders the same offline.
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   await EnvLoader.instance.load();
 

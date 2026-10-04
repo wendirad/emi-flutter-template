@@ -49,3 +49,4 @@ flutter:
     - .env
     - assets/illustrations/
     - assets/splash/
+    - google_fonts/

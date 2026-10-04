@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/extensions/build_context_extensions.dart';
 
@@ -12,13 +11,11 @@ class Motto extends StatelessWidget {
         ? context.cs.primary.withValues(alpha: 0.6)
         : context.cs.primary;
 
-    final baseStyle = GoogleFonts.inter(
-      textStyle: context.tt.headlineLarge?.copyWith(
-        color: context.cs.onSurface,
-        height: 1.1,
-        fontWeight: FontWeight.w700,
-        fontSize: 24,
-      ),
+    final baseStyle = (context.tt.headlineLarge ?? const TextStyle()).copyWith(
+      color: context.cs.onSurface,
+      height: 1.1,
+      fontWeight: FontWeight.w700,
+      fontSize: 24,
     );
 
     return RichText(
