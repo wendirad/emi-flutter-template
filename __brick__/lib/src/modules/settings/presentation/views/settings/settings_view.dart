@@ -20,9 +20,9 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          CurrentUserBloc(getCurrentUser: Modular.get<GetCurrentUserUseCase>())
-            ..add(const CurrentUserRequested()),
-      child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
+          CurrentUserCubit(getCurrentUser: Modular.get<GetCurrentUserUseCase>())
+            ..load(),
+      child: BlocBuilder<CurrentUserCubit, CurrentUserState>(
         builder: (context, state) {
           if (state.data case final user?) {
             return _SettingsContent(user: user);
@@ -32,9 +32,8 @@ class SettingsView extends StatelessWidget {
             return ErrorView(
               title: context.l10n.settingsErrorTitle,
               description: failure.message,
-              onButtonPress: () async => ReadContext(
-                context,
-              ).read<CurrentUserBloc>().add(const CurrentUserRequested()),
+              onButtonPress: () async =>
+                  ReadContext(context).read<CurrentUserCubit>().load(),
             );
           }
 
@@ -84,7 +83,8 @@ class _SettingsContent extends StatelessWidget {
 
               // Sign Out
               BlocProvider(
-                create: (context) => SignOutBloc(signOut: Modular.get<SignOutUseCase>()),
+                create: (context) =>
+                    SignOutCubit(signOut: Modular.get<SignOutUseCase>()),
                 child: const SignOutCard(),
               ),
               const SizedBox(height: 32),

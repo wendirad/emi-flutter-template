@@ -7,7 +7,7 @@ import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
-import '../../blocs/password_reset/password_reset_bloc.dart';
+import '../../cubits/password_reset/password_reset_cubit.dart';
 import '../../extensions/auth_failure_message.dart';
 import '../widgets/widgets.dart';
 
@@ -24,10 +24,11 @@ class _PasswordResetViewState extends State<PasswordResetView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          PasswordResetBloc(sendPasswordResetEmail: Modular.get<SendPasswordResetEmailUseCase>()),
+      create: (_) => PasswordResetCubit(
+        sendPasswordResetEmail: Modular.get<SendPasswordResetEmailUseCase>(),
+      ),
 
-      child: BlocListener<PasswordResetBloc, PasswordResetState>(
+      child: BlocListener<PasswordResetCubit, PasswordResetState>(
         listenWhen: (p, c) => p != c,
         listener: (context, state) async {
           if (state.isSuccess) {
@@ -72,7 +73,7 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
   Widget build(BuildContext context) {
     final PasswordResetState state = WatchContext(
       context,
-    ).watch<PasswordResetBloc>().state;
+    ).watch<PasswordResetCubit>().state;
 
     return Column(
       spacing: 8,
@@ -108,9 +109,8 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
               AppButton(
                 onPress: () {
                   if (widget.formKey.currentState!.validate()) {
-                    ReadContext(context).read<PasswordResetBloc>().add(
-                      PasswordResetRequested(email: _emailController.text.trim(),
-                      ),
+                    ReadContext(context).read<PasswordResetCubit>().submit(
+                      email: _emailController.text.trim(),
                     );
                   }
                 },

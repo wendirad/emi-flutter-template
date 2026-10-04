@@ -6,8 +6,8 @@ import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/use_cases/use_cases.dart';
-import '../../blocs/remembered_email/remembered_email_bloc.dart';
-import '../../blocs/sign_in/sign_in_bloc.dart';
+import '../../cubits/remembered_email/remembered_email_cubit.dart';
+import '../../cubits/sign_in/sign_in_cubit.dart';
 import '../../extensions/auth_failure_message.dart';
 import '../widgets/widgets.dart';
 
@@ -26,17 +26,17 @@ class _SignInViewState extends State<SignInView> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => SignInBloc(
+          create: (_) => SignInCubit(
             signIn: Modular.get<SignInWithEmailAndPasswordUseCase>(),
           ),
         ),
         BlocProvider(
-          create: (_) => RememberedEmailBloc(
+          create: (_) => RememberedEmailCubit(
             getRememberedEmail: Modular.get<GetRememberedEmailUseCase>(),
-          )..add(const RememberedEmailRequested()),
+          )..load(),
         ),
       ],
-      child: BlocListener<SignInBloc, SignInState>(
+      child: BlocListener<SignInCubit, SignInState>(
         listenWhen: (p, c) => p != c,
         listener: (context, state) async {
           if (state.isSuccess) {
@@ -90,9 +90,9 @@ class _SignInFormState extends State<_SignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    final SignInState state = WatchContext(context).watch<SignInBloc>().state;
+    final SignInState state = WatchContext(context).watch<SignInCubit>().state;
 
-    return BlocListener<RememberedEmailBloc, RememberedEmailState>(
+    return BlocListener<RememberedEmailCubit, RememberedEmailState>(
       listenWhen: (p, c) => p != c,
       listener: (context, remembered) => _applyRememberedEmail(remembered.data),
       child: Column(
@@ -141,12 +141,10 @@ class _SignInFormState extends State<_SignInForm> {
                 AppButton(
                   onPress: () {
                     if (widget.formKey.currentState!.validate()) {
-                      ReadContext(context).read<SignInBloc>().add(
-                        SignInRequested(
-                          email: _emailController.text.trim(),
-                          password: _passwordController.text.trim(),
-                          saveInfo: _saveInfo,
-                        ),
+                      ReadContext(context).read<SignInCubit>().submit(
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
+                        saveInfo: _saveInfo,
                       );
                     }
                   },

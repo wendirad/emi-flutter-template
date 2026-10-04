@@ -10,7 +10,7 @@ import '../../../../../core/presentation/errors/errors.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../../auth/auth.dart';
 import '../../../domain/use_cases/update_profile_use_case.dart';
-import '../../blocs/update_profile/update_profile_bloc.dart';
+import '../../cubits/update_profile/update_profile_cubit.dart';
 import '../../extensions/profile_failure_message.dart';
 import '../widgets/profile_form_field.dart';
 import 'widgets/photo_update_widget.dart';
@@ -128,9 +128,10 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
           ),
         ),
         BlocProvider(
-          create: (context) =>
-              UpdateProfileBloc(updateProfile: Modular.get<UpdateProfileUseCase>()),
-          child: BlocConsumer<UpdateProfileBloc, UpdateProfileState>(
+          create: (context) => UpdateProfileCubit(
+            updateProfile: Modular.get<UpdateProfileUseCase>(),
+          ),
+          child: BlocConsumer<UpdateProfileCubit, UpdateProfileState>(
             listenWhen: (p, c) => p != c,
             listener: (context, state) async {
               if (state.isSuccess) {
@@ -178,18 +179,20 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
                         onPress: () {
                           if (!widget.formKey.currentState!.validate()) return;
 
-                          ReadContext(context).read<UpdateProfileBloc>().add(
-                            UpdateProfileRequested(businessName: user is BusinessUser
-                                    ? _businessNameController.text.trim()
-                                    : null,
-                                firstName: _firstNameController.text.trim(),
-                                lastName: _lastNameController.text.trim(),
-                                profilePicture: _profilePicture,
-                                removeProfilePicture: _removeProfilePicture),
+                          ReadContext(
+                            context,
+                          ).read<UpdateProfileCubit>().submit(
+                            businessName: user is BusinessUser
+                                ? _businessNameController.text.trim()
+                                : null,
+                            firstName: _firstNameController.text.trim(),
+                            lastName: _lastNameController.text.trim(),
+                            profilePicture: _profilePicture,
+                            removeProfilePicture: _removeProfilePicture,
                           );
                         },
                         isLoading: state.isInProgress,
-                title: context.l10n.profileUpdateButton,
+                        title: context.l10n.profileUpdateButton,
                       ),
                     ],
                   ),

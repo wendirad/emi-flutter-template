@@ -6,7 +6,7 @@ import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/use_cases/use_cases.dart';
-import '../../blocs/sign_up/sign_up_bloc.dart';
+import '../../cubits/sign_up/sign_up_cubit.dart';
 import '../../extensions/auth_failure_message.dart';
 import '../widgets/widgets.dart';
 
@@ -24,8 +24,8 @@ class _SignUpViewState extends State<SignUpView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          SignUpBloc(signUp: Modular.get<SignUpWithEmailAndPasswordUseCase>()),
-      child: BlocListener<SignUpBloc, SignUpState>(
+          SignUpCubit(signUp: Modular.get<SignUpWithEmailAndPasswordUseCase>()),
+      child: BlocListener<SignUpCubit, SignUpState>(
         listenWhen: (p, c) => p != c,
         listener: (context, state) async {
           if (state.isSuccess) {
@@ -75,7 +75,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    final SignUpState state = WatchContext(context).watch<SignUpBloc>().state;
+    final SignUpState state = WatchContext(context).watch<SignUpCubit>().state;
 
     return Column(
       spacing: 8,
@@ -102,9 +102,7 @@ class _SignUpFormState extends State<_SignUpForm> {
 
               EmailField(controller: _emailController),
 
-              PasswordField(
-                controller: _passwordController,
-              ),
+              PasswordField(controller: _passwordController),
 
               PasswordField(
                 controller: _confirmPasswordController,
@@ -117,11 +115,10 @@ class _SignUpFormState extends State<_SignUpForm> {
               AppButton(
                 onPress: () {
                   if (widget.formKey.currentState!.validate()) {
-                    ReadContext(context).read<SignUpBloc>().add(
-                      SignUpRequested(email: _emailController.text.trim(),
-                          password: _passwordController.text.trim(),
-                          businessName: _businessNameController.text.trim(),
-                      ),
+                    ReadContext(context).read<SignUpCubit>().submit(
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text.trim(),
+                      businessName: _businessNameController.text.trim(),
                     );
                   }
                 },

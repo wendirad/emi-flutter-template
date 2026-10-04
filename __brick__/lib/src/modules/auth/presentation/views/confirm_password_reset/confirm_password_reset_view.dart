@@ -7,7 +7,7 @@ import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
 import '../../../domain/failures/auth_failures.dart';
 import '../../../domain/use_cases/use_cases.dart';
-import '../../blocs/confirm_password_reset/confirm_password_reset_bloc.dart';
+import '../../cubits/confirm_password_reset/confirm_password_reset_cubit.dart';
 import '../../extensions/auth_failure_message.dart';
 import '../widgets/widgets.dart';
 
@@ -33,9 +33,10 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          ConfirmPasswordResetBloc(confirmPasswordReset: Modular.get<ConfirmPasswordResetUseCase>()),
-      child: BlocListener<ConfirmPasswordResetBloc, ConfirmPasswordResetState>(
+      create: (_) => ConfirmPasswordResetCubit(
+        confirmPasswordReset: Modular.get<ConfirmPasswordResetUseCase>(),
+      ),
+      child: BlocListener<ConfirmPasswordResetCubit, ConfirmPasswordResetState>(
         listenWhen: (p, c) => p != c,
         listener: (context, state) {
           if (state.isSuccess) {
@@ -47,9 +48,9 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
           title: context.l10n.fieldConfirmPassword,
           subtitle: context.l10n.confirmResetSubtitle,
           form: _ConfirmPasswordResetViewForm(
-          formKey: _confirmPasswordResetViewFormKey,
-          code: verificationCode,
-        ),
+            formKey: _confirmPasswordResetViewFormKey,
+            code: verificationCode,
+          ),
           footer: AuthFooter(
             prompt: context.l10n.passwordResetRememberPrompt,
             actionText: context.l10n.authSignIn,
@@ -108,7 +109,7 @@ class _ConfirmPasswordResetViewFormState
   Widget build(BuildContext context) {
     final ConfirmPasswordResetState state = WatchContext(
       context,
-    ).watch<ConfirmPasswordResetBloc>().state;
+    ).watch<ConfirmPasswordResetCubit>().state;
 
     return Column(
       spacing: 8,
@@ -127,9 +128,7 @@ class _ConfirmPasswordResetViewFormState
           child: Column(
             spacing: 16,
             children: [
-              PasswordField(
-                controller: _newPasswordController,
-              ),
+              PasswordField(controller: _newPasswordController),
 
               PasswordField(
                 controller: _confirmNewPasswordController,
@@ -142,10 +141,11 @@ class _ConfirmPasswordResetViewFormState
               AppButton(
                 onPress: () {
                   if (widget.formKey.currentState!.validate()) {
-                    ReadContext(context).read<ConfirmPasswordResetBloc>().add(
-                      ConfirmPasswordResetRequested(code: widget.code ?? '',
-                          newPassword: _newPasswordController.text.trim(),
-                      ),
+                    ReadContext(
+                      context,
+                    ).read<ConfirmPasswordResetCubit>().submit(
+                      code: widget.code ?? '',
+                      newPassword: _newPasswordController.text.trim(),
                     );
                   }
                 },

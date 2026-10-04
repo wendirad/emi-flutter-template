@@ -5,7 +5,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import '../../../../../core/constants/constants.dart';
 import '../../../../../core/extensions/build_context_extensions.dart';
 import '../../../../../core/presentation/widgets/widgets.dart';
-import '../../blocs/sign_out/sign_out_bloc.dart';
+import '../../cubits/sign_out/sign_out_cubit.dart';
 import '../../extensions/auth_failure_message.dart';
 import 'sign_out_confirmation_dialog.dart';
 
@@ -14,7 +14,7 @@ class SignOutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SignOutBloc, SignOutState>(
+    return BlocListener<SignOutCubit, SignOutState>(
       listenWhen: (previous, current) => previous != current,
       listener: (context, state) {
         if (state.isSuccess) {
@@ -29,7 +29,7 @@ class SignOutCard extends StatelessWidget {
           icon: Icons.logout,
           title: context.l10n.authSignOut,
           subtitle: context.l10n.signOutSubtitle,
-          trailing: BlocBuilder<SignOutBloc, SignOutState>(
+          trailing: BlocBuilder<SignOutCubit, SignOutState>(
             builder: (context, state) {
               if (state.isInProgress) {
                 return SizedBox(
@@ -58,9 +58,7 @@ class SignOutCard extends StatelessWidget {
     );
 
     if (shouldSignOut == true && context.mounted) {
-      ReadContext(
-        context,
-      ).read<SignOutBloc>().add(const SignOutRequested());
+      await ReadContext(context).read<SignOutCubit>().submit();
     }
   }
 }

@@ -8,7 +8,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:{{project_name.snakeCase()}}/src/modules/profile/domain/failures/profile_failures.dart';
 import 'package:{{project_name.snakeCase()}}/src/modules/profile/domain/use_cases/use_cases.dart';
-import 'package:{{project_name.snakeCase()}}/src/modules/profile/presentation/blocs/update_profile/update_profile_bloc.dart';
+import 'package:{{project_name.snakeCase()}}/src/modules/profile/presentation/cubits/update_profile/update_profile_cubit.dart';
 
 class MockUpdateProfileUseCase extends Mock implements UpdateProfileUseCase {}
 
@@ -17,29 +17,27 @@ class FakeUpdateProfileParam extends Fake implements UpdateProfileParam {}
 void main() {
   late MockUpdateProfileUseCase updateProfile;
 
-  const request = UpdateProfileRequested(
-    firstName: 'Jane',
-    lastName: 'Doe',
-    removeProfilePicture: true,
-  );
-
   setUpAll(() => registerFallbackValue(FakeUpdateProfileParam()));
   setUp(() => updateProfile = MockUpdateProfileUseCase());
 
   test('starts idle', () {
     expect(
-      UpdateProfileBloc(updateProfile: updateProfile).state,
+      UpdateProfileCubit(updateProfile: updateProfile).state,
       const UpdateProfileState.idle(),
     );
   });
 
-  blocTest<UpdateProfileBloc, UpdateProfileState>(
+  blocTest<UpdateProfileCubit, UpdateProfileState>(
     'emits inProgress then success and passes the fields on',
     setUp: () => when(
       () => updateProfile(param: any(named: 'param')),
     ).thenAnswer((_) async => const Right(unit)),
-    build: () => UpdateProfileBloc(updateProfile: updateProfile),
-    act: (bloc) => bloc.add(request),
+    build: () => UpdateProfileCubit(updateProfile: updateProfile),
+    act: (cubit) => cubit.submit(
+      firstName: 'Jane',
+      lastName: 'Doe',
+      removeProfilePicture: true,
+    ),
     expect: () => [
       const UpdateProfileState.inProgress(),
       const UpdateProfileState.success(),
@@ -55,13 +53,17 @@ void main() {
     },
   );
 
-  blocTest<UpdateProfileBloc, UpdateProfileState>(
+  blocTest<UpdateProfileCubit, UpdateProfileState>(
     'emits inProgress then the failure when the update fails',
     setUp: () => when(
       () => updateProfile(param: any(named: 'param')),
     ).thenAnswer((_) async => Left(ProfileUpdateFailure.fromCode('x'))),
-    build: () => UpdateProfileBloc(updateProfile: updateProfile),
-    act: (bloc) => bloc.add(request),
+    build: () => UpdateProfileCubit(updateProfile: updateProfile),
+    act: (cubit) => cubit.submit(
+      firstName: 'Jane',
+      lastName: 'Doe',
+      removeProfilePicture: true,
+    ),
     expect: () => [
       const UpdateProfileState.inProgress(),
       UpdateProfileState.failure(ProfileUpdateFailure.fromCode('x')),
