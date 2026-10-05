@@ -20,7 +20,7 @@ class _AppShellViewState extends State<AppShellView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => AuthSessionBloc(
-        observeAuthSession: Modular.get<ObserveAuthSessionUseCase>(),
+        observeAuthSession: inject<ObserveAuthSessionUseCase>(),
       )..add(AuthSessionUserSubscriptionRequested()),
       child: BlocListener<AuthSessionBloc, AuthSessionState>(
         listenWhen: (p, c) => p != c,
@@ -36,7 +36,7 @@ class _AppShellViewState extends State<AppShellView> {
         AppSnackBar.error(context, failure.message);
       }
 
-      Modular.to.navigate(AppRoute.signIn.str);
+      context.navigate(AppRoute.signIn.str);
     }
   }
 }

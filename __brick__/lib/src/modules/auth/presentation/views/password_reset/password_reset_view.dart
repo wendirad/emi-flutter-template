@@ -25,7 +25,7 @@ class _PasswordResetViewState extends State<PasswordResetView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => PasswordResetCubit(
-        sendPasswordResetEmail: Modular.get<SendPasswordResetEmailUseCase>(),
+        sendPasswordResetEmail: inject<SendPasswordResetEmailUseCase>(),
       ),
 
       child: BlocListener<PasswordResetCubit, PasswordResetState>(
@@ -33,7 +33,7 @@ class _PasswordResetViewState extends State<PasswordResetView> {
         listener: (context, state) async {
           if (state.isSuccess) {
             AppSnackBar.success(context, context.l10n.passwordResetEmailSent);
-            Modular.to.navigate(AppRoute.signIn.str);
+            context.navigate(AppRoute.signIn.str);
           }
         },
         child: AuthScaffold(
@@ -43,7 +43,7 @@ class _PasswordResetViewState extends State<PasswordResetView> {
           footer: AuthFooter(
             prompt: context.l10n.passwordResetRememberPrompt,
             actionText: context.l10n.authSignIn,
-            onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
+            onAction: () => context.pushNamed(AppRoute.signIn.str),
           ),
         ),
       ),
@@ -87,7 +87,7 @@ class _PasswordResetViewFormState extends State<_PasswordResetViewForm> {
           ),
         ],
 
-        if (Modular.args.data case final PasswordResetConfirmFailure failure
+        if (context.routeState().arguments case final PasswordResetConfirmFailure failure
             when state.isIdle) ...[
           AppAlert(
             title: context.l10n.passwordResetConfirmationFailedTitle,

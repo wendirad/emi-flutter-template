@@ -5,31 +5,13 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
 
-class AppNavigationBar extends StatefulWidget {
+class AppNavigationBar extends StatelessWidget {
   const AppNavigationBar({super.key});
 
   @override
-  State<StatefulWidget> createState() => _AppNavigationBarState();
-}
-
-class _AppNavigationBarState extends State<AppNavigationBar> {
-  int _selectedIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedIndex = _indexForCurrentRoute() ?? _selectedIndex;
-    Modular.to.addListener(_syncSelectedIndex);
-  }
-
-  @override
-  void dispose() {
-    Modular.to.removeListener(_syncSelectedIndex);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final int selectedIndex = _indexForPath(context.routeState().uri.path) ?? 0;
+
     return Container(
       decoration: BoxDecoration(
         color: context.cs.primaryContainer.withAlpha(150),
@@ -60,39 +42,31 @@ class _AppNavigationBarState extends State<AppNavigationBar> {
                 text: context.l10n.navSettings,
               ),
             ],
-            selectedIndex: _selectedIndex,
-            onTabChange: _navigate,
+            selectedIndex: selectedIndex,
+            onTabChange: (index) => _navigate(context, selectedIndex, index),
           ),
         ),
       ),
     );
   }
 
-  void _navigate(int index) {
-    if (index == _selectedIndex) return;
-    if (mounted) setState(() => _selectedIndex = index);
+  void _navigate(BuildContext context, int selectedIndex, int index) {
+    if (index == selectedIndex) return;
 
-    Modular.to.navigate(switch (index) {
+    context.navigate(switch (index) {
       0 => AppRoute.home.str,
       1 => AppRoute.settings.str,
       _ => AppRoute.notFound.str,
     });
   }
 
-  int? _indexForCurrentRoute() {
-    final current = AppRoute.current;
+  int? _indexForPath(String path) {
+    final current = AppRoute.fromPath(path);
     if (current.isOrIsChildOf(AppRoute.home)) return 0;
     if (current.isOrIsChildOf(AppRoute.settings) ||
         current.isOrIsChildOf(AppRoute.profile)) {
       return 1;
     }
     return null;
-  }
-
-  void _syncSelectedIndex() {
-    final int? index = _indexForCurrentRoute();
-    if (mounted && index != null && index != _selectedIndex) {
-      setState(() => _selectedIndex = index);
-    }
   }
 }

@@ -61,14 +61,17 @@ class _ProfileUpdateForm extends StatefulWidget {
 class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
   File? _profilePicture;
   bool _removeProfilePicture = false;
+  bool _prefilled = false;
 
   final TextEditingController _businessNameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_prefilled) return;
+    _prefilled = true;
     _loadPrefilledData();
   }
 
@@ -82,7 +85,7 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Modular.args.data;
+    final user = context.routeState().arguments;
 
     if (user == null || user is! AuthUser) {
       return ErrorView(
@@ -129,14 +132,14 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
         ),
         BlocProvider(
           create: (context) => UpdateProfileCubit(
-            updateProfile: Modular.get<UpdateProfileUseCase>(),
+            updateProfile: inject<UpdateProfileUseCase>(),
           ),
           child: BlocConsumer<UpdateProfileCubit, UpdateProfileState>(
             listenWhen: (p, c) => p != c,
             listener: (context, state) async {
               if (state.isSuccess) {
                 AppSnackBar.success(context, context.l10n.profileUpdateSuccess);
-                await Modular.to.popAndPushNamed(AppRoute.settings.str);
+                await context.popAndPushNamed(AppRoute.settings.str);
               }
             },
             builder: (context, state) {
@@ -206,7 +209,7 @@ class _ProfileUpdateFormState extends State<_ProfileUpdateForm> {
   }
 
   void _loadPrefilledData() {
-    final user = Modular.args.data;
+    final user = context.routeState(listen: false).arguments;
     if (user is! AuthUser) return;
 
     if (user is BusinessUser) {

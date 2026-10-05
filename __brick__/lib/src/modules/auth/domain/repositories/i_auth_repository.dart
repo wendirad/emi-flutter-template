@@ -4,7 +4,7 @@ import '../entities/auth_entities.dart';
 import '../failures/auth_failures.dart';
 
 abstract class IAuthRepository {
-  Future<bool> get isAuthenticated;
+  bool get isAuthenticated;
 
   Future<Either<AuthSessionFailure, Stream<bool>>> get authStateChanges;
 

@@ -9,33 +9,25 @@ import 'domain/repositories/i_profile_repository.dart';
 import 'domain/use_cases/use_cases.dart';
 import 'presentation/views/views.dart';
 
-class ProfileModule extends Module {
-  final List<ModularRoute> _routes = [
-    ChildRoute(AppRoute.updateProfile.base, child: (_) => UpdateProfileView()),
-  ];
-
-  @override
-  void binds(Injector i) {
-    i.addLazySingleton<IProfileRepository>(
+/// Profile dependencies and routes. Mount with
+/// `c.module(profileModule, at: AppRoute.profile.base)`; the binds live while a
+/// profile route is open.
+final Module profileModule = createModule(
+  register: (c) {
+    c.addLazySingleton<IProfileRepository>(
       () => ProfileRepository(
-        auth: Modular.get<FirebaseAuth>(),
-        store: Modular.get<FirebaseFirestore>(),
-        storage: Modular.get<FirebaseStorage>(),
+        auth: inject<FirebaseAuth>(),
+        store: inject<FirebaseFirestore>(),
+        storage: inject<FirebaseStorage>(),
       ),
     );
 
-    i.addLazySingleton<UpdateProfileUseCase>(
+    c.addLazySingleton<UpdateProfileUseCase>(
       () => UpdateProfileUseCase(
-        profileRepository: Modular.get<IProfileRepository>(),
+        profileRepository: inject<IProfileRepository>(),
       ),
     );
-  }
 
-  @override
-  void routes(RouteManager r) {
-    super.routes(r);
-    for (final ModularRoute route in _routes) {
-      r.add(route);
-    }
-  }
-}
+    c.route(AppRoute.updateProfile.base, child: (_, _) => UpdateProfileView());
+  },
+);

@@ -25,7 +25,7 @@ class AuthRepository implements IAuthRepository {
   });
 
   @override
-  Future<bool> get isAuthenticated async => auth.currentUser != null;
+  bool get isAuthenticated => auth.currentUser != null;
 
   @override
   Future<Either<AuthSessionFailure, Stream<bool>>> get authStateChanges async {

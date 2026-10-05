@@ -56,7 +56,7 @@ class ErrorView extends StatelessWidget {
                 description: description ?? content.description,
                 button: button,
                 buttonText: buttonText ?? content.buttonText,
-                onPress: onButtonPress ?? content.onPress,
+                onPress: onButtonPress ?? () => content.onPress(context),
               ),
             ],
           ),
@@ -72,7 +72,7 @@ class _ErrorContent {
   final String title;
   final String description;
   final String buttonText;
-  final AsyncCallback onPress;
+  final Future<void> Function(BuildContext context) onPress;
 
   const _ErrorContent({
     required this.illustration,
@@ -88,10 +88,9 @@ class _ErrorContent {
       title: l10n.errorPageNotFoundTitle,
       description: l10n.errorPageNotFoundMessage,
       buttonText: l10n.actionBack,
-      onPress: () async {
-        final canPop = await Modular.to.maybePop();
-        if (!canPop) {
-          await Modular.to.pushReplacementNamed(AppRoute.home.str);
+      onPress: (context) async {
+        if (!context.maybePop()) {
+          await context.replace(AppRoute.home.str);
         }
       },
     ),
@@ -100,26 +99,27 @@ class _ErrorContent {
       title: l10n.errorNoConnectionTitle,
       description: l10n.errorNoConnectionMessage,
       buttonText: l10n.actionTryAgain,
-      onPress: () async => Modular.to.navigate(Modular.to.path),
+      onPress: (context) async =>
+          context.navigate(context.routeState(listen: false).uri.toString()),
     ),
     ErrorTypes.underMaintenance => _ErrorContent(
       illustration: Illustrations.underMaintenance,
       title: l10n.errorMaintenanceTitle,
       description: l10n.errorMaintenanceMessage,
       buttonText: l10n.actionTryAgain,
-      onPress: () async {},
+      onPress: (_) async {},
     ),
     ErrorTypes.noData => _ErrorContent(
       illustration: Illustrations.noData,
       title: l10n.errorNoDataTitle,
       description: l10n.errorNoDataMessage,
       buttonText: l10n.actionRetry,
-      onPress: () async {
-        final String path = Modular.to.path;
-        if (Modular.to.canPop()) {
-          await Modular.to.popAndPushNamed(path);
+      onPress: (context) async {
+        final String path = context.routeState(listen: false).uri.toString();
+        if (context.canPop()) {
+          await context.popAndPushNamed(path);
         } else {
-          await Modular.to.pushNamed(path);
+          await context.pushNamed(path);
         }
       },
     ),
@@ -128,7 +128,9 @@ class _ErrorContent {
       title: l10n.errorUnknownTitle,
       description: l10n.errorUnknownMessage,
       buttonText: l10n.actionTryAgain,
-      onPress: () async => await Modular.to.pushNamed(Modular.to.path),
+      onPress: (context) async => await context.pushNamed(
+        context.routeState(listen: false).uri.toString(),
+      ),
     ),
   };
 }

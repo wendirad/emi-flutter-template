@@ -22,7 +22,8 @@ class ConfirmPasswordResetView extends StatefulWidget {
 class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
   final _confirmPasswordResetViewFormKey = GlobalKey<FormState>();
 
-  late final String? verificationCode;
+  String? verificationCode;
+  bool _verifying = true;
 
   @override
   void initState() {
@@ -32,16 +33,20 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
 
   @override
   Widget build(BuildContext context) {
+    if (_verifying) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return BlocProvider(
       create: (_) => ConfirmPasswordResetCubit(
-        confirmPasswordReset: Modular.get<ConfirmPasswordResetUseCase>(),
+        confirmPasswordReset: inject<ConfirmPasswordResetUseCase>(),
       ),
       child: BlocListener<ConfirmPasswordResetCubit, ConfirmPasswordResetState>(
         listenWhen: (p, c) => p != c,
         listener: (context, state) {
           if (state.isSuccess) {
             AppSnackBar.success(context, context.l10n.confirmResetSuccess);
-            Modular.to.navigate(AppRoute.signIn.str);
+            context.navigate(AppRoute.signIn.str);
           }
         },
         child: AuthScaffold(
@@ -54,27 +59,38 @@ class _ConfirmPasswordResetViewState extends State<ConfirmPasswordResetView> {
           footer: AuthFooter(
             prompt: context.l10n.passwordResetRememberPrompt,
             actionText: context.l10n.authSignIn,
-            onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
+            onAction: () => context.pushNamed(AppRoute.signIn.str),
           ),
         ),
       ),
     );
   }
 
-  void _checkVerificationCode() {
-    final Object? data = Modular.args.data;
-    verificationCode = switch (data) {
-      VerifyPasswordResetCodeParam(:final code) => code,
-      Map() => data['code'] as String?,
-      _ => null,
+  Future<void> _checkVerificationCode() async {
+    final Object? data = context.routeState(listen: false).arguments;
+    final String oobCode = switch (data) {
+      Map() => data['oobCode'] as String? ?? '',
+      _ => '',
     };
 
-    if (verificationCode == null) {
-      Modular.to.navigate(
-        AppRoute.resetPassword.str,
-        arguments: PasswordResetConfirmFailure.fromCode('invalid-action-code'),
-      );
+    final verification = await inject<VerifyPasswordResetCodeUseCase>()(
+      param: VerifyPasswordResetCodeParam(code: oobCode),
+    );
+    if (!mounted) return;
+
+    final PasswordResetConfirmFailure? failure = verification.fold(
+      (l) => l,
+      (_) => null,
+    );
+    if (failure != null) {
+      context.navigate(AppRoute.resetPassword.str, arguments: failure);
+      return;
     }
+
+    setState(() {
+      verificationCode = oobCode;
+      _verifying = false;
+    });
   }
 }
 

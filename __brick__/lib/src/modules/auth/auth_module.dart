@@ -10,88 +10,84 @@ import 'domain/use_cases/use_cases.dart';
 import 'presentation/guards/guards.dart';
 import 'presentation/views/views.dart';
 
-class AuthModule extends Module {
-  List<ModularRoute> get _routes => [
-    ChildRoute(AppRoute.signUp.base, child: (_) => SignUpView()),
-    ChildRoute(AppRoute.signIn.base, child: (_) => SignInView()),
-    ChildRoute(AppRoute.resetPassword.base, child: (_) => PasswordResetView()),
-    ChildRoute(
-      AppRoute.confirmPasswordReset.base,
-      child: (_) => ConfirmPasswordResetView(),
-      guards: [PasswordResetGuard()],
-    ),
-  ];
+final Module _authRoutes = createModule(
+  register: (c) {
+    c
+      ..route(AppRoute.signUp.base, child: (_, _) => SignUpView())
+      ..route(AppRoute.signIn.base, child: (_, _) => SignInView())
+      ..route(AppRoute.resetPassword.base, child: (_, _) => PasswordResetView())
+      ..route(
+        AppRoute.confirmPasswordReset.base,
+        child: (_, _) => ConfirmPasswordResetView(),
+        guards: [passwordResetGuard],
+      );
+  },
+);
 
-  @override
-  void exportedBinds(Injector i) {
-    i.addLazySingleton<IAuthRepository>(
+/// Auth dependencies, root-owned because the app shell and settings use them.
+/// Register inside the `/app` children; the routes mount at `/app/auth/...`.
+final Module authModule = createModule(
+  register: (c) {
+    c.addLazySingleton<IAuthRepository>(
       () => AuthRepository(
-        auth: Modular.get<FirebaseAuth>(),
-        store: Modular.get<FirebaseFirestore>(),
-        storage: Modular.get<FirebaseStorage>(),
+        auth: inject<FirebaseAuth>(),
+        store: inject<FirebaseFirestore>(),
+        storage: inject<FirebaseStorage>(),
       ),
     );
 
-    i.addLazySingleton<SignUpWithEmailAndPasswordUseCase>(
+    c.addLazySingleton<SignUpWithEmailAndPasswordUseCase>(
       () => SignUpWithEmailAndPasswordUseCase(
-        authRepository: Modular.get<IAuthRepository>(),
+        authRepository: inject<IAuthRepository>(),
       ),
     );
 
-    i.addLazySingleton<SignInWithEmailAndPasswordUseCase>(
+    c.addLazySingleton<SignInWithEmailAndPasswordUseCase>(
       () => SignInWithEmailAndPasswordUseCase(
-        authRepository: Modular.get<IAuthRepository>(),
+        authRepository: inject<IAuthRepository>(),
       ),
     );
 
-    i.addLazySingleton<SendPasswordResetEmailUseCase>(
+    c.addLazySingleton<SendPasswordResetEmailUseCase>(
       () => SendPasswordResetEmailUseCase(
-        authRepository: Modular.get<IAuthRepository>(),
+        authRepository: inject<IAuthRepository>(),
       ),
     );
 
-    i.addLazySingleton<VerifyPasswordResetCodeUseCase>(
+    c.addLazySingleton<VerifyPasswordResetCodeUseCase>(
       () => VerifyPasswordResetCodeUseCase(
-        authRepository: Modular.get<IAuthRepository>(),
+        authRepository: inject<IAuthRepository>(),
       ),
     );
 
-    i.addLazySingleton<ConfirmPasswordResetUseCase>(
+    c.addLazySingleton<ConfirmPasswordResetUseCase>(
       () => ConfirmPasswordResetUseCase(
-        authRepository: Modular.get<IAuthRepository>(),
+        authRepository: inject<IAuthRepository>(),
       ),
     );
 
-    i.addLazySingleton<GetCurrentUserUseCase>(
+    c.addLazySingleton<GetCurrentUserUseCase>(
       () => GetCurrentUserUseCase(
-        authRepository: Modular.get<IAuthRepository>(),
+        authRepository: inject<IAuthRepository>(),
       ),
     );
 
-    i.addLazySingleton<GetRememberedEmailUseCase>(
+    c.addLazySingleton<GetRememberedEmailUseCase>(
       () => GetRememberedEmailUseCase(
-        authRepository: Modular.get<IAuthRepository>(),
+        authRepository: inject<IAuthRepository>(),
       ),
     );
 
-    i.addLazySingleton<ObserveAuthSessionUseCase>(
+    c.addLazySingleton<ObserveAuthSessionUseCase>(
       () => ObserveAuthSessionUseCase(
-        authRepository: Modular.get<IAuthRepository>(),
+        authRepository: inject<IAuthRepository>(),
       ),
     );
 
-    i.addLazySingleton<SignOutUseCase>(
-      () => SignOutUseCase(authRepository: Modular.get<IAuthRepository>()),
+    c.addLazySingleton<SignOutUseCase>(
+      () => SignOutUseCase(authRepository: inject<IAuthRepository>()),
     );
 
-    super.exportedBinds(i);
-  }
-
-  @override
-  void routes(RouteManager r) {
-    for (final ModularRoute route in _routes) {
-      r.add(route);
-    }
-    super.routes(r);
-  }
-}
+    c.module(_authRoutes, at: AppRoute.auth.base);
+  },
+);

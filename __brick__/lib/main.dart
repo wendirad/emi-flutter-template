@@ -87,7 +87,8 @@ void main() async {
 
   runApp(
     ModularApp(
-      module: AppModule(
+      initialRoute: AppRoute.home.str,
+      module: appModule(
         themeService: themeService,
         localeService: localeService,
       ),

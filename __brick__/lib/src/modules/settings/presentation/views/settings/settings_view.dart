@@ -20,7 +20,7 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          CurrentUserCubit(getCurrentUser: Modular.get<GetCurrentUserUseCase>())
+          CurrentUserCubit(getCurrentUser: inject<GetCurrentUserUseCase>())
             ..load(),
       child: BlocBuilder<CurrentUserCubit, CurrentUserState>(
         builder: (context, state) {
@@ -84,7 +84,7 @@ class _SettingsContent extends StatelessWidget {
               // Sign Out
               BlocProvider(
                 create: (context) =>
-                    SignOutCubit(signOut: Modular.get<SignOutUseCase>()),
+                    SignOutCubit(signOut: inject<SignOutUseCase>()),
                 child: const SignOutCard(),
               ),
               const SizedBox(height: 32),
@@ -121,7 +121,7 @@ class _ProfileSettings extends StatelessWidget {
               right: -10,
               child: IconButton(
                 icon: const Icon(Icons.edit_outlined),
-                onPressed: () async => await Modular.to.pushNamed(
+                onPressed: () async => await context.pushNamed(
                   AppRoute.updateProfile.str,
                   arguments: user,
                 ),
@@ -194,13 +194,13 @@ class _GeneralSettings extends StatelessWidget {
               ),
               const Divider(height: 1),
               ListenableBuilder(
-                listenable: Modular.get<LocaleService>(),
+                listenable: inject<LocaleService>(),
                 builder: (context, _) => _SettingsTile(
                   icon: Icons.language,
                   title: context.l10n.settingsLanguageTitle,
                   subtitle: currentLanguageLabel(
                     context,
-                    Modular.get<LocaleService>().locale,
+                    inject<LocaleService>().locale,
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => showLanguageSheet(context),
@@ -220,7 +220,7 @@ class _ThemeToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDark;
-    final themeService = Modular.get<ThemeService>();
+    final themeService = inject<ThemeService>();
 
     return Switch(
       value: isDark,
@@ -277,7 +277,7 @@ class _AccountSettings extends StatelessWidget {
                 subtitle: context.l10n.settingsAboutSubtitle,
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () async {
-                  await Modular.to.pushNamed(AppRoute.about.str);
+                  await context.pushNamed(AppRoute.about.str);
                 },
               ),
             ],

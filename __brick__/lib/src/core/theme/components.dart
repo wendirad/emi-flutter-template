@@ -1,8 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_ui/material_ui.dart' as mui;
 
 import 'app_colors.dart';
 import 'palette.dart';
+
+/// google_fonts 9 speaks `material_ui` types, so convert across the boundary.
+TextTheme _poppins(TextTheme base) {
+  final mui.TextTheme t = GoogleFonts.poppinsTextTheme(
+    mui.TextTheme(
+      displayLarge: base.displayLarge,
+      displayMedium: base.displayMedium,
+      displaySmall: base.displaySmall,
+      headlineLarge: base.headlineLarge,
+      headlineMedium: base.headlineMedium,
+      headlineSmall: base.headlineSmall,
+      titleLarge: base.titleLarge,
+      titleMedium: base.titleMedium,
+      titleSmall: base.titleSmall,
+      bodyLarge: base.bodyLarge,
+      bodyMedium: base.bodyMedium,
+      bodySmall: base.bodySmall,
+      labelLarge: base.labelLarge,
+      labelMedium: base.labelMedium,
+      labelSmall: base.labelSmall,
+    ),
+  );
+  return TextTheme(
+    displayLarge: t.displayLarge,
+    displayMedium: t.displayMedium,
+    displaySmall: t.displaySmall,
+    headlineLarge: t.headlineLarge,
+    headlineMedium: t.headlineMedium,
+    headlineSmall: t.headlineSmall,
+    titleLarge: t.titleLarge,
+    titleMedium: t.titleMedium,
+    titleSmall: t.titleSmall,
+    bodyLarge: t.bodyLarge,
+    bodyMedium: t.bodyMedium,
+    bodySmall: t.bodySmall,
+    labelLarge: t.labelLarge,
+    labelMedium: t.labelMedium,
+    labelSmall: t.labelSmall,
+  );
+}
 
 ThemeData buildBaseTheme(ColorScheme scheme) {
   final isDark = scheme.brightness == Brightness.dark;
@@ -22,7 +63,7 @@ ThemeData buildBaseTheme(ColorScheme scheme) {
     splashFactory: InkSparkle.splashFactory,
 
     // Typography
-    textTheme: GoogleFonts.poppinsTextTheme(textTheme),
+    textTheme: _poppins(textTheme),
 
     // AppBar
     appBarTheme: AppBarTheme(

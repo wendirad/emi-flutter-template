@@ -27,12 +27,12 @@ class _SignInViewState extends State<SignInView> {
       providers: [
         BlocProvider(
           create: (_) => SignInCubit(
-            signIn: Modular.get<SignInWithEmailAndPasswordUseCase>(),
+            signIn: inject<SignInWithEmailAndPasswordUseCase>(),
           ),
         ),
         BlocProvider(
           create: (_) => RememberedEmailCubit(
-            getRememberedEmail: Modular.get<GetRememberedEmailUseCase>(),
+            getRememberedEmail: inject<GetRememberedEmailUseCase>(),
           )..load(),
         ),
       ],
@@ -42,7 +42,7 @@ class _SignInViewState extends State<SignInView> {
           if (state.isSuccess) {
             AppSnackBar.success(context, context.l10n.signInSuccess);
 
-            Modular.to.navigate(AppRoute.home.str);
+            context.navigate(AppRoute.home.str);
           }
         },
         child: AuthScaffold(
@@ -52,7 +52,7 @@ class _SignInViewState extends State<SignInView> {
           footer: AuthFooter(
             prompt: context.l10n.signInNoAccountPrompt,
             actionText: context.l10n.authSignUp,
-            onAction: () => Modular.to.pushNamed(AppRoute.signUp.str),
+            onAction: () => context.pushNamed(AppRoute.signUp.str),
           ),
         ),
       ),
@@ -130,7 +130,7 @@ class _SignInFormState extends State<_SignInForm> {
                     AppTextButton(
                       text: context.l10n.signInForgotPassword,
                       onPress: () async {
-                        await Modular.to.pushNamed(AppRoute.resetPassword.str);
+                        await context.pushNamed(AppRoute.resetPassword.str);
                       },
                     ),
                   ],

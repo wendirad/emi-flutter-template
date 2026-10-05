@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 
 class AppRoute {
   static final AppRouteNode root = AppRouteNode('/');
@@ -26,8 +25,7 @@ class AppRoute {
   static final AppRouteNode profile = appShell.child('/profile');
   static final AppRouteNode updateProfile = profile.child('/edit');
 
-  static AppRouteNode get current {
-    final String currentPath = Modular.to.path;
+  static AppRouteNode fromPath(String currentPath) {
     String normalize(String s) {
       final cleaned = s.split('?').first.split('#').first;
       return cleaned.length > 1

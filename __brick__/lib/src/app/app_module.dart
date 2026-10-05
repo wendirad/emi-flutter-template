@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../core/constants/constants.dart';
@@ -15,58 +16,45 @@ import 'views/connection_shell/connection_shell_view.dart';
 import 'views/home/home_view.dart';
 import 'views/splash/splash_view.dart';
 
-class AppModule extends Module {
-  final ThemeService _themeService;
-  final LocaleService _localeService;
+Module appModule({
+  required ThemeService themeService,
+  required LocaleService localeService,
+}) {
+  return createModule(
+    register: (c) {
+      c
+        ..addInstance<ThemeService>(themeService)
+        ..addInstance<LocaleService>(localeService)
+        ..addLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance)
+        ..addLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance)
+        ..addLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance)
+        ..route(AppRoute.splash.str, child: (_, _) => SplashView())
+        ..route(AppRoute.notFound.str, child: (_, _) => _NotFound())
+        ..route(
+          AppRoute.app.base,
+          child: (_, _) => ConnectionShellView(),
+          children: (c) {
+            c
+              ..module(authModule)
+              ..route(
+                AppRoute.appShell.base,
+                child: (_, _) => AppShellView(),
+                guards: [authGuard],
+                children: (c) {
+                  c
+                    ..route(AppRoute.home.base, child: (_, _) => HomeView())
+                    ..module(profileModule, at: AppRoute.profile.base)
+                    ..module(settingsModule, at: AppRoute.settings.base);
+                },
+              );
+          },
+        );
+    },
+  );
+}
 
-  AppModule({
-    required ThemeService themeService,
-    required LocaleService localeService,
-  }) : _themeService = themeService,
-       _localeService = localeService,
-      super() {
-    Modular.setInitialRoute(AppRoute.home.str);
-  }
-
-  List<ModularRoute> get _routes => [
-    ChildRoute(AppRoute.splash.str, child: (_) => SplashView()),
-    ChildRoute(
-      AppRoute.app.base,
-      child: (_) => ConnectionShellView(),
-      children: [
-        ChildRoute(
-          AppRoute.appShell.base,
-          child: (_) => AppShellView(),
-          guards: [AuthGuard()],
-          children: [
-            ChildRoute(AppRoute.home.base, child: (_) => HomeView()),
-            ModuleRoute(AppRoute.profile.base, module: ProfileModule()),
-            ModuleRoute(AppRoute.settings.base, module: SettingsModule()),
-          ],
-        ),
-        ModuleRoute(AppRoute.auth.base, module: AuthModule()),
-      ],
-    ),
-
-    WildcardRoute(child: (_) => ErrorView(errorType: ErrorTypes.pageNotFound)),
-  ];
-
+class _NotFound extends StatelessWidget {
   @override
-  void binds(i) {
-    i.addInstance<ThemeService>(_themeService);
-    i.addInstance<LocaleService>(_localeService);
-    i.addLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-    i.addLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
-    i.addLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
-  }
-
-  @override
-  List<Module> get imports => [AuthModule(), ...super.imports];
-
-  @override
-  void routes(r) {
-    for (final ModularRoute route in _routes) {
-      r.add(route);
-    }
-  }
+  Widget build(BuildContext context) =>
+      const ErrorView(errorType: ErrorTypes.pageNotFound);
 }

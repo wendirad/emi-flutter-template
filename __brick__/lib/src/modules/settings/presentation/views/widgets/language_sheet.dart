@@ -12,7 +12,7 @@ String currentLanguageLabel(BuildContext context, Locale? selected) =>
 
 /// Lets the user pick the app language, or follow the device.
 Future<void> showLanguageSheet(BuildContext context) {
-  final LocaleService service = Modular.get<LocaleService>();
+  final LocaleService service = inject<LocaleService>();
 
   return showModalBottomSheet<void>(
     context: context,

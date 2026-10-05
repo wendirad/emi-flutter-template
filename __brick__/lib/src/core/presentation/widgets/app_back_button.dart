@@ -8,23 +8,14 @@ class AppBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: Future.value(Modular.to.canPop()),
-      builder: (context, snapshot) {
-        final canPop = snapshot.data ?? false;
-        if (!canPop) {
-          return const SizedBox.shrink();
-        }
-        return IconButton(
-          tooltip: context.l10n.actionBack,
-          icon: const Icon(Icons.arrow_back),
-          color: context.appColors.onOverlay,
-          style: IconButton.styleFrom(
-            backgroundColor: context.appColors.overlay,
-          ),
-          onPressed: () async => await Modular.to.maybePop(),
-        );
-      },
+    if (!context.canPop()) return const SizedBox.shrink();
+
+    return IconButton(
+      tooltip: context.l10n.actionBack,
+      icon: const Icon(Icons.arrow_back),
+      color: context.appColors.onOverlay,
+      style: IconButton.styleFrom(backgroundColor: context.appColors.overlay),
+      onPressed: context.maybePop,
     );
   }
 }

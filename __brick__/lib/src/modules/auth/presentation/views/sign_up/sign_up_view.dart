@@ -24,13 +24,13 @@ class _SignUpViewState extends State<SignUpView> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          SignUpCubit(signUp: Modular.get<SignUpWithEmailAndPasswordUseCase>()),
+          SignUpCubit(signUp: inject<SignUpWithEmailAndPasswordUseCase>()),
       child: BlocListener<SignUpCubit, SignUpState>(
         listenWhen: (p, c) => p != c,
         listener: (context, state) async {
           if (state.isSuccess) {
             AppSnackBar.success(context, context.l10n.signUpSuccess);
-            Modular.to.navigate(AppRoute.home.str);
+            context.navigate(AppRoute.home.str);
           }
         },
         child: AuthScaffold(
@@ -40,7 +40,7 @@ class _SignUpViewState extends State<SignUpView> {
           footer: AuthFooter(
             prompt: context.l10n.signUpHasAccountPrompt,
             actionText: context.l10n.authSignIn,
-            onAction: () => Modular.to.pushNamed(AppRoute.signIn.str),
+            onAction: () => context.pushNamed(AppRoute.signIn.str),
           ),
         ),
       ),

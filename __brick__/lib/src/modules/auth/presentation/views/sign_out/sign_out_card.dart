@@ -19,7 +19,7 @@ class SignOutCard extends StatelessWidget {
       listener: (context, state) {
         if (state.isSuccess) {
           AppSnackBar.success(context, context.l10n.signOutSuccess);
-          Modular.to.navigate(AppRoute.signIn.str);
+          context.navigate(AppRoute.signIn.str);
         } else if (state.failure case final failure?) {
           AppSnackBar.error(context, failure.localized(context.l10n));
         }

@@ -19,7 +19,7 @@ class ThemeToggleButton extends StatelessWidget {
         backgroundColor: context.appColors.overlay,
       ),
       onPressed: () =>
-          Modular.get<ThemeService>().toggle(context.brightness),
+          inject<ThemeService>().toggle(context.brightness),
     );
   }
 }

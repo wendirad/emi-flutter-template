@@ -10,8 +10,8 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeService themeService = Modular.get<ThemeService>();
-    final LocaleService localeService = Modular.get<LocaleService>();
+    final ThemeService themeService = inject<ThemeService>();
+    final LocaleService localeService = inject<LocaleService>();
 
     return ListenableBuilder(
       listenable: Listenable.merge([themeService, localeService]),
@@ -29,7 +29,7 @@ class AppWidget extends StatelessWidget {
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),
           themeMode: themeService.mode,
-          routerConfig: Modular.routerConfig,
+          routerConfig: ModularApp.routerConfigOf(context),
           debugShowCheckedModeBanner: false,
         );
       },
