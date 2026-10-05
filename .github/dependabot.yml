@@ -1,0 +1,37 @@
+version: 2
+
+# __brick__/pubspec.yaml holds Mason placeholders, so Dependabot cannot resolve
+# it. Bump the generated project's pub dependencies there by hand.
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: pub
+    directory: /hooks
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: npm
+    directory: /__brick__/rules_test
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      rules-test:
+        patterns: ["*"]

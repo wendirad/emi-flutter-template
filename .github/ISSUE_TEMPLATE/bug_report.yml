@@ -1,0 +1,65 @@
+name: Bug report
+description: The brick fails to generate, or the generated project is broken.
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Check [existing issues](../issues) first, and trim logs to the failing part.
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Where does it fail?
+      options:
+        - mason make (generation or post-gen hook)
+        - flutter pub get, analyze or test on the generated project
+        - Running the generated app
+        - Brick CI or repository tooling
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and variables
+      description: The exact `mason make` command, with every variable you passed.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Brick version
+      description: The `version` in brick.yaml, or the commit you added the brick from.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Output of `mason --version` and `flutter --version`, plus your OS.
+      render: text
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues.
+          required: true
+        - label: I am using the latest version of the brick.
+          required: true
