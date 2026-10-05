@@ -1,10 +1,10 @@
 name: flutter_template
-description: Flutter starter with core, auth, errors and settings modules (Firebase, Modular, Bloc).
-version: 0.1.0
-
+description: >-
+  Flutter starter with core, auth, errors and settings modules (Firebase,
+  Modular, Bloc).
+version: 0.2.0
 environment:
-  mason: ">=0.1.0 <0.2.0"
-
+  mason: '>=0.1.0 <0.2.0'
 vars:
   project_name:
     type: string
@@ -22,7 +22,9 @@ vars:
     prompt: Organization name (e.g. com.acme)?
   use_firebase:
     type: boolean
-    description: Include Firebase config files (rules, indexes, firebase_options placeholder)
+    description: >-
+      Include Firebase config files (rules, indexes, firebase_options
+      placeholder)
     default: true
     prompt: Include Firebase config files?
   use_camera:
