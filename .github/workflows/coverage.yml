@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: subosito/flutter-action@v2
         with:
@@ -43,7 +43,7 @@ jobs:
           awk -F: '/^LF:/{t+=$2} /^LH:/{h+=$2} END{printf "Line coverage: %.1f%% (%d/%d)\n", h*100/t, h, t}' \
             coverage/lcov.info | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: ${{ runner.temp }}/gen/out/coverage/lcov.info
